@@ -108,6 +108,17 @@ The demo will submit:
 - 0G Storage roots for policies, memory, and receipts
 - Demo video showing the full user deposit -> agent request -> approval -> spend proof flow
 
+## Deployment Proof
+
+| Item | Value |
+| --- | --- |
+| 0G Contract Address | Pending deployment |
+| 0G Explorer Link | Pending deployment |
+| Agent Profile Root | Pending demo run |
+| Policy Root | Pending demo run |
+| Receipt Root | Pending demo run |
+| Compute Decision Root | Pending demo run |
+
 ## Repository Structure
 
 ```txt

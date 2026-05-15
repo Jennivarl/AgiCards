@@ -14,6 +14,8 @@
 
 ## 0G Proof Targets
 
+Add final proof links to the README `Deployment Proof` table before submission.
+
 Minimum proof:
 
 - `AgentRegistered`

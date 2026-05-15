@@ -98,22 +98,22 @@ npm run compile:contract
 npm run deploy:0g
 ```
 
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the 0G Galileo deployment flow.
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the 0G Mainnet deployment flow.
 
 Use `/api/integrations/status` locally to see which live-mode environment variables are still missing.
 
 ## 0G Integration
 
-The planned deployed contract is `contracts/AgiCardsRegistry.sol`.
+The deployed contract is `contracts/AgiCardsRegistry.sol` on 0G Mainnet (Chain ID 16661).
 
 For local development, storage returns mock Merkle roots unless `OG_STORAGE_PRIVATE_KEY` or `DEPLOYER_PRIVATE_KEY` is set. When configured, the storage adapter uploads JSON payloads to 0G Storage with the official TypeScript SDK.
 
 For local development, compute uses the deterministic policy engine unless `OG_COMPUTE_API_KEY` is set. When configured, the compute adapter calls the 0G Compute Router OpenAI-compatible `/chat/completions` endpoint.
 
-The demo will submit:
+The submission includes:
 
-- 0G contract address
-- 0G Explorer link
+- 0G Mainnet contract address
+- 0G Explorer link showing verifiable on-chain activity
 - 0G Storage roots for policies, memory, and receipts
 - Demo video showing the full user deposit -> agent request -> approval -> spend proof flow
 

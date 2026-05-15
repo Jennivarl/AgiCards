@@ -2,8 +2,8 @@ import { makeRoot } from "../id";
 import type { StorageObject } from "../types";
 
 export class OgStorageAdapter {
-  private readonly rpcUrl = process.env.NEXT_PUBLIC_0G_RPC_URL || "https://evmrpc-testnet.0g.ai";
-  private readonly indexerRpc = process.env.OG_STORAGE_INDEXER_RPC || "https://indexer-storage-testnet-turbo.0g.ai";
+  private readonly rpcUrl = process.env.NEXT_PUBLIC_0G_RPC_URL || "https://evmrpc.0g.ai";
+  private readonly indexerRpc = process.env.OG_STORAGE_INDEXER_RPC || "https://indexer-storage-turbo.0g.ai";
   private readonly privateKey = process.env.OG_STORAGE_PRIVATE_KEY || process.env.DEPLOYER_PRIVATE_KEY;
 
   status() {

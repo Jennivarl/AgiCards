@@ -11,21 +11,21 @@ import {
 import { privateKeyToAccount } from "viem/accounts";
 import { AGICARDS_REGISTRY_ABI } from "../contracts/agicardsRegistry";
 import { makeRoot } from "../id";
-import { ogGalileo } from "../ogNetwork";
+import { ogMainnet } from "../ogNetwork";
 
-const galileoChain = defineChain({
-  id: ogGalileo.id,
-  name: ogGalileo.name,
-  nativeCurrency: ogGalileo.nativeCurrency,
+const mainnetChain = defineChain({
+  id: ogMainnet.id,
+  name: ogMainnet.name,
+  nativeCurrency: ogMainnet.nativeCurrency,
   rpcUrls: {
     default: {
-      http: [process.env.NEXT_PUBLIC_0G_RPC_URL || ogGalileo.rpcUrl]
+      http: [process.env.NEXT_PUBLIC_0G_RPC_URL || ogMainnet.rpcUrl]
     }
   },
   blockExplorers: {
     default: {
       name: "0G ChainScan",
-      url: ogGalileo.explorerUrl
+      url: ogMainnet.explorerUrl
     }
   }
 });
@@ -62,8 +62,8 @@ export class OgChainAdapter {
   private readonly privateKey = process.env.DEPLOYER_PRIVATE_KEY as Hex | undefined;
 
   publicClient = createPublicClient({
-    chain: galileoChain,
-    transport: http(process.env.NEXT_PUBLIC_0G_RPC_URL || ogGalileo.rpcUrl)
+    chain: mainnetChain,
+    transport: http(process.env.NEXT_PUBLIC_0G_RPC_URL || ogMainnet.rpcUrl)
   });
 
   isConfigured() {
@@ -73,8 +73,8 @@ export class OgChainAdapter {
   status() {
     return {
       configured: this.isConfigured(),
-      chainId: ogGalileo.id,
-      rpcUrl: process.env.NEXT_PUBLIC_0G_RPC_URL || ogGalileo.rpcUrl,
+      chainId: ogMainnet.id,
+      rpcUrl: process.env.NEXT_PUBLIC_0G_RPC_URL || ogMainnet.rpcUrl,
       registryAddress: this.registryAddress ?? null
     };
   }
@@ -147,8 +147,8 @@ export class OgChainAdapter {
     const account = privateKeyToAccount(this.privateKey);
     const walletClient = createWalletClient({
       account,
-      chain: galileoChain,
-      transport: http(process.env.NEXT_PUBLIC_0G_RPC_URL || ogGalileo.rpcUrl)
+      chain: mainnetChain,
+      transport: http(process.env.NEXT_PUBLIC_0G_RPC_URL || ogMainnet.rpcUrl)
     });
 
     const hash = await walletClient.writeContract({
@@ -167,4 +167,3 @@ export class OgChainAdapter {
 }
 
 export const ogChain = new OgChainAdapter();
-

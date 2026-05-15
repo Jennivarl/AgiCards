@@ -10,7 +10,7 @@ type ChatCompletionResponse = {
 };
 
 export class OgComputeAdapter {
-  private readonly baseUrl = process.env.OG_COMPUTE_BASE_URL || "https://router-api-testnet.integratenetwork.work/v1";
+  private readonly baseUrl = process.env.OG_COMPUTE_BASE_URL || "https://router-api.0g.ai/v1";
   private readonly apiKey = process.env.OG_COMPUTE_API_KEY;
   private readonly model = process.env.OG_COMPUTE_MODEL || "zai-org/GLM-5-FP8";
 

@@ -1,19 +1,19 @@
 # 0G Deployment
 
-This project deploys `contracts/AgiCardsRegistry.sol` to 0G Galileo testnet.
+This project deploys `contracts/AgiCardsRegistry.sol` to 0G Mainnet (Chain ID 16661).
 
 ## Environment
 
 Create `.env.local` with:
 
 ```txt
-NEXT_PUBLIC_0G_CHAIN_ID=16602
-NEXT_PUBLIC_0G_RPC_URL=https://evmrpc-testnet.0g.ai
-NEXT_PUBLIC_0G_EXPLORER_URL=https://chainscan-galileo.0g.ai
+NEXT_PUBLIC_0G_CHAIN_ID=16661
+NEXT_PUBLIC_0G_RPC_URL=https://evmrpc.0g.ai
+NEXT_PUBLIC_0G_EXPLORER_URL=https://chainscan.0g.ai
 DEPLOYER_PRIVATE_KEY=your_wallet_private_key
-OG_STORAGE_INDEXER_RPC=https://indexer-storage-testnet-turbo.0g.ai
+OG_STORAGE_INDEXER_RPC=https://indexer-storage-turbo.0g.ai
 OG_STORAGE_PRIVATE_KEY=your_wallet_private_key
-OG_COMPUTE_BASE_URL=https://router-api-testnet.integratenetwork.work/v1
+OG_COMPUTE_BASE_URL=https://router-api.0g.ai/v1
 OG_COMPUTE_API_KEY=your_0g_router_api_key
 OG_COMPUTE_MODEL=zai-org/GLM-5-FP8
 ```

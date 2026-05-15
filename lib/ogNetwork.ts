@@ -1,29 +1,28 @@
-export const ogGalileo = {
-  id: 16602,
-  name: "0G-Galileo-Testnet",
+export const ogMainnet = {
+  id: 16661,
+  name: "0G Mainnet",
   nativeCurrency: {
     decimals: 18,
     name: "0G",
     symbol: "0G"
   },
-  rpcUrl: "https://evmrpc-testnet.0g.ai",
-  explorerUrl: "https://chainscan-galileo.0g.ai",
-  storageExplorerUrl: "https://storagescan-galileo.0g.ai"
+  rpcUrl: "https://evmrpc.0g.ai",
+  explorerUrl: "https://chainscan.0g.ai",
+  storageExplorerUrl: "https://storagescan.0g.ai"
 };
 
 export function contractExplorerLink(address?: string) {
   if (!address) {
-    return ogGalileo.explorerUrl;
+    return ogMainnet.explorerUrl;
   }
 
-  return `${ogGalileo.explorerUrl}/address/${address}`;
+  return `${ogMainnet.explorerUrl}/address/${address}`;
 }
 
 export function transactionExplorerLink(hash?: string) {
   if (!hash) {
-    return ogGalileo.explorerUrl;
+    return ogMainnet.explorerUrl;
   }
 
-  return `${ogGalileo.explorerUrl}/tx/${hash}`;
+  return `${ogMainnet.explorerUrl}/tx/${hash}`;
 }
-

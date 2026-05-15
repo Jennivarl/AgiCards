@@ -5,8 +5,8 @@ import { privateKeyToAccount } from "viem/accounts";
 import "./compile-contract.mjs";
 
 const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
-const rpcUrl = process.env.NEXT_PUBLIC_0G_RPC_URL || "https://evmrpc-testnet.0g.ai";
-const explorerUrl = process.env.NEXT_PUBLIC_0G_EXPLORER_URL || "https://chainscan-galileo.0g.ai";
+const rpcUrl = process.env.NEXT_PUBLIC_0G_RPC_URL || "https://evmrpc.0g.ai";
+const explorerUrl = process.env.NEXT_PUBLIC_0G_EXPLORER_URL || "https://chainscan.0g.ai";
 
 if (!privateKey) {
   throw new Error("Missing DEPLOYER_PRIVATE_KEY in environment.");
@@ -14,9 +14,9 @@ if (!privateKey) {
 
 const artifactPath = path.join(process.cwd(), "artifacts", "AgiCardsRegistry.json");
 const artifact = JSON.parse(fs.readFileSync(artifactPath, "utf8"));
-const galileo = defineChain({
-  id: 16602,
-  name: "0G-Galileo-Testnet",
+const mainnet = defineChain({
+  id: 16661,
+  name: "0G Mainnet",
   nativeCurrency: {
     decimals: 18,
     name: "0G",
@@ -37,11 +37,11 @@ const galileo = defineChain({
 const account = privateKeyToAccount(privateKey);
 const walletClient = createWalletClient({
   account,
-  chain: galileo,
+  chain: mainnet,
   transport: http(rpcUrl)
 });
 const publicClient = createPublicClient({
-  chain: galileo,
+  chain: mainnet,
   transport: http(rpcUrl)
 });
 

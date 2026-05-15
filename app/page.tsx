@@ -21,7 +21,7 @@ import { FormEvent, useMemo, useState } from "react";
 import { demoAgent, demoPolicy, demoWallet, initialRequests } from "@/lib/demoData";
 import { formatUsd, makeId, makeRoot, shortHash } from "@/lib/id";
 import { availableWalletBalance, reserveFunds, settleReservedSpend } from "@/lib/policyEngine";
-import { contractExplorerLink, ogGalileo, transactionExplorerLink } from "@/lib/ogNetwork";
+import { contractExplorerLink, ogMainnet, transactionExplorerLink } from "@/lib/ogNetwork";
 import type { CardRequest, ChainProof, RiskReport, SpendMode, WalletState } from "@/lib/types";
 
 type EthereumProvider = {
@@ -359,8 +359,8 @@ export default function Home() {
         </nav>
         <div className="networkBox">
           <span>Network</span>
-          <strong>{ogGalileo.name}</strong>
-          <small>Chain ID {ogGalileo.id}</small>
+          <strong>{ogMainnet.name}</strong>
+          <small>Chain ID {ogMainnet.id}</small>
         </div>
       </aside>
 

@@ -8,6 +8,7 @@
     "build": "next build",
     "compile:contract": "node scripts/compile-contract.mjs",
     "deploy:0g": "node scripts/deploy-0g.mjs",
+    "demo:proof": "tsx scripts/demo-proof.ts",
     "start": "next start",
     "test": "tsx --test tests/policyEngine.test.ts",
     "typecheck": "tsc --noEmit",

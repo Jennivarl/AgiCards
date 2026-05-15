@@ -123,10 +123,12 @@ The submission includes:
 | --- | --- |
 | 0G Contract Address | 0xc757698204543af249e328764e89530464de668e |
 | 0G Explorer Link | https://chainscan.0g.ai/address/0xc757698204543af249e328764e89530464de668e |
-| Agent Profile Root | Pending demo run |
-| Policy Root | Pending demo run |
-| Receipt Root | Pending demo run |
-| Compute Decision Root | Pending demo run |
+| Deployment Transaction | https://chainscan.0g.ai/tx/0xb9e7... |
+| Agent Profile Root | 0x52868b24c4a5c8698a5b8bb6cdffb15ed8563736ca6c79e61e47ea50e240c903 |
+| Policy Root | 0xc84ac38bfa46d2c84c182c695cf0242fed9bc4aef6e4f1ca3ef2d6ac027983e6 |
+| Receipt Root | 0x6a949fea0ff0797a246bda397940ce9580ae0bd4e0afb61b6078ad5f79ab4dcc |
+| Compute Decision Root | 0x54a7b8debda694b4d0c369ab3c3a7fe5b2db7fca9fd300e94e881dc0676d3284 |
+| Memory Root | 0xcb2f061e39ae9b7609355aff8f6366c76cfba4e98395abb8d66693d1434415fd |
 
 ## Repository Structure
 

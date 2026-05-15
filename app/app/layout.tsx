@@ -3,14 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
-import { LayoutDashboard, Users, Wallet, CreditCard, Database, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, Wallet, CreditCard, Database, Settings, ArrowLeft } from 'lucide-react';
 
 const navItems = [
   { path: '/app', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/app/agents', label: 'Agents', icon: Users },
   { path: '/app/wallet', label: 'Wallet', icon: Wallet },
   { path: '/app/orders', label: 'Card Orders', icon: CreditCard },
-  { path: '/app/proof', label: '0G Proof', icon: Database },
+  { path: '/app/proof', label: '0G Layer', icon: Database },
   { path: '/app/settings', label: 'Settings', icon: Settings }
 ];
 
@@ -69,6 +69,26 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               );
             })}
           </nav>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35, duration: 0.5 }}
+            className="absolute bottom-28 left-6 right-6"
+          >
+            <Link
+              href="/"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg w-full transition-all group"
+              style={{
+                background: 'rgba(255, 246, 232, 0.05)',
+                border: '1px solid rgba(255, 129, 32, 0.2)',
+                color: 'rgba(255, 246, 232, 0.6)'
+              }}
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-xs font-medium">Back to Home</span>
+            </Link>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}

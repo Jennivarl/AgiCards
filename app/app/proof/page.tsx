@@ -15,7 +15,7 @@ export default function ProofPage() {
         className="text-4xl font-bold mb-10"
         style={{ color: '#FFF7E8' }}
       >
-        0G Proof
+        0G Layer
       </motion.h1>
 
       <motion.div
@@ -108,25 +108,23 @@ export default function ProofPage() {
           data: [
             { label: 'Agent Profile Root (0G Storage)', value: '0xa9639b81ba042c45c8ba6d13b73a53110fc83be9e3067123cf933f7bd4de5140', cols: 2, mono: true },
             { label: 'Chain ID', value: '16661' },
-            { label: 'Agent Name', value: 'Marketing Agent Alpha' }
+            { label: 'Proof Type', value: 'Agent profile root' }
           ]
         },
         {
           title: 'Policy Hash',
           data: [
             { label: 'Policy Root (0G Storage)', value: '0xa9b39fc3e22c39058822aeee69800eeb6bfc83c5ca2b95201611886e8a6c1b1e', mono: true, fullWidth: true },
-            { label: 'Daily Cap', value: '$100.00' },
-            { label: 'Per-Request Cap', value: '$50.00' },
-            { label: 'Auto-Approval', value: '$10.00' },
-            { label: 'Allowed Categories', value: 'Ads, SaaS' }
+            { label: 'Proof Type', value: 'Policy record root' },
+            { label: 'Network', value: '0G Mainnet' }
           ]
         },
         {
           title: 'Wallet-Funded Request',
           data: [
             { label: 'Receipt Root (0G Storage)', value: '0x5e8041c243afa263814d01c01c776876056d0369dae358f413c787c6e4dfa752', mono: true, fullWidth: true },
-            { label: 'Merchant', value: 'Google Ads' },
-            { label: 'Amount', value: '$45.00', highlight: true }
+            { label: 'Proof Type', value: 'Receipt root' },
+            { label: 'Status', value: 'Recorded', highlight: true }
           ]
         },
         {

@@ -105,7 +105,7 @@ export function VirtualCard({ variant = 'default', delay = 0, index = 0 }: Virtu
                 <div className="text-xs opacity-70 mb-1.5 uppercase tracking-wider" style={{ color: '#FFF7E8' }}>
                   Virtual Agent Card
                 </div>
-                <div className="text-xs opacity-60" style={{ color: '#FFF7E8' }}>Daily cap $100</div>
+                <div className="text-xs opacity-60" style={{ color: '#FFF7E8' }}>Daily cap $--</div>
               </div>
               <div
                 className="text-xs font-semibold px-3 py-1.5 rounded"

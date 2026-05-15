@@ -43,14 +43,9 @@ export default function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
                 className="mb-8"
-                style={{ fontSize: '6rem', lineHeight: '0.9', letterSpacing: '-0.03em' }}
+                style={{ fontSize: '4.5rem', lineHeight: '1.05', letterSpacing: '-0.03em', fontWeight: 800, color: '#FFF7E8' }}
               >
-                <span style={{ fontFamily: 'Playfair Display, serif' }} className="text-gradient-gold">
-                  AGI
-                </span>
-                <span style={{ fontFamily: 'Cinzel, serif', fontSize: '6.5rem' }} className="text-gradient-orange">
-                  CARDS
-                </span>
+                Agents can spend, but only inside the rules you set.
               </motion.div>
 
               <motion.p
@@ -142,7 +137,7 @@ export default function LandingPage() {
             className="mb-32"
           >
             <h2 className="text-5xl font-bold mb-16 text-center max-w-4xl mx-auto leading-tight" style={{ color: '#FFF7E8' }}>
-              Agents can spend, but only inside the rules you set.
+              Every card request is funded, bounded, and proven on-chain.
             </h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -185,7 +180,7 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
-            id="0g-proof"
+            id="0g-layer"
             className="mb-32 p-14 rounded-2xl relative overflow-hidden"
             style={{
               background: 'rgba(16, 8, 5, 0.5)',
@@ -198,8 +193,8 @@ export default function LandingPage() {
             />
 
             <h2 className="text-5xl font-bold mb-14 text-center relative z-10 leading-tight" style={{ color: '#FFF7E8' }}>
-              Mainnet proof is part of the product,{' '}
-              <span className="text-gradient-orange">not a side note.</span>
+              On-chain verification is{' '}
+              <span className="text-gradient-orange">core infrastructure.</span>
             </h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
@@ -291,10 +286,10 @@ export default function LandingPage() {
             </div>
 
             <h2 className="text-4xl font-bold mb-5 relative z-10" style={{ color: '#FFF7E8' }}>
-              Build the demo, show the proof, keep the card claims clean.
+              Controlled agent spending, with on-chain proof at every step.
             </h2>
             <p className="text-lg mb-10 relative z-10 max-w-3xl mx-auto" style={{ color: 'rgba(255, 246, 232, 0.75)' }}>
-              AgiCards presents live Web3 card controls now, while Stripe remains a future/test adapter for issuer-backed card expansion.
+              AgiCards delivers live Web3 card controls with verifiable on-chain enforcement. A Stripe adapter is available for future issuer-backed card programmes.
             </p>
             <Link
               href="/app"

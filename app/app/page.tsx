@@ -16,9 +16,9 @@ export default function Dashboard() {
 
       <div className="grid md:grid-cols-3 gap-6 mb-10">
         {[
-          { icon: Wallet, label: 'Wallet Balance', value: '$2,450.00', change: '+$250 this week', changeColor: '#43D483', color: '#FFB331' },
-          { icon: Users, label: 'Active Agents', value: '3', change: '2 paused', changeColor: 'rgba(255, 246, 232, 0.64)', color: '#FFB331' },
-          { icon: CreditCard, label: 'Pending Requests', value: '2', change: 'Needs review', changeColor: '#FF5A12', color: '#FFB331' }
+          { icon: Wallet, label: 'Wallet Balance', value: '$--', change: '--', changeColor: 'rgba(255, 246, 232, 0.4)', color: '#FFB331' },
+          { icon: Users, label: 'Active Agents', value: '--', change: '--', changeColor: 'rgba(255, 246, 232, 0.4)', color: '#FFB331' },
+          { icon: CreditCard, label: 'Pending Requests', value: '--', change: '--', changeColor: 'rgba(255, 246, 232, 0.4)', color: '#FFB331' }
         ].map((stat, idx) => (
           <motion.div
             key={idx}
@@ -54,10 +54,10 @@ export default function Dashboard() {
           </h2>
           <div className="space-y-4">
             {[
-              { label: 'Name', value: 'Marketing Agent Alpha' },
-              { label: 'Purpose', value: 'Ad spend automation' },
-              { label: 'Daily Cap', value: '$100.00', highlight: true },
-              { label: 'Status', value: 'Active', badge: true }
+              { label: 'Name', value: '--' },
+              { label: 'Purpose', value: '--' },
+              { label: 'Daily Cap', value: '$--', highlight: true },
+              { label: 'Status', value: '--', badge: true }
             ].map((item, idx) => (
               <motion.div
                 key={idx}
@@ -70,7 +70,7 @@ export default function Dashboard() {
                 <span className="text-sm font-medium" style={{ color: 'rgba(255, 246, 232, 0.7)' }}>{item.label}</span>
                 {item.badge ? (
                   <span className="text-xs px-3 py-1 rounded-full font-semibold"
-                    style={{ background: 'rgba(67, 212, 131, 0.2)', color: '#43D483' }}>
+                    style={{ background: 'rgba(255, 246, 232, 0.1)', color: 'rgba(255, 246, 232, 0.5)' }}>
                     {item.value}
                   </span>
                 ) : (
@@ -94,10 +94,10 @@ export default function Dashboard() {
           </h2>
           <div className="space-y-4">
             {[
-              { label: 'Per-Request Cap', value: '$50.00' },
-              { label: 'Auto-Approval', value: 'Under $10' },
-              { label: 'Allowed Categories', value: 'Ads, SaaS' },
-              { label: 'Policy Hash', value: '0xa9b39f...c1b1e', mono: true }
+              { label: 'Per-Request Cap', value: '$--' },
+              { label: 'Auto-Approval', value: '--' },
+              { label: 'Allowed Categories', value: '--' },
+              { label: 'Policy Hash', value: '--', mono: true }
             ].map((item, idx) => (
               <motion.div
                 key={idx}
@@ -109,7 +109,7 @@ export default function Dashboard() {
               >
                 <span className="text-sm font-medium" style={{ color: 'rgba(255, 246, 232, 0.7)' }}>{item.label}</span>
                 <span className={`text-sm ${item.mono ? 'font-mono' : 'font-semibold'}`}
-                  style={{ color: item.mono ? '#FFB331' : '#FFF7E8' }}>
+                  style={{ color: item.mono ? 'rgba(255, 179, 49, 0.5)' : 'rgba(255, 247, 232, 0.5)' }}>
                   {item.value}
                 </span>
               </motion.div>
@@ -131,10 +131,10 @@ export default function Dashboard() {
           </h2>
           <div className="space-y-4">
             {[
-              { label: 'Merchant', value: 'Google Ads' },
-              { label: 'Amount', value: '$45.00', highlight: true },
-              { label: 'Risk Score', value: 'Low', badge: 'success' },
-              { label: 'Status', value: 'Pending Review', badge: 'warning' }
+              { label: 'Merchant', value: '--' },
+              { label: 'Amount', value: '$--', highlight: true },
+              { label: 'Risk Score', value: '--', badge: 'neutral' },
+              { label: 'Status', value: '--', badge: 'neutral' }
             ].map((item, idx) => (
               <motion.div
                 key={idx}
@@ -146,13 +146,8 @@ export default function Dashboard() {
               >
                 <span className="text-sm font-medium" style={{ color: 'rgba(255, 246, 232, 0.7)' }}>{item.label}</span>
                 {item.badge ? (
-                  <span
-                    className="text-xs px-3 py-1 rounded-full font-semibold"
-                    style={{
-                      background: item.badge === 'success' ? 'rgba(67, 212, 131, 0.2)' : 'rgba(255, 179, 49, 0.2)',
-                      color: item.badge === 'success' ? '#43D483' : '#FFB331'
-                    }}
-                  >
+                  <span className="text-xs px-3 py-1 rounded-full font-semibold"
+                    style={{ background: 'rgba(255, 246, 232, 0.08)', color: 'rgba(255, 246, 232, 0.4)' }}>
                     {item.value}
                   </span>
                 ) : (
@@ -172,7 +167,7 @@ export default function Dashboard() {
         >
           <h2 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: '#FFF7E8' }}>
             <Database className="w-6 h-6" style={{ color: '#FFB331' }} />
-            0G Proof Status
+            0G Layer Status
           </h2>
           <div className="space-y-4">
             {['0G Chain Connected', '0G Storage Synced', 'Compute Layer Active'].map((status, idx) => (

@@ -3,7 +3,7 @@
 import { motion } from 'motion/react';
 import { Wallet, TrendingUp, Database, CheckCircle2 } from 'lucide-react';
 
-const depositAmounts = [25, 50, 100, 250];
+const depositAmounts = ['--', '--', '--', '--'];
 
 export default function WalletPage() {
   return (
@@ -32,8 +32,8 @@ export default function WalletPage() {
 
       <div className="grid md:grid-cols-2 gap-6 mb-10">
         {[
-          { icon: Wallet, label: 'Total Deposited', value: '$2,450.00', color: '#FFB331' },
-          { icon: TrendingUp, label: 'Available Balance', value: '$1,875.00', color: '#43D483' }
+          { icon: Wallet, label: 'Total Deposited', value: '$--', color: '#FFB331' },
+          { icon: TrendingUp, label: 'Available Balance', value: '$--', color: '#43D483' }
         ].map((stat, idx) => (
           <motion.div
             key={idx}
@@ -57,8 +57,8 @@ export default function WalletPage() {
 
       <div className="grid md:grid-cols-2 gap-6 mb-10">
         {[
-          { label: 'Reserved Balance', value: '$425.00', desc: 'Locked for pending requests', color: '#FFB331' },
-          { label: 'Total Spent', value: '$150.00', desc: 'This month', color: '#FFF7E8' }
+          { label: 'Reserved Balance', value: '$--', desc: 'Locked for pending requests', color: '#FFB331' },
+          { label: 'Total Spent', value: '$--', desc: 'This month', color: '#FFF7E8' }
         ].map((stat, idx) => (
           <motion.div
             key={idx}
@@ -85,7 +85,7 @@ export default function WalletPage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           {depositAmounts.map((amount, idx) => (
             <motion.button
-              key={amount}
+              key={idx}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.6 + idx * 0.05, duration: 0.3 }}

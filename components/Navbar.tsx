@@ -30,42 +30,38 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3 group">
-          <motion.div
-            whileHover={{ scale: 1.05, rotate: 5 }}
-            className="w-10 h-10 flex items-center justify-center"
-          >
-            <svg viewBox="0 0 40 40" className="w-full h-full">
-              <defs>
-                <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" style={{ stopColor: '#FFF7E8', stopOpacity: 1 }} />
-                  <stop offset="35%" style={{ stopColor: '#FFE15B', stopOpacity: 1 }} />
-                  <stop offset="65%" style={{ stopColor: '#FFB331', stopOpacity: 1 }} />
-                  <stop offset="100%" style={{ stopColor: '#EE93A8', stopOpacity: 1 }} />
-                </linearGradient>
-                <filter id="glow">
-                  <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                  <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
-                  </feMerge>
-                </filter>
-              </defs>
-              <path
-                d="M 8 32 Q 12 8, 20 20 Q 28 8, 32 32 L 28 32 Q 24 16, 20 24 Q 16 16, 12 32 Z"
-                fill="url(#logo-grad)"
-                filter="url(#glow)"
-                opacity="0.95"
-              />
-              <circle cx="20" cy="20" r="2.5" fill="#FFE15B" filter="url(#glow)" />
-            </svg>
+          <motion.div whileHover={{ scale: 1.05 }}>
+            <img
+              src="/logo.png"
+              alt="AgiCards logo"
+              style={{ height: '38px', width: 'auto' }}
+            />
           </motion.div>
-          <span className="text-xl tracking-tight font-semibold" style={{ color: '#FFF7E8' }}>
-            AgiCards
-          </span>
+          <motion.div whileHover={{ scale: 1.03 }} style={{ lineHeight: 1, letterSpacing: '-0.02em' }}>
+            <span style={{
+              fontFamily: 'Cormorant Garamond, serif',
+              fontSize: '2rem',
+              fontWeight: 700,
+              fontStyle: 'italic',
+              background: 'linear-gradient(135deg, #FFFDE8 0%, #FFF176 40%, #FFE000 70%, #FFD000 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              letterSpacing: '0.01em',
+            }}>Agi</span><span style={{
+              fontFamily: 'Cinzel, serif',
+              fontSize: '1.53rem',
+              fontWeight: 900,
+              background: 'linear-gradient(135deg, #FF8C00 0%, #FF4A00 45%, #D63000 75%, #A52000 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>CARDS</span>
+          </motion.div>
         </Link>
 
         <div className="hidden md:flex items-center gap-10">
-          {['Product', '0G Proof', 'Flow'].map((item, idx) => (
+          {['Product', 'Flow'].map((item, idx) => (
             <motion.a
               key={item}
               href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
@@ -81,6 +77,19 @@ export function Navbar() {
               />
             </motion.a>
           ))}
+          <motion.a
+            href="https://0g.ai"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className="text-sm font-medium hover:opacity-100 transition-all relative group"
+            style={{ color: 'rgba(255, 246, 232, 0.85)' }}
+          >
+            0g.ai
+            <span className="absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
+              style={{ background: 'linear-gradient(90deg, #FFB331, #FF5A12)' }}
+            />
+          </motion.a>
         </div>
 
         <motion.div

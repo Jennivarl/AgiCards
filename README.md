@@ -124,11 +124,11 @@ The submission includes:
 | 0G Contract Address | 0xc757698204543af249e328764e89530464de668e |
 | 0G Explorer Link | https://chainscan.0g.ai/address/0xc757698204543af249e328764e89530464de668e |
 | Deployment Transaction | https://chainscan.0g.ai/tx/0xb9e7... |
-| Agent Profile Root | 0x52868b24c4a5c8698a5b8bb6cdffb15ed8563736ca6c79e61e47ea50e240c903 |
-| Policy Root | 0xc84ac38bfa46d2c84c182c695cf0242fed9bc4aef6e4f1ca3ef2d6ac027983e6 |
-| Receipt Root | 0x6a949fea0ff0797a246bda397940ce9580ae0bd4e0afb61b6078ad5f79ab4dcc |
-| Compute Decision Root | 0x54a7b8debda694b4d0c369ab3c3a7fe5b2db7fca9fd300e94e881dc0676d3284 |
-| Memory Root | 0xcb2f061e39ae9b7609355aff8f6366c76cfba4e98395abb8d66693d1434415fd |
+| Agent Profile Root | 0xa9639b81ba042c45c8ba6d13b73a53110fc83be9e3067123cf933f7bd4de5140 |
+| Policy Root | 0xa9b39fc3e22c39058822aeee69800eeb6bfc83c5ca2b95201611886e8a6c1b1e |
+| Receipt Root | 0x5e8041c243afa263814d01c01c776876056d0369dae358f413c787c6e4dfa752 |
+| Compute Decision Root | 0xa12eb9cfe85854f721aeaf36230a7d562bc376b9635fe2bddf490f40dad7773f |
+| Memory Root | 0xf599f6a4430673f2ecc201e0216248f3ae540d0991d8a0ae3bee31181d331e6b |
 
 ## Repository Structure
 

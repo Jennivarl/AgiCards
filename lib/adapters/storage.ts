@@ -57,7 +57,7 @@ export class OgStorageAdapter {
     const provider = new ethers.JsonRpcProvider(this.rpcUrl);
     const signer = new ethers.Wallet(this.privateKey!, provider);
     const indexer = new Indexer(this.indexerRpc);
-    const [tx, uploadErr] = await indexer.upload(memData, this.rpcUrl, signer);
+    const [tx, uploadErr] = await indexer.upload(memData, this.rpcUrl, signer, { finalityRequired: false });
 
     if (uploadErr !== null) {
       throw new Error(`0G Storage upload error: ${uploadErr}`);

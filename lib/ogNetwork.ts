@@ -19,3 +19,11 @@ export function contractExplorerLink(address?: string) {
   return `${ogGalileo.explorerUrl}/address/${address}`;
 }
 
+export function transactionExplorerLink(hash?: string) {
+  if (!hash) {
+    return ogGalileo.explorerUrl;
+  }
+
+  return `${ogGalileo.explorerUrl}/tx/${hash}`;
+}
+

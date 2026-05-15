@@ -68,6 +68,7 @@ export default function Home() {
   const [isBusy, setIsBusy] = useState(false);
   const [status, setStatus] = useState("Ready for agent card requests.");
   const [integrationStatus, setIntegrationStatus] = useState<IntegrationStatus | null>(null);
+  const [agentProofs, setAgentProofs] = useState<ChainProof[]>([]);
 
   const latestRequest = requests[0];
   const available = availableWalletBalance(wallet);
@@ -126,6 +127,21 @@ export default function Home() {
     const payload = (await response.json()) as IntegrationStatus;
     setIntegrationStatus(payload);
     setStatus("Integration status refreshed.");
+  }
+
+  async function registerAgentProof() {
+    setStatus("Registering agent and policy proof...");
+    const response = await fetch("/api/agents/register", {
+      method: "POST"
+    });
+    const payload = (await response.json()) as {
+      agentRoot: string;
+      policyRoot: string;
+      chainProofs: ChainProof[];
+    };
+
+    setAgentProofs(payload.chainProofs);
+    setStatus(`Agent and policy proof created: ${shortHash(payload.chainProofs[0].hash)}.`);
   }
 
   async function handleDeposit(event: FormEvent<HTMLFormElement>) {
@@ -329,6 +345,9 @@ export default function Home() {
               <span className="pill success">Active</span>
             </div>
             <p className="muted">{demoAgent.purpose}</p>
+            <button className="secondaryButton" type="button" onClick={registerAgentProof}>
+              Register agent proof
+            </button>
             <div className="policyBox">
               <div>
                 <span>Policy</span>
@@ -350,6 +369,18 @@ export default function Home() {
               <RootItem label="Memory root" value={demoAgent.memoryRoot} />
               <RootItem label="Policy root" value={demoPolicy.storageRoot} />
             </div>
+            {agentProofs.length ? (
+              <div className="chainProofs">
+                {agentProofs.map((proof) => (
+                  <a href={transactionExplorerLink(proof.hash)} key={proof.label} target="_blank" rel="noreferrer">
+                    <span>{proof.label}</span>
+                    <code>
+                      {proof.mode} {shortHash(proof.hash)}
+                    </code>
+                  </a>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="panel depositPanel">

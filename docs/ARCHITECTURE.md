@@ -1,5 +1,7 @@
 # AgiCards Architecture
 
+See [ARCHITECTURE_DIAGRAM.md](ARCHITECTURE_DIAGRAM.md) for a visual flow.
+
 ## Core Flow
 
 ```txt

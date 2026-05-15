@@ -502,6 +502,51 @@ textarea {
   gap: 14px;
 }
 
+.orderStepper {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.step {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0c111a;
+  color: var(--muted);
+  padding: 8px;
+}
+
+.step span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 999px;
+  background: #20283a;
+  color: var(--muted);
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step strong {
+  font-size: 12px;
+}
+
+.step.active {
+  border-color: #6f55ff;
+  color: var(--text);
+}
+
+.step.active span {
+  background: #6f55ff;
+  color: #fff;
+}
+
 .requestItem {
   display: grid;
   gap: 12px;
@@ -680,6 +725,7 @@ textarea {
   .metrics,
   .integrationGrid,
   .miniGrid,
+  .orderStepper,
   .policyGrid,
   .proofGrid,
   .navList {

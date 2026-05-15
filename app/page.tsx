@@ -90,6 +90,7 @@ export default function Home() {
   const [status, setStatus] = useState("Ready for agent card requests.");
   const [integrationStatus, setIntegrationStatus] = useState<IntegrationStatus | null>(null);
   const [agentProofs, setAgentProofs] = useState<ChainProof[]>([]);
+  const [orderStage, setOrderStage] = useState<"idle" | "evaluate" | "reserve" | "issue" | "proof">("idle");
 
   const latestRequest = requests[0];
   const available = availableWalletBalance(wallet);
@@ -248,6 +249,7 @@ export default function Home() {
   async function handleRequest(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsBusy(true);
+    setOrderStage("evaluate");
     setStatus("0G Compute is evaluating the agent request...");
 
     const requestRoot = makeRoot({
@@ -287,15 +289,18 @@ export default function Home() {
 
     if (evaluation.risk.decision === "rejected") {
       setRequests((current) => [nextRequest, ...current]);
+      setOrderStage("idle");
       setStatus(`Request rejected by policy: ${evaluation.risk.reason}`);
       setIsBusy(false);
       return;
     }
 
+    setOrderStage("reserve");
     setWallet((current) => reserveFunds(current, Number(form.amountUsd)));
     nextRequest.status = "approved";
     setStatus("Policy approved. Reserving funds and issuing card through selected adapter...");
 
+    setOrderStage("issue");
     const issueResponse = await fetch("/api/cards/issue", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -315,6 +320,7 @@ export default function Home() {
 
     setWallet((current) => settleReservedSpend(current, Number(form.amountUsd)));
     setRequests((current) => [nextRequest, ...current]);
+    setOrderStage("proof");
     setStatus(
       `${form.mode === "stripe" ? "Stripe test card" : "0G Web3 card"} completed. Receipt root ${shortHash(
         issued.receiptRoot
@@ -571,10 +577,11 @@ export default function Home() {
             <div className="panelHeader">
               <div>
                 <p className="eyebrow">Agent Request</p>
-                <h2>Create Spend</h2>
+                <h2>Card Order</h2>
               </div>
               <CreditCard size={24} />
             </div>
+            <OrderStepper stage={orderStage} />
             <form className="requestForm" onSubmit={handleRequest}>
               <div className="modeSwitch" role="group" aria-label="Spend mode">
                 <button
@@ -742,6 +749,30 @@ function IntegrationCard({ label, mode, configured }: { label: string; mode: str
       <strong>{mode}</strong>
       <small>{configured ? "Configured" : "Fallback active"}</small>
     </article>
+  );
+}
+
+function OrderStepper({ stage }: { stage: "idle" | "evaluate" | "reserve" | "issue" | "proof" }) {
+  const steps = [
+    { key: "evaluate", label: "Risk check" },
+    { key: "reserve", label: "Reserve funds" },
+    { key: "issue", label: "Issue card" },
+    { key: "proof", label: "Store proof" }
+  ];
+  const activeIndex = steps.findIndex((step) => step.key === stage);
+
+  return (
+    <div className="orderStepper" aria-label="Card order progress">
+      {steps.map((step, index) => (
+        <div
+          className={index <= activeIndex && activeIndex >= 0 ? "step active" : "step"}
+          key={step.key}
+        >
+          <span>{index + 1}</span>
+          <strong>{step.label}</strong>
+        </div>
+      ))}
+    </div>
   );
 }
 

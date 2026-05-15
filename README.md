@@ -121,8 +121,8 @@ The submission includes:
 
 | Item | Value |
 | --- | --- |
-| 0G Contract Address | Pending deployment |
-| 0G Explorer Link | Pending deployment |
+| 0G Contract Address | 0xc757698204543af249e328764e89530464de668e |
+| 0G Explorer Link | https://chainscan.0g.ai/address/0xc757698204543af249e328764e89530464de668e |
 | Agent Profile Root | Pending demo run |
 | Policy Root | Pending demo run |
 | Receipt Root | Pending demo run |

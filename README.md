@@ -54,6 +54,8 @@ lib/adapters/           0G, Stripe, and Web3 card adapters
 lib/policyEngine.ts     funding, limit, and approval checks
 ```
 
+See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) for the 3-minute hackathon demo flow.
+
 ## User Deposit Layer
 
 AgiCards requires users to deposit funds before agents can request cards. The wallet tracks deposited, reserved, spent, and available balances. Every card request reserves funds first; rejected requests release funds, and completed spends reduce the user's available balance.

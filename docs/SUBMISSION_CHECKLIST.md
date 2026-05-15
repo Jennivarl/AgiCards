@@ -41,15 +41,7 @@ Compute proof:
 
 ## Demo Script
 
-1. Open AgiCards dashboard.
-2. Show user wallet deposit.
-3. Show Marketing Agent and SaaS Growth Card Policy.
-4. Create a 0G Web3 card request below auto-approval.
-5. Show risk evaluation and receipt root.
-6. Create a Stripe test card request above auto-approval or near policy limit.
-7. Show how AgiCards stores redacted metadata only.
-8. Open 0G Explorer link for contract activity.
-9. Show README architecture.
+Use [DEMO_SCRIPT.md](DEMO_SCRIPT.md) for the complete 3-minute flow.
 
 ## X Post Template
 
@@ -58,4 +50,3 @@ AgiCards lets AI agents request controlled virtual cards, with spending policies
 Built for #0GHackathon #BuildOn0G
 
 @0G_labs @0g_CN @0g_Eco @HackQuest_
-

@@ -20,6 +20,14 @@ npm run dev
 
 Then open `http://localhost:3000`.
 
+## Checks
+
+```bash
+npm run test
+npm run typecheck
+npm run build
+```
+
 ## Contract Compile And Deploy
 
 ```bash

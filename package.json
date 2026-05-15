@@ -9,6 +9,7 @@
     "compile:contract": "node scripts/compile-contract.mjs",
     "deploy:0g": "node scripts/deploy-0g.mjs",
     "start": "next start",
+    "test": "tsx --test tests/policyEngine.test.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -26,6 +27,7 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "solc": "^0.8.35"
+    "solc": "^0.8.35",
+    "tsx": "^4.22.0"
   }
 }

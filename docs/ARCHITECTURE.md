@@ -66,6 +66,8 @@ Evaluates:
 - daily limit
 - whether human approval is required
 
+The server adapter uses the 0G Compute Router when `OG_COMPUTE_API_KEY` is configured. If no key is available, it falls back to the deterministic local policy engine so demos remain usable while credentials are being set up.
+
 ### Agent ID
 
 The MVP uses a contract-level `agentId`. If official 0G Agent ID tooling is available during the build, this ID can be linked to or replaced by the official Agent ID standard.
@@ -73,4 +75,3 @@ The MVP uses a contract-level `agentId`. If official 0G Agent ID tooling is avai
 ### Persistent Memory
 
 The MVP stores memory snapshots on 0G Storage. When 0G Persistent Memory is available, the same memory objects can migrate into the native module.
-

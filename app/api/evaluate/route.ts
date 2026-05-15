@@ -4,6 +4,10 @@ import { ogStorage } from "@/lib/adapters/storage";
 import { demoPolicy, demoWallet } from "@/lib/demoData";
 import type { CardRequest } from "@/lib/types";
 
+export async function GET() {
+  return NextResponse.json(ogCompute.status());
+}
+
 export async function POST(request: Request) {
   const body = (await request.json()) as Pick<CardRequest, "amountUsd" | "category" | "merchant" | "purpose" | "mode">;
   const risk = await ogCompute.evaluate(body, demoPolicy, demoWallet);
@@ -17,4 +21,3 @@ export async function POST(request: Request) {
     decisionRoot: decision.root
   });
 }
-

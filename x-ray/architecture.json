@@ -1,0 +1,18 @@
+{
+  "title": "AgiCards Architecture",
+  "nodes": [
+    {"id": "user", "label": "User", "subtitle": "Agent Owner", "type": "actor", "row": 0},
+    {"id": "registry", "label": "AgiCardsRegistry", "subtitle": "Registry + Escrow", "type": "protocol", "row": 1},
+    {"id": "og_storage", "label": "0G Storage", "subtitle": "proof roots", "type": "external", "row": 2},
+    {"id": "og_compute", "label": "0G Compute", "subtitle": "policy eval", "type": "external", "row": 2}
+  ],
+  "edges": [
+    {"from": "user", "to": "registry", "label": "fund + request card"},
+    {"from": "registry", "to": "user", "label": "withdraw ETH"},
+    {"from": "registry", "to": "og_storage", "label": "store proof roots"},
+    {"from": "registry", "to": "og_compute", "label": "policy roots"}
+  ],
+  "groups": [
+    {"label": "0G Infrastructure", "nodes": ["og_storage", "og_compute"]}
+  ]
+}

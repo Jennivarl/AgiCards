@@ -2,14 +2,68 @@
 
 AgiCards lets AI agents request controlled virtual cards, with spending policies, approvals, memory, and audit trails powered by 0G.
 
-## What This MVP Proves
+## Overview
+
+AgiCards is an agent wallet and card-control layer for autonomous AI agents. Users fund a wallet, generate an AI agent, assign spending rules, and let that agent request controlled card orders or Web3 spends.
+
+The goal is simple:
+
+```txt
+AI agents should be able to spend, but only inside user-defined rules with verifiable 0G proof.
+```
+
+## Problem
+
+AI agents are becoming capable of taking real actions, but giving them direct spending power is risky. Users need a way to control:
+
+- how much an agent can spend
+- where an agent can spend
+- when human approval is required
+- how every decision and spend can be audited later
+
+## Solution
 
 - Users deposit funds into an AgiCards wallet before delegating spend authority.
-- Agents request Stripe-style real cards or 0G-native Web3 card spends.
-- 0G Chain records agent, policy, approval, deposit, and spend proof.
-- 0G Storage persists policies, receipts, memory, and audit logs.
-- 0G Compute evaluates request risk and produces approval explanations.
-- Stripe Issuing is isolated behind an adapter for future production use.
+- Users generate an agent and assign a spending policy.
+- The agent creates a card order for a specific task.
+- 0G Compute evaluates the request against the policy.
+- AgiCards reserves funds before approval.
+- The order routes to either a 0G-native Web3 card flow or a Stripe adapter.
+- Receipts, policy decisions, and memory are stored and proven through 0G.
+
+## 0G Modules Used
+
+| Module | Use |
+| --- | --- |
+| 0G Chain | Smart contract proof for deposits, agents, policies, approvals, card actions, and spend receipts |
+| 0G Storage | Persistent storage for agent profiles, policies, memory, decisions, and receipts |
+| 0G Compute | Risk and policy evaluation through the 0G Compute Router when configured |
+| Agent ID path | MVP uses contract-level agent identity, with a path to official 0G Agent ID |
+| Persistent Memory path | MVP stores memory on 0G Storage, with a path to native 0G Persistent Memory |
+
+## Demo Flow
+
+```txt
+Connect wallet
+  -> Generate agent
+  -> Register agent proof
+  -> Deposit funds
+  -> Create card order
+  -> 0G Compute evaluates risk
+  -> Funds are reserved
+  -> Card/Web3 spend is issued
+  -> Receipt and proof hashes are shown
+```
+
+## What This MVP Proves
+
+- Controlled agent spending with user-defined limits.
+- User deposits before any agent can spend.
+- Agent and policy generation from the dashboard.
+- 0G Chain proof hooks for core actions.
+- 0G Storage support for policies, receipts, and memory.
+- 0G Compute support for risk decisions.
+- Stripe is isolated behind an adapter for future real-card support.
 
 ## Local Development
 

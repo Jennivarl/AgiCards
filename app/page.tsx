@@ -1,818 +1,316 @@
 "use client";
 
-import {
-  Activity,
-  BadgeCheck,
-  Bot,
-  BrainCircuit,
-  Check,
-  CircleDollarSign,
-  Coins,
-  CreditCard,
-  Database,
-  ExternalLink,
-  LockKeyhole,
-  ReceiptText,
-  ShieldCheck,
-  Wallet,
-  X
-} from "lucide-react";
-import { FormEvent, useMemo, useState } from "react";
-import { demoAgent, demoPolicy, demoWallet, initialRequests } from "@/lib/demoData";
-import { formatUsd, makeId, makeRoot, shortHash } from "@/lib/id";
-import { availableWalletBalance, reserveFunds, settleReservedSpend } from "@/lib/policyEngine";
-import { contractExplorerLink, ogMainnet, transactionExplorerLink } from "@/lib/ogNetwork";
-import type { CardRequest, ChainProof, RiskReport, SpendMode, WalletState } from "@/lib/types";
+import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'motion/react';
+import { VirtualCard } from '@/components/VirtualCard';
+import { Wallet, Shield, Database, CreditCard, ArrowRight, Sparkles, Lock, CheckCircle2 } from 'lucide-react';
+import { useRef } from 'react';
 
-type EthereumProvider = {
-  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-};
+export default function LandingPage() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"]
+  });
 
-declare global {
-  interface Window {
-    ethereum?: EthereumProvider;
-  }
-}
-
-type RequestFormState = {
-  mode: SpendMode;
-  merchant: string;
-  category: string;
-  amountUsd: number;
-  purpose: string;
-};
-
-type IntegrationStatus = {
-  chain: { mode: string; configured: boolean };
-  storage: { mode: string; configured: boolean };
-  compute: { mode: string; configured: boolean };
-  stripe: { mode: string; configured: boolean; issuingEnabled: boolean };
-};
-
-type AgentFormState = {
-  name: string;
-  purpose: string;
-  maxPerRequestUsd: number;
-  dailyLimitUsd: number;
-  autoApproveBelowUsd: number;
-  allowedCategories: string;
-};
-
-const categoryOptions = ["SaaS", "AI tools", "Marketing", "Hosting", "Travel"];
-
-const defaultForm: RequestFormState = {
-  mode: "web3",
-  merchant: "AI Landing Reviewer",
-  category: "AI tools",
-  amountUsd: 9,
-  purpose: "Review landing page copy before launch"
-};
-
-const defaultAgentForm: AgentFormState = {
-  name: "Research Agent",
-  purpose: "Find useful AI tools and request controlled cards for approved software purchases.",
-  maxPerRequestUsd: 20,
-  dailyLimitUsd: 80,
-  autoApproveBelowUsd: 8,
-  allowedCategories: "SaaS,AI tools,Marketing"
-};
-
-export default function Home() {
-  const [wallet, setWallet] = useState<WalletState>(demoWallet);
-  const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
-  const [depositUsd, setDepositUsd] = useState(50);
-  const [requests, setRequests] = useState<CardRequest[]>(initialRequests);
-  const [form, setForm] = useState<RequestFormState>(defaultForm);
-  const [agentForm, setAgentForm] = useState<AgentFormState>(defaultAgentForm);
-  const [generatedAgent, setGeneratedAgent] = useState(demoAgent);
-  const [generatedPolicy, setGeneratedPolicy] = useState(demoPolicy);
-  const [isBusy, setIsBusy] = useState(false);
-  const [status, setStatus] = useState("Ready for agent card requests.");
-  const [integrationStatus, setIntegrationStatus] = useState<IntegrationStatus | null>(null);
-  const [agentProofs, setAgentProofs] = useState<ChainProof[]>([]);
-  const [orderStage, setOrderStage] = useState<"idle" | "evaluate" | "reserve" | "issue" | "proof">("idle");
-
-  const latestRequest = requests[0];
-  const available = availableWalletBalance(wallet);
-  const policyUsage = Math.min(100, ((wallet.spentUsd + wallet.reservedUsd) / generatedPolicy.dailyLimitUsd) * 100);
-
-  const proofItems = useMemo(
-    () => [
-      {
-        label: "0G Chain",
-        value: "AgiCardsRegistry events",
-        icon: Activity,
-        detail: "Deposits, policies, approvals, card links, and spend receipts."
-      },
-      {
-        label: "0G Storage",
-        value: "Policy + memory roots",
-        icon: Database,
-        detail: "Agent profile, policy JSON, receipts, and AI memory snapshots."
-      },
-      {
-        label: "0G Compute",
-        value: "Risk inference",
-        icon: BrainCircuit,
-        detail: "Evaluates requests before a card is issued or a Web3 spend is approved."
-      },
-      {
-        label: "Stripe Adapter",
-        value: "Test card mode",
-        icon: CreditCard,
-        detail: "Future real-card rail, isolated from the 0G-native card flow."
-      }
-    ],
-    []
-  );
-
-  async function connectWallet() {
-    if (!window.ethereum) {
-      setStatus("No browser wallet found. Install MetaMask or another EVM wallet to connect.");
-      return;
-    }
-
-    const accounts = (await window.ethereum.request({ method: "eth_requestAccounts" })) as string[];
-    const account = accounts[0];
-
-    if (!account) {
-      setStatus("Wallet connection was cancelled.");
-      return;
-    }
-
-    setConnectedWallet(account);
-    setStatus(`Wallet connected: ${shortHash(account)}`);
-  }
-
-  async function refreshIntegrationStatus() {
-    const response = await fetch("/api/integrations/status");
-    const payload = (await response.json()) as IntegrationStatus;
-    setIntegrationStatus(payload);
-    setStatus("Integration status refreshed.");
-  }
-
-  async function registerAgentProof() {
-    setStatus("Registering agent and policy proof...");
-    const response = await fetch("/api/agents/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        agent: generatedAgent,
-        policy: generatedPolicy
-      })
-    });
-    const payload = (await response.json()) as {
-      agentRoot: string;
-      policyRoot: string;
-      chainProofs: ChainProof[];
-    };
-
-    setAgentProofs(payload.chainProofs);
-    setStatus(`Agent and policy proof created: ${shortHash(payload.chainProofs[0].hash)}.`);
-  }
-
-  function generateAgent(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const agentId = makeId("agent", `${agentForm.name}:${agentForm.purpose}`);
-    const policyId = makeId("policy", `${agentId}:${agentForm.allowedCategories}`);
-    const categories = agentForm.allowedCategories
-      .split(",")
-      .map((category) => category.trim())
-      .filter(Boolean);
-    const agentRoot = makeRoot({
-      agentId,
-      name: agentForm.name,
-      purpose: agentForm.purpose
-    });
-    const policyRoot = makeRoot({
-      policyId,
-      agentId,
-      maxPerRequestUsd: agentForm.maxPerRequestUsd,
-      dailyLimitUsd: agentForm.dailyLimitUsd,
-      autoApproveBelowUsd: agentForm.autoApproveBelowUsd,
-      categories
-    });
-
-    setGeneratedAgent({
-      id: agentId,
-      name: agentForm.name,
-      purpose: agentForm.purpose,
-      owner: connectedWallet ?? demoAgent.owner,
-      storageRoot: agentRoot,
-      memoryRoot: makeRoot({ agentId, memory: [] }),
-      status: "active"
-    });
-    setGeneratedPolicy({
-      id: policyId,
-      agentId,
-      name: `${agentForm.name} Card Policy`,
-      maxPerRequestUsd: agentForm.maxPerRequestUsd,
-      dailyLimitUsd: agentForm.dailyLimitUsd,
-      autoApproveBelowUsd: agentForm.autoApproveBelowUsd,
-      allowedCategories: categories,
-      expiresInHours: 24,
-      storageRoot: policyRoot
-    });
-    setRequests([]);
-    setAgentProofs([]);
-    setStatus(`${agentForm.name} generated with a controlled card policy.`);
-  }
-
-  async function handleDeposit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const response = await fetch("/api/wallet/deposit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        amountUsd: depositUsd,
-        owner: connectedWallet ?? generatedAgent.owner
-      })
-    });
-    const deposit = (await response.json()) as {
-      receiptRoot: string;
-      chainProof: ChainProof;
-    };
-
-    setWallet((current) => ({
-      ...current,
-      depositedUsd: current.depositedUsd + depositUsd,
-      depositReceiptRoot: deposit.receiptRoot,
-      depositProof: deposit.chainProof
-    }));
-    setStatus(
-      `Deposited ${formatUsd(depositUsd)} with ${deposit.chainProof.mode} chain proof ${shortHash(
-        deposit.chainProof.hash
-      )}.`
-    );
-  }
-
-  async function handleRequest(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setIsBusy(true);
-    setOrderStage("evaluate");
-    setStatus("0G Compute is evaluating the agent request...");
-
-    const requestRoot = makeRoot({
-      agentId: generatedAgent.id,
-      policyId: generatedPolicy.id,
-      ...form
-    });
-    const requestId = makeId("req", requestRoot);
-    const evaluationResponse = await fetch("/api/evaluate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        policy: generatedPolicy,
-        wallet
-      })
-    });
-    const evaluation = (await evaluationResponse.json()) as {
-      risk: RiskReport;
-      decisionRoot: string;
-    };
-
-    const nextRequest: CardRequest = {
-      id: requestId,
-      agentId: generatedAgent.id,
-      policyId: generatedPolicy.id,
-      mode: form.mode,
-      merchant: form.merchant,
-      category: form.category,
-      purpose: form.purpose,
-      amountUsd: Number(form.amountUsd),
-      status: evaluation.risk.decision === "rejected" ? "rejected" : "pending",
-      requestRoot,
-      decisionRoot: evaluation.decisionRoot,
-      risk: evaluation.risk
-    };
-
-    if (evaluation.risk.decision === "rejected") {
-      setRequests((current) => [nextRequest, ...current]);
-      setOrderStage("idle");
-      setStatus(`Request rejected by policy: ${evaluation.risk.reason}`);
-      setIsBusy(false);
-      return;
-    }
-
-    setOrderStage("reserve");
-    setWallet((current) => reserveFunds(current, Number(form.amountUsd)));
-    nextRequest.status = "approved";
-    setStatus("Policy approved. Reserving funds and issuing card through selected adapter...");
-
-    setOrderStage("issue");
-    const issueResponse = await fetch("/api/cards/issue", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(nextRequest)
-    });
-    const issued = (await issueResponse.json()) as {
-      metadata: { cardId: string; last4?: string };
-      receiptRoot: string;
-      chainProofs: ChainProof[];
-    };
-
-    nextRequest.status = "completed";
-    nextRequest.providerCardId = issued.metadata.cardId;
-    nextRequest.last4 = issued.metadata.last4;
-    nextRequest.receiptRoot = issued.receiptRoot;
-    nextRequest.chainProofs = issued.chainProofs;
-
-    setWallet((current) => settleReservedSpend(current, Number(form.amountUsd)));
-    setRequests((current) => [nextRequest, ...current]);
-    setOrderStage("proof");
-    setStatus(
-      `${form.mode === "stripe" ? "Stripe test card" : "0G Web3 card"} completed. Receipt root ${shortHash(
-        issued.receiptRoot
-      )}.`
-    );
-    setIsBusy(false);
-  }
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
 
   return (
-    <main className="shell">
-      <aside className="sidebar">
-        <div className="brand">
-          <div className="brandMark">A</div>
-          <div>
-            <strong>AgiCards</strong>
-            <span>Agent spend control</span>
-          </div>
-        </div>
-        <nav className="navList" aria-label="Main">
-          <a href="#wallet">
-            <Wallet size={18} />
-            Wallet
-          </a>
-          <a href="#agent">
-            <Bot size={18} />
-            Agent
-          </a>
-          <a href="#request">
-            <CreditCard size={18} />
-            Request
-          </a>
-          <a href="#proof">
-            <ShieldCheck size={18} />
-            0G Proof
-          </a>
-        </nav>
-        <div className="networkBox">
-          <span>Network</span>
-          <strong>{ogMainnet.name}</strong>
-          <small>Chain ID {ogMainnet.id}</small>
-        </div>
-      </aside>
+    <div className="min-h-screen">
+      <div ref={heroRef} className="relative pt-32 pb-32 px-6 overflow-hidden">
+        <motion.div
+          style={{ opacity }}
+          className="absolute inset-0 pointer-events-none"
+        >
+          <div className="absolute top-20 right-10 w-96 h-96 rounded-full opacity-20 blur-3xl"
+            style={{ background: 'radial-gradient(circle, #FF5A12 0%, transparent 70%)' }}
+          />
+          <div className="absolute bottom-20 left-10 w-80 h-80 rounded-full opacity-15 blur-3xl"
+            style={{ background: 'radial-gradient(circle, #FFE15B 0%, transparent 70%)' }}
+          />
+        </motion.div>
 
-      <section className="workspace">
-        <header className="topbar">
-          <div>
-            <p className="eyebrow">Track 3 / Agentic Economy</p>
-            <h1>AgiCards</h1>
-          </div>
-          <div className="topActions">
-            <button className="walletButton" type="button" onClick={connectWallet}>
-              <Wallet size={16} />
-              {connectedWallet ? shortHash(connectedWallet) : "Connect wallet"}
-            </button>
-            <a className="externalButton" href={contractExplorerLink()} target="_blank" rel="noreferrer">
-              Explorer
-              <ExternalLink size={16} />
-            </a>
-          </div>
-        </header>
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-20 items-center mb-32">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.6 }}
+                className="mb-8"
+                style={{ fontSize: '6rem', lineHeight: '0.9', letterSpacing: '-0.03em' }}
+              >
+                <span style={{ fontFamily: 'Playfair Display, serif' }} className="text-gradient-gold">
+                  AGI
+                </span>
+                <span style={{ fontFamily: 'Cinzel, serif', fontSize: '6.5rem' }} className="text-gradient-orange">
+                  CARDS
+                </span>
+              </motion.div>
 
-        <section className="statusBar" aria-live="polite">
-          <Activity size={18} />
-          <span>{status}</span>
-          <button className="statusButton" type="button" onClick={refreshIntegrationStatus}>
-            Check integrations
-          </button>
-        </section>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+                className="text-xl mb-10 leading-relaxed max-w-xl"
+                style={{ color: 'rgba(255, 246, 232, 0.85)' }}
+              >
+                Programmable Web3 cards for AI agents, built with user deposits, spend rules, and verifiable 0G proof.
+              </motion.p>
 
-        {integrationStatus ? (
-          <section className="integrationGrid" aria-label="Integration status">
-            <IntegrationCard label="0G Chain" mode={integrationStatus.chain.mode} configured={integrationStatus.chain.configured} />
-            <IntegrationCard
-              label="0G Storage"
-              mode={integrationStatus.storage.mode}
-              configured={integrationStatus.storage.configured}
-            />
-            <IntegrationCard
-              label="0G Compute"
-              mode={integrationStatus.compute.mode}
-              configured={integrationStatus.compute.configured}
-            />
-            <IntegrationCard
-              label="Stripe"
-              mode={integrationStatus.stripe.mode}
-              configured={integrationStatus.stripe.configured}
-            />
-          </section>
-        ) : null}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+                className="flex gap-4 mb-14"
+              >
+                <Link
+                  href="/app"
+                  className="group relative px-8 py-4 rounded-lg font-semibold transition-all overflow-hidden flex items-center gap-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #FFE45D 0%, #FFB331 45%, #FF5A12 100%)',
+                    color: '#050403',
+                    boxShadow: '0 8px 24px rgba(255, 90, 18, 0.4)'
+                  }}
+                >
+                  <span className="relative z-10">Open MVP</span>
+                  <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+                </Link>
+                <Link
+                  href="/app/proof"
+                  className="group px-8 py-4 rounded-lg font-semibold transition-all relative overflow-hidden"
+                  style={{
+                    background: 'rgba(255, 90, 18, 0.12)',
+                    border: '1px solid rgba(255, 129, 32, 0.35)',
+                    color: '#FFB331',
+                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)'
+                  }}
+                >
+                  <span className="relative z-10">View 0G Layer</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber/20 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+                </Link>
+              </motion.div>
 
-        <section className="metrics" id="wallet">
-          <MetricCard icon={Coins} label="Deposited" value={formatUsd(wallet.depositedUsd)} tone="green" />
-          <MetricCard icon={LockKeyhole} label="Reserved" value={formatUsd(wallet.reservedUsd)} tone="amber" />
-          <MetricCard icon={ReceiptText} label="Spent Today" value={formatUsd(wallet.spentUsd)} tone="purple" />
-          <MetricCard icon={Wallet} label="Available" value={formatUsd(available)} tone="blue" />
-        </section>
-
-        <section className="mainGrid">
-          <div className="panel agentPanel" id="agent">
-            <div className="panelHeader">
-              <div>
-                <p className="eyebrow">Active Agent</p>
-                <h2>{generatedAgent.name}</h2>
-              </div>
-              <span className="pill success">Active</span>
-            </div>
-            <p className="muted">{generatedAgent.purpose}</p>
-            <button className="secondaryButton" type="button" onClick={registerAgentProof}>
-              Register agent proof
-            </button>
-            <div className="policyBox">
-              <div>
-                <span>Policy</span>
-                <strong>{generatedPolicy.name}</strong>
-              </div>
-              <div className="policyTrack">
-                <span style={{ width: `${policyUsage}%` }} />
-              </div>
-              <div className="policyGrid">
-                <PolicyStat label="Max/request" value={formatUsd(generatedPolicy.maxPerRequestUsd)} />
-                <PolicyStat label="Daily limit" value={formatUsd(generatedPolicy.dailyLimitUsd)} />
-                <PolicyStat label="Auto approve" value={`< ${formatUsd(generatedPolicy.autoApproveBelowUsd)}`} />
-                <PolicyStat label="Expires" value={`${generatedPolicy.expiresInHours}h`} />
-              </div>
-            </div>
-            <div className="rootList">
-              <RootItem label="Owner" value={connectedWallet ?? generatedAgent.owner} />
-              <RootItem label="Agent root" value={generatedAgent.storageRoot} />
-              <RootItem label="Memory root" value={generatedAgent.memoryRoot} />
-              <RootItem label="Policy root" value={generatedPolicy.storageRoot} />
-            </div>
-            {agentProofs.length ? (
-              <div className="chainProofs">
-                {agentProofs.map((proof) => (
-                  <a href={transactionExplorerLink(proof.hash)} key={proof.label} target="_blank" rel="noreferrer">
-                    <span>{proof.label}</span>
-                    <code>
-                      {proof.mode} {shortHash(proof.hash)}
-                    </code>
-                  </a>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+                className="grid grid-cols-3 gap-5"
+              >
+                {[
+                  { num: '16661', label: '0G mainnet ready' },
+                  { num: '24/7', label: 'Policy checks' },
+                  { num: '3', label: 'Agent spend modes' }
+                ].map((stat, idx) => (
+                  <motion.div
+                    key={idx}
+                    whileHover={{ y: -4, scale: 1.02 }}
+                    className="p-5 rounded-lg glass-panel transition-all"
+                    style={{ boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)' }}
+                  >
+                    <div className="text-3xl font-bold mb-1.5 text-gradient-orange">{stat.num}</div>
+                    <div className="text-xs leading-tight" style={{ color: 'rgba(255, 246, 232, 0.65)' }}>
+                      {stat.label}
+                    </div>
+                  </motion.div>
                 ))}
-              </div>
-            ) : null}
+              </motion.div>
+            </motion.div>
+
+            <motion.div
+              style={{ y }}
+              className="relative h-[550px] flex items-center justify-center"
+            >
+              <VirtualCard variant="default" delay={0.4} index={0} />
+              <VirtualCard variant="gold" delay={0.5} index={1} />
+              <VirtualCard variant="pink" delay={0.6} index={2} />
+            </motion.div>
           </div>
 
-          <div className="panel generatorPanel">
-            <div className="panelHeader">
-              <div>
-                <p className="eyebrow">Agent Setup</p>
-                <h2>Generate Agent</h2>
-              </div>
-              <Bot size={24} />
-            </div>
-            <form className="requestForm" onSubmit={generateAgent}>
-              <label>
-                Agent name
-                <input
-                  value={agentForm.name}
-                  onChange={(event) => setAgentForm((current) => ({ ...current, name: event.target.value }))}
-                />
-              </label>
-              <label>
-                Purpose
-                <textarea
-                  value={agentForm.purpose}
-                  onChange={(event) => setAgentForm((current) => ({ ...current, purpose: event.target.value }))}
-                />
-              </label>
-              <label>
-                Allowed categories
-                <input
-                  value={agentForm.allowedCategories}
-                  onChange={(event) =>
-                    setAgentForm((current) => ({ ...current, allowedCategories: event.target.value }))
-                  }
-                />
-              </label>
-              <div className="miniGrid">
-                <label>
-                  Max/request
-                  <input
-                    type="number"
-                    min="1"
-                    value={agentForm.maxPerRequestUsd}
-                    onChange={(event) =>
-                      setAgentForm((current) => ({ ...current, maxPerRequestUsd: Number(event.target.value) }))
-                    }
-                  />
-                </label>
-                <label>
-                  Daily limit
-                  <input
-                    type="number"
-                    min="1"
-                    value={agentForm.dailyLimitUsd}
-                    onChange={(event) =>
-                      setAgentForm((current) => ({ ...current, dailyLimitUsd: Number(event.target.value) }))
-                    }
-                  />
-                </label>
-                <label>
-                  Auto approve
-                  <input
-                    type="number"
-                    min="0"
-                    value={agentForm.autoApproveBelowUsd}
-                    onChange={(event) =>
-                      setAgentForm((current) => ({ ...current, autoApproveBelowUsd: Number(event.target.value) }))
-                    }
-                  />
-                </label>
-              </div>
-              <button type="submit">Generate agent</button>
-            </form>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            id="product"
+            className="mb-32"
+          >
+            <h2 className="text-5xl font-bold mb-16 text-center max-w-4xl mx-auto leading-tight" style={{ color: '#FFF7E8' }}>
+              Agents can spend, but only inside the rules you set.
+            </h2>
 
-          <div className="panel depositPanel">
-            <div className="panelHeader">
-              <div>
-                <p className="eyebrow">Fund First</p>
-                <h2>User Wallet Deposit</h2>
-              </div>
-              <CircleDollarSign size={24} />
-            </div>
-            <form className="depositForm" onSubmit={handleDeposit}>
-              <label>
-                Deposit amount
-                <input
-                  type="number"
-                  min="1"
-                  value={depositUsd}
-                  onChange={(event) => setDepositUsd(Number(event.target.value))}
-                />
-              </label>
-              <button type="submit">Deposit demo funds</button>
-            </form>
-            <p className="muted">
-              Every agent request reserves user funds before a Stripe test card or 0G-native Web3 card can be issued.
-            </p>
-            <RootItem label="Latest deposit root" value={wallet.depositReceiptRoot} />
-            {wallet.depositProof ? (
-              <div className="chainProofs">
-                <a href={transactionExplorerLink(wallet.depositProof.hash)} target="_blank" rel="noreferrer">
-                  <span>{wallet.depositProof.label}</span>
-                  <code>
-                    {wallet.depositProof.mode} {shortHash(wallet.depositProof.hash)}
-                  </code>
-                </a>
-              </div>
-            ) : null}
-          </div>
-
-          <div className="panel requestPanel" id="request">
-            <div className="panelHeader">
-              <div>
-                <p className="eyebrow">Agent Request</p>
-                <h2>Card Order</h2>
-              </div>
-              <CreditCard size={24} />
-            </div>
-            <OrderStepper stage={orderStage} />
-            <form className="requestForm" onSubmit={handleRequest}>
-              <div className="modeSwitch" role="group" aria-label="Spend mode">
-                <button
-                  type="button"
-                  className={form.mode === "web3" ? "selected" : ""}
-                  onClick={() => setForm((current) => ({ ...current, mode: "web3" }))}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[
+                { icon: Wallet, color: '#FF5A12', title: 'Agent Wallets', desc: 'Each AI agent gets a dedicated wallet with clear spending rules and balance limits.' },
+                { icon: Lock, color: '#FFB331', title: 'User-Funded Control', desc: 'Users deposit first. Agents request spending from funded wallets only.' },
+                { icon: Database, color: '#FFE15B', title: '0G Proof Layer', desc: 'All activity is recorded with verifiable proof on 0G Chain and Storage.' },
+                { icon: CreditCard, color: '#EE93A8', title: 'Card Adapter Path', desc: 'Web3 virtual cards now. Issuer-backed adapter roadmap for future expansion.' }
+              ].map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1, duration: 0.6 }}
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="p-7 rounded-lg glass-panel-elevated metallic-shine group"
                 >
-                  0G Web3
-                </button>
-                <button
-                  type="button"
-                  className={form.mode === "stripe" ? "selected" : ""}
-                  onClick={() => setForm((current) => ({ ...current, mode: "stripe" }))}
-                >
-                  Stripe test
-                </button>
-              </div>
-              <div className="modeNote">
-                {form.mode === "web3"
-                  ? "0G Web3 mode is the working MVP path for verifiable agent spending."
-                  : "Stripe mode is a future real-card adapter and runs as test/mock infrastructure in this MVP."}
-              </div>
-              <label>
-                Merchant
-                <input
-                  value={form.merchant}
-                  onChange={(event) => setForm((current) => ({ ...current, merchant: event.target.value }))}
-                />
-              </label>
-              <label>
-                Category
-                <select
-                  value={form.category}
-                  onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))}
-                >
-                  {categoryOptions.map((category) => (
-                    <option key={category}>{category}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Amount
-                <input
-                  type="number"
-                  min="1"
-                  max="200"
-                  value={form.amountUsd}
-                  onChange={(event) => setForm((current) => ({ ...current, amountUsd: Number(event.target.value) }))}
-                />
-              </label>
-              <label>
-                Purpose
-                <textarea
-                  value={form.purpose}
-                  onChange={(event) => setForm((current) => ({ ...current, purpose: event.target.value }))}
-                />
-              </label>
-              <button disabled={isBusy} type="submit">
-                {isBusy ? "Processing..." : "Evaluate and issue"}
-              </button>
-            </form>
-          </div>
-
-          <div className="panel activityPanel">
-            <div className="panelHeader">
-              <div>
-                <p className="eyebrow">Latest Activity</p>
-                <h2>Requests</h2>
-              </div>
-              <ReceiptText size={24} />
-            </div>
-            <div className="requestList">
-              {requests.map((request) => (
-                <article className="requestItem" key={request.id}>
-                  <div className="requestTop">
-                    <div>
-                      <strong>{request.merchant}</strong>
-                      <span>{request.mode === "stripe" ? "Stripe test card" : "0G Web3 card"}</span>
-                    </div>
-                    <span className={`pill ${request.status === "rejected" ? "danger" : "success"}`}>
-                      {request.status}
-                    </span>
-                  </div>
-                  <div className="requestMeta">
-                    <span>{formatUsd(request.amountUsd)}</span>
-                    <span>{request.category}</span>
-                    {request.last4 ? <span>ending {request.last4}</span> : null}
-                  </div>
-                  {request.risk ? <RiskReportView risk={request.risk} /> : null}
-                  <div className="rootList compact">
-                    <RootItem label="Request root" value={request.requestRoot} />
-                    {request.decisionRoot ? <RootItem label="Decision root" value={request.decisionRoot} /> : null}
-                    {request.receiptRoot ? <RootItem label="Receipt root" value={request.receiptRoot} /> : null}
-                  </div>
-                  {request.chainProofs?.length ? (
-                    <div className="chainProofs">
-                      {request.chainProofs.map((proof) => (
-                        <a
-                          href={transactionExplorerLink(proof.hash)}
-                          key={`${request.id}-${proof.label}`}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          <span>{proof.label}</span>
-                          <code>
-                            {proof.mode} {shortHash(proof.hash)}
-                          </code>
-                        </a>
-                      ))}
-                    </div>
-                  ) : null}
-                </article>
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    className="w-14 h-14 rounded-xl mb-5 flex items-center justify-center shadow-lg"
+                    style={{
+                      background: `rgba(${item.color === '#FF5A12' ? '255, 90, 18' : item.color === '#FFB331' ? '255, 179, 49' : item.color === '#FFE15B' ? '255, 225, 91' : '238, 147, 168'}, 0.2)`,
+                      border: `1px solid rgba(${item.color === '#FF5A12' ? '255, 90, 18' : item.color === '#FFB331' ? '255, 179, 49' : item.color === '#FFE15B' ? '255, 225, 91' : '238, 147, 168'}, 0.4)`
+                    }}
+                  >
+                    <item.icon className="w-7 h-7" style={{ color: item.color }} />
+                  </motion.div>
+                  <h3 className="text-lg font-semibold mb-3" style={{ color: '#FFF7E8' }}>{item.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: 'rgba(255, 246, 232, 0.7)' }}>
+                    {item.desc}
+                  </p>
+                </motion.div>
               ))}
             </div>
-          </div>
-        </section>
+          </motion.div>
 
-        <section className="proofGrid" id="proof">
-          {proofItems.map((item) => (
-            <article className="proofItem" key={item.label}>
-              <item.icon size={22} />
-              <div>
-                <span>{item.label}</span>
-                <strong>{item.value}</strong>
-                <p>{item.detail}</p>
-              </div>
-            </article>
-          ))}
-        </section>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            id="0g-proof"
+            className="mb-32 p-14 rounded-2xl relative overflow-hidden"
+            style={{
+              background: 'rgba(16, 8, 5, 0.5)',
+              border: '1px solid rgba(255, 129, 32, 0.35)',
+              boxShadow: '0 16px 64px rgba(0, 0, 0, 0.4)'
+            }}
+          >
+            <div className="absolute top-0 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl pointer-events-none"
+              style={{ background: 'radial-gradient(circle, #FFB331 0%, transparent 70%)' }}
+            />
 
-        {latestRequest ? (
-          <section className="proofStrip">
-            <BadgeCheck size={18} />
-            <span>
-              Latest proof path: wallet deposit {"->"} 0G policy {"->"} 0G Compute decision {"->"} card adapter{" "}
-              {"->"} 0G receipt{" "}
-              {latestRequest.receiptRoot ? shortHash(latestRequest.receiptRoot) : ""}
-            </span>
-          </section>
-        ) : null}
-      </section>
-    </main>
-  );
-}
+            <h2 className="text-5xl font-bold mb-14 text-center relative z-10 leading-tight" style={{ color: '#FFF7E8' }}>
+              Mainnet proof is part of the product,{' '}
+              <span className="text-gradient-orange">not a side note.</span>
+            </h2>
 
-function MetricCard({
-  icon: Icon,
-  label,
-  value,
-  tone
-}: {
-  icon: typeof Wallet;
-  label: string;
-  value: string;
-  tone: "green" | "amber" | "purple" | "blue";
-}) {
-  return (
-    <article className={`metric ${tone}`}>
-      <Icon size={22} />
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </article>
-  );
-}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+              {[
+                { icon: Shield, color: '#FF5A12', title: '0G Chain', desc: 'Contract activity and agent spend events' },
+                { icon: Database, color: '#FFB331', title: '0G Storage', desc: 'Policy records, agent metadata, request logs' },
+                { icon: Sparkles, color: '#FFE15B', title: '0G Compute', desc: 'AI policy reasoning and request evaluation' },
+                { icon: CheckCircle2, color: '#EE93A8', title: 'Agent ID', desc: 'Roadmap-compatible identity layer' },
+                { icon: Lock, color: '#43D483', title: 'Privacy', desc: 'Future secure execution layer' }
+              ].map((module, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.08, duration: 0.5 }}
+                  whileHover={{ scale: 1.05, y: -4 }}
+                  className="p-6 rounded-xl glass-panel-elevated"
+                  style={{ boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)' }}
+                >
+                  <module.icon className="w-9 h-9 mb-4" style={{ color: module.color }} />
+                  <h3 className="font-semibold mb-2.5 text-lg" style={{ color: '#FFB331' }}>{module.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: 'rgba(255, 246, 232, 0.7)' }}>
+                    {module.desc}
+                  </p>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
 
-function IntegrationCard({ label, mode, configured }: { label: string; mode: string; configured: boolean }) {
-  return (
-    <article className="integrationCard">
-      <span>{label}</span>
-      <strong>{mode}</strong>
-      <small>{configured ? "Configured" : "Fallback active"}</small>
-    </article>
-  );
-}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            id="flow"
+            className="mb-32"
+          >
+            <h2 className="text-5xl font-bold mb-16 text-center" style={{ color: '#FFF7E8' }}>
+              How It Works
+            </h2>
 
-function OrderStepper({ stage }: { stage: "idle" | "evaluate" | "reserve" | "issue" | "proof" }) {
-  const steps = [
-    { key: "evaluate", label: "Risk check" },
-    { key: "reserve", label: "Reserve funds" },
-    { key: "issue", label: "Issue card" },
-    { key: "proof", label: "Store proof" }
-  ];
-  const activeIndex = steps.findIndex((step) => step.key === stage);
+            <div className="flex flex-col md:flex-row gap-6 items-center justify-center">
+              {[
+                { num: '1', title: 'Fund Wallet', icon: Wallet },
+                { num: '2', title: 'Generate Agent', icon: Sparkles },
+                { num: '3', title: 'Set Spend Rules', icon: Shield },
+                { num: '4', title: 'Approve Request', icon: CheckCircle2 },
+                { num: '5', title: 'Store Proof on 0G', icon: Database }
+              ].map((step, idx) => (
+                <div key={idx} className="flex items-center gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1, duration: 0.5 }}
+                    whileHover={{ scale: 1.05, y: -4 }}
+                    className="p-7 rounded-xl text-center glass-panel-elevated min-w-[180px]"
+                  >
+                    <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.6 }}>
+                      <step.icon className="w-10 h-10 mx-auto mb-3" style={{ color: '#FFB331' }} />
+                    </motion.div>
+                    <div className="text-3xl font-bold mb-2 text-gradient-orange">{step.num}</div>
+                    <div className="text-sm font-medium" style={{ color: '#FFF7E8' }}>{step.title}</div>
+                  </motion.div>
+                  {idx < 4 && (
+                    <ArrowRight className="hidden md:block w-7 h-7" style={{ color: 'rgba(255, 129, 32, 0.5)' }} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </motion.div>
 
-  return (
-    <div className="orderStepper" aria-label="Card order progress">
-      {steps.map((step, index) => (
-        <div
-          className={index <= activeIndex && activeIndex >= 0 ? "step active" : "step"}
-          key={step.key}
-        >
-          <span>{index + 1}</span>
-          <strong>{step.label}</strong>
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="text-center p-16 rounded-2xl glass-panel-elevated relative overflow-hidden"
+            style={{ boxShadow: '0 16px 64px rgba(0, 0, 0, 0.4)' }}
+          >
+            <div className="absolute inset-0 opacity-5 pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-full"
+                style={{
+                  backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255, 179, 49, 0.4) 1px, transparent 0)',
+                  backgroundSize: '40px 40px'
+                }}
+              />
+            </div>
+
+            <h2 className="text-4xl font-bold mb-5 relative z-10" style={{ color: '#FFF7E8' }}>
+              Build the demo, show the proof, keep the card claims clean.
+            </h2>
+            <p className="text-lg mb-10 relative z-10 max-w-3xl mx-auto" style={{ color: 'rgba(255, 246, 232, 0.75)' }}>
+              AgiCards presents live Web3 card controls now, while Stripe remains a future/test adapter for issuer-backed card expansion.
+            </p>
+            <Link
+              href="/app"
+              className="group inline-flex items-center gap-3 px-12 py-5 rounded-xl font-semibold text-lg transition-all relative overflow-hidden"
+              style={{
+                background: 'linear-gradient(135deg, #FFE45D 0%, #FFB331 45%, #FF5A12 100%)',
+                color: '#050403',
+                boxShadow: '0 12px 32px rgba(255, 90, 18, 0.5)'
+              }}
+            >
+              <span className="relative z-10">Enter AgiCards</span>
+              <ArrowRight className="w-6 h-6 relative z-10 group-hover:translate-x-2 transition-transform" />
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
+            </Link>
+          </motion.div>
         </div>
-      ))}
-    </div>
-  );
-}
-
-function PolicyStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <span>{label}</span>
-      <strong>{value}</strong>
-    </div>
-  );
-}
-
-function RootItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rootItem">
-      <span>{label}</span>
-      <code>{shortHash(value)}</code>
-    </div>
-  );
-}
-
-function RiskReportView({ risk }: { risk: RiskReport }) {
-  return (
-    <div className="riskBox">
-      <div className="riskHeader">
-        <span>Risk {risk.riskScore}</span>
-        <strong>{risk.reason}</strong>
-      </div>
-      <div className="checks">
-        {risk.checks.map((check) => (
-          <div key={check.label} className={check.passed ? "check pass" : "check fail"}>
-            {check.passed ? <Check size={14} /> : <X size={14} />}
-            <span>{check.label}</span>
-          </div>
-        ))}
       </div>
     </div>
   );

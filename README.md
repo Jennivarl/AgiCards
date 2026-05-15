@@ -89,6 +89,8 @@ Or run the core non-build checks together:
 npm run verify
 ```
 
+GitHub Actions runs `npm run verify` and `npm run build` on pushes and pull requests.
+
 ## Contract Compile And Deploy
 
 ```bash

@@ -123,7 +123,7 @@ The submission includes:
 | --- | --- |
 | 0G Contract Address | 0xc757698204543af249e328764e89530464de668e |
 | 0G Explorer Link | https://chainscan.0g.ai/address/0xc757698204543af249e328764e89530464de668e |
-| Deployment Transaction | https://chainscan.0g.ai/tx/0xb9e7... |
+| Deployment Transaction | https://chainscan.0g.ai/tx/0xb9e73926ec6a01df223b84a98a718022955838d09f7257da05cc76fb00fdc8b9 |
 | Agent Profile Root | 0xa9639b81ba042c45c8ba6d13b73a53110fc83be9e3067123cf933f7bd4de5140 |
 | Policy Root | 0xa9b39fc3e22c39058822aeee69800eeb6bfc83c5ca2b95201611886e8a6c1b1e |
 | Receipt Root | 0x5e8041c243afa263814d01c01c776876056d0369dae358f413c787c6e4dfa752 |

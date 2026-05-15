@@ -58,6 +58,14 @@ Add the printed contract address to `.env.local`:
 AGICARDS_REGISTRY_ADDRESS=0x...
 ```
 
+Current mainnet deployment:
+
+```txt
+AGICARDS_REGISTRY_ADDRESS=0xc757698204543af249e328764e89530464de668e
+Explorer=https://chainscan.0g.ai/address/0xc757698204543af249e328764e89530464de668e
+DeploymentTx=https://chainscan.0g.ai/tx/0xb9e73926ec6a01df223b84a98a718022955838d09f7257da05cc76fb00fdc8b9
+```
+
 ## Hackathon Proof
 
 After deployment, run demo actions that emit:

@@ -224,7 +224,7 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         amountUsd: depositUsd,
-      owner: connectedWallet ?? demoAgent.owner
+        owner: connectedWallet ?? generatedAgent.owner
       })
     });
     const deposit = (await response.json()) as {
@@ -251,7 +251,7 @@ export default function Home() {
     setStatus("0G Compute is evaluating the agent request...");
 
     const requestRoot = makeRoot({
-      agentId: demoAgent.id,
+      agentId: generatedAgent.id,
       policyId: generatedPolicy.id,
       ...form
     });
@@ -259,7 +259,11 @@ export default function Home() {
     const evaluationResponse = await fetch("/api/evaluate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
+      body: JSON.stringify({
+        ...form,
+        policy: generatedPolicy,
+        wallet
+      })
     });
     const evaluation = (await evaluationResponse.json()) as {
       risk: RiskReport;
@@ -268,7 +272,7 @@ export default function Home() {
 
     const nextRequest: CardRequest = {
       id: requestId,
-      agentId: demoAgent.id,
+      agentId: generatedAgent.id,
       policyId: generatedPolicy.id,
       mode: form.mode,
       merchant: form.merchant,

@@ -20,6 +20,15 @@ npm run dev
 
 Then open `http://localhost:3000`.
 
+## Contract Compile And Deploy
+
+```bash
+npm run compile:contract
+npm run deploy:0g
+```
+
+See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the 0G Galileo deployment flow.
+
 ## 0G Integration
 
 The planned deployed contract is `contracts/AgiCardsRegistry.sol`.

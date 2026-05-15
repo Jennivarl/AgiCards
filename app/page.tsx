@@ -96,42 +96,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.8, duration: 0.6 }}
-                className="grid grid-cols-2 gap-5"
-              >
-                {[
-                  { num: '16661', label: '0G mainnet chain ID' },
-                  { num: '24/7', label: 'Policy checks' },
-                ].map((stat, idx) => (
-                  <motion.div
-                    key={idx}
-                    whileHover={{ y: -4, scale: 1.02 }}
-                    className="p-5 rounded-lg glass-panel transition-all"
-                    style={{ boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)' }}
-                  >
-                    <div className="text-3xl font-bold mb-1.5 text-gradient-orange">{stat.num}</div>
-                    <div className="text-xs leading-tight" style={{ color: 'rgba(255, 246, 232, 0.65)' }}>
-                      {stat.label}
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            </motion.div>
-
-            <motion.div
-              style={{ y }}
-              className="flex flex-col items-center gap-8"
-            >
-              <div className="relative h-[550px] w-full flex items-center justify-center">
-                <VirtualCard variant="default" delay={0.4} index={0} />
-                <VirtualCard variant="gold" delay={0.5} index={1} />
-                <VirtualCard variant="pink" delay={0.6} index={2} />
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1, duration: 0.6 }}
-                className="flex gap-4 w-full max-w-[420px]"
+                className="flex gap-4 max-w-xl"
               >
                 <motion.div
                   whileHover={{ y: -4, scale: 1.03 }}
@@ -176,6 +141,15 @@ export default function LandingPage() {
                   </div>
                 </motion.div>
               </motion.div>
+            </motion.div>
+
+            <motion.div
+              style={{ y }}
+              className="relative h-[550px] flex items-center justify-center"
+            >
+              <VirtualCard variant="default" delay={0.4} index={0} />
+              <VirtualCard variant="gold" delay={0.5} index={1} />
+              <VirtualCard variant="pink" delay={0.6} index={2} />
             </motion.div>
           </div>
 

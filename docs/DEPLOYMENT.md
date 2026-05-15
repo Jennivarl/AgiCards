@@ -11,6 +11,8 @@ NEXT_PUBLIC_0G_CHAIN_ID=16602
 NEXT_PUBLIC_0G_RPC_URL=https://evmrpc-testnet.0g.ai
 NEXT_PUBLIC_0G_EXPLORER_URL=https://chainscan-galileo.0g.ai
 DEPLOYER_PRIVATE_KEY=your_wallet_private_key
+OG_STORAGE_INDEXER_RPC=https://indexer-storage-testnet-turbo.0g.ai
+OG_STORAGE_PRIVATE_KEY=your_wallet_private_key
 ```
 
 Do not commit `.env.local`.

@@ -72,6 +72,8 @@ export type StorageObject = {
   type: "agent" | "policy" | "memory" | "request" | "receipt" | "deposit" | "decision";
   createdAt: string;
   payload: unknown;
+  mode?: "live" | "mock";
+  txHash?: string;
 };
 
 export type StripeCardMetadata = {

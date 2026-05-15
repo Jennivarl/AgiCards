@@ -33,6 +33,8 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the 0G Galileo deployment flow.
 
 The planned deployed contract is `contracts/AgiCardsRegistry.sol`.
 
+For local development, storage returns mock Merkle roots unless `OG_STORAGE_PRIVATE_KEY` or `DEPLOYER_PRIVATE_KEY` is set. When configured, the storage adapter uploads JSON payloads to 0G Storage with the official TypeScript SDK.
+
 The demo will submit:
 
 - 0G contract address

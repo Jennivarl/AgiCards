@@ -599,6 +599,11 @@ export default function Home() {
                   Stripe test
                 </button>
               </div>
+              <div className="modeNote">
+                {form.mode === "web3"
+                  ? "0G Web3 mode is the working MVP path for verifiable agent spending."
+                  : "Stripe mode is a future real-card adapter and runs as test/mock infrastructure in this MVP."}
+              </div>
               <label>
                 Merchant
                 <input

@@ -497,6 +497,16 @@ textarea {
   color: #fff;
 }
 
+.modeNote {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0c111a;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 10px 12px;
+}
+
 .requestList {
   display: grid;
   gap: 14px;

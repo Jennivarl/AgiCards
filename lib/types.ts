@@ -47,6 +47,13 @@ export type CardRequest = {
   providerCardId?: string;
   last4?: string;
   risk?: RiskReport;
+  chainProofs?: ChainProof[];
+};
+
+export type ChainProof = {
+  label: string;
+  hash: string;
+  mode: "live" | "mock";
 };
 
 export type RiskReport = {
@@ -83,4 +90,3 @@ export type Web3CardMetadata = {
   status: "active" | "spent" | "cancelled";
   spendingLimitUsd: number;
 };
-

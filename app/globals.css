@@ -334,6 +334,33 @@ button:disabled {
   gap: 10px;
 }
 
+.chainProofs {
+  display: grid;
+  gap: 8px;
+}
+
+.chainProofs a {
+  display: flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0 10px;
+  text-decoration: none;
+}
+
+.chainProofs a:hover {
+  border-color: #6f55ff;
+}
+
+.chainProofs span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .rootList.compact {
   gap: 7px;
 }
@@ -593,4 +620,3 @@ textarea {
     text-align: left;
   }
 }
-

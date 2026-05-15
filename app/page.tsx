@@ -21,8 +21,8 @@ import { FormEvent, useMemo, useState } from "react";
 import { demoAgent, demoPolicy, demoWallet, initialRequests } from "@/lib/demoData";
 import { formatUsd, makeId, makeRoot, shortHash } from "@/lib/id";
 import { availableWalletBalance, reserveFunds, settleReservedSpend } from "@/lib/policyEngine";
-import { contractExplorerLink, ogGalileo } from "@/lib/ogNetwork";
-import type { CardRequest, RiskReport, SpendMode, WalletState } from "@/lib/types";
+import { contractExplorerLink, ogGalileo, transactionExplorerLink } from "@/lib/ogNetwork";
+import type { CardRequest, ChainProof, RiskReport, SpendMode, WalletState } from "@/lib/types";
 
 type RequestFormState = {
   mode: SpendMode;
@@ -156,12 +156,14 @@ export default function Home() {
     const issued = (await issueResponse.json()) as {
       metadata: { cardId: string; last4?: string };
       receiptRoot: string;
+      chainProofs: ChainProof[];
     };
 
     nextRequest.status = "completed";
     nextRequest.providerCardId = issued.metadata.cardId;
     nextRequest.last4 = issued.metadata.last4;
     nextRequest.receiptRoot = issued.receiptRoot;
+    nextRequest.chainProofs = issued.chainProofs;
 
     setWallet((current) => settleReservedSpend(current, Number(form.amountUsd)));
     setRequests((current) => [nextRequest, ...current]);
@@ -387,6 +389,23 @@ export default function Home() {
                     {request.decisionRoot ? <RootItem label="Decision root" value={request.decisionRoot} /> : null}
                     {request.receiptRoot ? <RootItem label="Receipt root" value={request.receiptRoot} /> : null}
                   </div>
+                  {request.chainProofs?.length ? (
+                    <div className="chainProofs">
+                      {request.chainProofs.map((proof) => (
+                        <a
+                          href={transactionExplorerLink(proof.hash)}
+                          key={`${request.id}-${proof.label}`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          <span>{proof.label}</span>
+                          <code>
+                            {proof.mode} {shortHash(proof.hash)}
+                          </code>
+                        </a>
+                      ))}
+                    </div>
+                  ) : null}
                 </article>
               ))}
             </div>

@@ -20,6 +20,12 @@ OG_COMPUTE_MODEL=zai-org/GLM-5-FP8
 
 Do not commit `.env.local`.
 
+The integration status endpoint reports missing live-mode variables:
+
+```txt
+/api/integrations/status
+```
+
 ## Compile
 
 ```bash

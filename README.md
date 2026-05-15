@@ -37,6 +37,8 @@ npm run deploy:0g
 
 See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the 0G Galileo deployment flow.
 
+Use `/api/integrations/status` locally to see which live-mode environment variables are still missing.
+
 ## 0G Integration
 
 The planned deployed contract is `contracts/AgiCardsRegistry.sol`.

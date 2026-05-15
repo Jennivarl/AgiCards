@@ -3,6 +3,7 @@ import { ogChain } from "@/lib/adapters/chain";
 import { ogCompute } from "@/lib/adapters/compute";
 import { ogStorage } from "@/lib/adapters/storage";
 import { stripeIssuing } from "@/lib/adapters/stripe";
+import { getEnvStatus, getMissingLiveEnv } from "@/lib/env";
 import { contractExplorerLink } from "@/lib/ogNetwork";
 
 export async function GET() {
@@ -12,6 +13,8 @@ export async function GET() {
   const stripe = stripeIssuing.status();
 
   return NextResponse.json({
+    env: getEnvStatus(),
+    missingLiveEnv: getMissingLiveEnv(),
     chain: {
       ...chain,
       mode: chain.configured ? "live-ready" : "mock",

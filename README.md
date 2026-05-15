@@ -108,7 +108,7 @@ The deployed contract is `contracts/AgiCardsRegistry.sol` on 0G Mainnet (Chain I
 
 For local development, storage returns mock Merkle roots unless `OG_STORAGE_PRIVATE_KEY` or `DEPLOYER_PRIVATE_KEY` is set. When configured, the storage adapter uploads JSON payloads to 0G Storage with the official TypeScript SDK.
 
-For local development, compute uses the deterministic policy engine unless `OG_COMPUTE_API_KEY` is set. When configured, the compute adapter calls the 0G Compute Router OpenAI-compatible `/chat/completions` endpoint.
+For local development, compute uses the deterministic policy engine unless `OG_COMPUTE_API_KEY` is set. When configured, the compute adapter calls the 0G Compute Router OpenAI-compatible `/chat/completions` endpoint. The default model is `OGM-1.0-35B-A3B`, with `deepseek-v4-pro` as the premium fallback model.
 
 The submission includes:
 

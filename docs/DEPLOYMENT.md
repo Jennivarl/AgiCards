@@ -15,7 +15,8 @@ OG_STORAGE_INDEXER_RPC=https://indexer-storage-turbo.0g.ai
 OG_STORAGE_PRIVATE_KEY=your_wallet_private_key
 OG_COMPUTE_BASE_URL=https://router-api.0g.ai/v1
 OG_COMPUTE_API_KEY=your_0g_router_api_key
-OG_COMPUTE_MODEL=zai-org/GLM-5-FP8
+OG_COMPUTE_MODEL=OGM-1.0-35B-A3B
+OG_COMPUTE_FALLBACK_MODEL=deepseek-v4-pro
 ```
 
 Do not commit `.env.local`.

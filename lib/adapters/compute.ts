@@ -12,13 +12,15 @@ type ChatCompletionResponse = {
 export class OgComputeAdapter {
   private readonly baseUrl = process.env.OG_COMPUTE_BASE_URL || "https://router-api.0g.ai/v1";
   private readonly apiKey = process.env.OG_COMPUTE_API_KEY;
-  private readonly model = process.env.OG_COMPUTE_MODEL || "zai-org/GLM-5-FP8";
+  private readonly model = process.env.OG_COMPUTE_MODEL || "OGM-1.0-35B-A3B";
+  private readonly fallbackModel = process.env.OG_COMPUTE_FALLBACK_MODEL || "deepseek-v4-pro";
 
   status() {
     return {
       configured: Boolean(this.apiKey),
       baseUrl: this.baseUrl,
-      model: this.model
+      model: this.model,
+      fallbackModel: this.fallbackModel
     };
   }
 
@@ -34,14 +36,24 @@ export class OgComputeAdapter {
     }
 
     try {
-      return await this.evaluateWithRouter(request, policy, wallet, fallback);
+      return await this.evaluateWithRouter(this.model, request, policy, wallet, fallback);
     } catch (error) {
-      console.warn("0G Compute evaluation failed; falling back to local policy engine.", error);
-      return fallback;
+      console.warn("Primary 0G Compute evaluation failed; trying fallback model.", error);
+    }
+
+    try {
+      return await this.evaluateWithRouter(this.fallbackModel, request, policy, wallet, fallback);
+    } catch (error) {
+      console.warn("Fallback 0G Compute evaluation failed; falling back to local policy engine.", error);
+      return {
+        ...fallback,
+        reason: `${fallback.reason} Remote compute was unavailable, so AgiCards used the deterministic policy engine.`
+      };
     }
   }
 
   private async evaluateWithRouter(
+    model: string,
     request: Pick<CardRequest, "amountUsd" | "category" | "merchant" | "purpose" | "mode">,
     policy: SpendingPolicy,
     wallet: WalletState,
@@ -54,7 +66,7 @@ export class OgComputeAdapter {
         Authorization: `Bearer ${this.apiKey}`
       },
       body: JSON.stringify({
-        model: this.model,
+        model,
         messages: [
           {
             role: "system",

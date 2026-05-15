@@ -12,7 +12,8 @@ export function getEnvStatus() {
     compute: {
       hasBaseUrl: Boolean(process.env.OG_COMPUTE_BASE_URL),
       hasApiKey: Boolean(process.env.OG_COMPUTE_API_KEY),
-      hasModel: Boolean(process.env.OG_COMPUTE_MODEL)
+      hasModel: Boolean(process.env.OG_COMPUTE_MODEL),
+      hasFallbackModel: Boolean(process.env.OG_COMPUTE_FALLBACK_MODEL)
     },
     stripe: {
       hasSecretKey: Boolean(process.env.STRIPE_SECRET_KEY),
@@ -34,7 +35,7 @@ export function getMissingLiveEnv() {
   if (!env.compute.hasBaseUrl) missing.push("OG_COMPUTE_BASE_URL");
   if (!env.compute.hasApiKey) missing.push("OG_COMPUTE_API_KEY");
   if (!env.compute.hasModel) missing.push("OG_COMPUTE_MODEL");
+  if (!env.compute.hasFallbackModel) missing.push("OG_COMPUTE_FALLBACK_MODEL");
 
   return missing;
 }
-

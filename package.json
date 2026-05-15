@@ -10,7 +10,8 @@
     "deploy:0g": "node scripts/deploy-0g.mjs",
     "start": "next start",
     "test": "tsx --test tests/policyEngine.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run test && npm run typecheck && npm run compile:contract"
   },
   "dependencies": {
     "@0gfoundation/0g-storage-ts-sdk": "^1.2.9",

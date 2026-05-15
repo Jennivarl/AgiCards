@@ -79,7 +79,14 @@ Then open `http://localhost:3000`.
 ```bash
 npm run test
 npm run typecheck
+npm run compile:contract
 npm run build
+```
+
+Or run the core non-build checks together:
+
+```bash
+npm run verify
 ```
 
 ## Contract Compile And Deploy

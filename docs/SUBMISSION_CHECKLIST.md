@@ -12,6 +12,13 @@
 - [ ] README with architecture and local setup
 - [ ] Public X post with required tags and hashtags
 
+## Before Submission
+
+- [ ] Run `npm run verify`
+- [ ] Run `npm run build`
+- [ ] Update README deployment proof table
+- [ ] Confirm demo video is under 3 minutes
+
 ## 0G Proof Targets
 
 Add final proof links to the README `Deployment Proof` table before submission.

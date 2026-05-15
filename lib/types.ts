@@ -29,6 +29,7 @@ export type WalletState = {
   reservedUsd: number;
   spentUsd: number;
   depositReceiptRoot: string;
+  depositProof?: ChainProof;
 };
 
 export type CardRequest = {

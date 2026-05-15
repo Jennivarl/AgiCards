@@ -130,19 +130,30 @@ export default function Home() {
 
   async function handleDeposit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const receiptRoot = makeRoot({
-      type: "deposit",
-      amountUsd: depositUsd,
-      owner: connectedWallet ?? demoAgent.owner,
-      createdAt: new Date().toISOString()
+    const response = await fetch("/api/wallet/deposit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        amountUsd: depositUsd,
+        owner: connectedWallet ?? demoAgent.owner
+      })
     });
+    const deposit = (await response.json()) as {
+      receiptRoot: string;
+      chainProof: ChainProof;
+    };
 
     setWallet((current) => ({
       ...current,
       depositedUsd: current.depositedUsd + depositUsd,
-      depositReceiptRoot: receiptRoot
+      depositReceiptRoot: deposit.receiptRoot,
+      depositProof: deposit.chainProof
     }));
-    setStatus(`Deposited ${formatUsd(depositUsd)} and created 0G deposit receipt ${shortHash(receiptRoot)}.`);
+    setStatus(
+      `Deposited ${formatUsd(depositUsd)} with ${deposit.chainProof.mode} chain proof ${shortHash(
+        deposit.chainProof.hash
+      )}.`
+    );
   }
 
   async function handleRequest(event: FormEvent<HTMLFormElement>) {
@@ -365,6 +376,16 @@ export default function Home() {
               Every agent request reserves user funds before a Stripe test card or 0G-native Web3 card can be issued.
             </p>
             <RootItem label="Latest deposit root" value={wallet.depositReceiptRoot} />
+            {wallet.depositProof ? (
+              <div className="chainProofs">
+                <a href={transactionExplorerLink(wallet.depositProof.hash)} target="_blank" rel="noreferrer">
+                  <span>{wallet.depositProof.label}</span>
+                  <code>
+                    {wallet.depositProof.mode} {shortHash(wallet.depositProof.hash)}
+                  </code>
+                </a>
+              </div>
+            ) : null}
           </div>
 
           <div className="panel requestPanel" id="request">

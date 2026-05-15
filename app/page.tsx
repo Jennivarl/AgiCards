@@ -116,6 +116,102 @@ export default function LandingPage() {
                   </motion.div>
                 ))}
               </motion.div>
+
+              {/* Spend path flow diagram */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1, duration: 0.6 }}
+                className="mt-10"
+              >
+                {/* Agent Request */}
+                <div className="flex flex-col items-center">
+                  <div className="px-5 py-2.5 rounded-lg text-xs font-semibold tracking-wide"
+                    style={{ background: 'rgba(255,179,49,0.15)', border: '1px solid rgba(255,129,32,0.4)', color: '#FFB331' }}>
+                    Agent Request
+                  </div>
+
+                  {/* Connector down */}
+                  <div className="w-px h-5" style={{ background: 'rgba(255,129,32,0.4)' }} />
+
+                  {/* Policy Check */}
+                  <div className="px-5 py-2.5 rounded-lg text-xs font-semibold tracking-wide"
+                    style={{ background: 'rgba(255,90,18,0.12)', border: '1px solid rgba(255,90,18,0.35)', color: '#FF5A12' }}>
+                    Policy Check · 0G Compute
+                  </div>
+
+                  {/* Fork */}
+                  <div className="relative flex items-start justify-center w-full mt-0">
+                    {/* Left arm */}
+                    <div className="flex flex-col items-center flex-1">
+                      <div className="flex items-center w-full justify-end pr-0">
+                        <div className="flex-1 h-px ml-8" style={{ background: 'rgba(255,129,32,0.3)' }} />
+                        <div className="w-px h-5" style={{ background: 'rgba(255,129,32,0.3)' }} />
+                      </div>
+                    </div>
+                    {/* Center vertical */}
+                    <div className="w-px h-5 mt-0" style={{ background: 'rgba(255,129,32,0.3)' }} />
+                    {/* Right arm */}
+                    <div className="flex flex-col items-center flex-1">
+                      <div className="flex items-center w-full justify-start pl-0">
+                        <div className="w-px h-5" style={{ background: 'rgba(255,129,32,0.15)' }} />
+                        <div className="flex-1 h-px mr-8" style={{ background: 'rgba(255,129,32,0.15)' }} />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Two path boxes */}
+                  <div className="grid grid-cols-2 gap-4 w-full mt-0">
+                    {/* Web3 — Active */}
+                    <motion.div
+                      whileHover={{ y: -3, scale: 1.02 }}
+                      className="p-4 rounded-xl relative overflow-hidden"
+                      style={{
+                        background: 'rgba(16,8,5,0.7)',
+                        border: '1px solid rgba(255,129,32,0.4)',
+                        boxShadow: '0 0 18px rgba(255,90,18,0.12)'
+                      }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: '#FFB331' }}>Web3 Card</span>
+                        <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                          style={{ background: 'rgba(67,212,131,0.15)', color: '#43D483', border: '1px solid rgba(67,212,131,0.3)' }}>
+                          Live
+                        </span>
+                      </div>
+                      <div className="text-xs leading-relaxed" style={{ color: 'rgba(255,246,232,0.6)' }}>
+                        0G proof-linked virtual card issued on-chain
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5"
+                        style={{ background: 'linear-gradient(90deg, transparent, #FF5A12, transparent)' }} />
+                    </motion.div>
+
+                    {/* Stripe — Coming Soon, faded */}
+                    <div
+                      className="p-4 rounded-xl relative overflow-hidden"
+                      style={{
+                        background: 'rgba(11,7,5,0.4)',
+                        border: '1px solid rgba(255,246,232,0.08)',
+                        opacity: 0.45,
+                        filter: 'grayscale(0.3)'
+                      }}
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <span className="text-xs font-bold tracking-widest uppercase" style={{ color: 'rgba(255,246,232,0.5)' }}>Stripe Adapter</span>
+                        <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                          style={{ background: 'rgba(255,246,232,0.06)', color: 'rgba(255,246,232,0.35)', border: '1px solid rgba(255,246,232,0.1)' }}>
+                          Soon
+                        </span>
+                      </div>
+                      <div className="text-xs leading-relaxed" style={{ color: 'rgba(255,246,232,0.3)' }}>
+                        Issuer-backed card adapter for future expansion
+                      </div>
+                      <div className="absolute inset-0 rounded-xl"
+                        style={{ background: 'repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(255,246,232,0.02) 6px, rgba(255,246,232,0.02) 7px)' }} />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             </motion.div>
 
             <motion.div

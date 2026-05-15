@@ -156,6 +156,13 @@ a {
   gap: 16px;
 }
 
+.topActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
 .topbar h1,
 .panel h2 {
   margin: 0;
@@ -188,6 +195,13 @@ button {
   cursor: pointer;
   font-weight: 700;
   padding: 0 14px;
+}
+
+.walletButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #20283a;
 }
 
 button:disabled {
@@ -637,6 +651,11 @@ textarea {
   .topbar {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .topActions {
+    justify-content: flex-start;
+    width: 100%;
   }
 
   .metrics,

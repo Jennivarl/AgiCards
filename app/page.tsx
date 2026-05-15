@@ -24,6 +24,16 @@ import { availableWalletBalance, reserveFunds, settleReservedSpend } from "@/lib
 import { contractExplorerLink, ogGalileo, transactionExplorerLink } from "@/lib/ogNetwork";
 import type { CardRequest, ChainProof, RiskReport, SpendMode, WalletState } from "@/lib/types";
 
+type EthereumProvider = {
+  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
+};
+
+declare global {
+  interface Window {
+    ethereum?: EthereumProvider;
+  }
+}
+
 type RequestFormState = {
   mode: SpendMode;
   merchant: string;
@@ -51,6 +61,7 @@ const defaultForm: RequestFormState = {
 
 export default function Home() {
   const [wallet, setWallet] = useState<WalletState>(demoWallet);
+  const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
   const [depositUsd, setDepositUsd] = useState(50);
   const [requests, setRequests] = useState<CardRequest[]>(initialRequests);
   const [form, setForm] = useState<RequestFormState>(defaultForm);
@@ -92,6 +103,24 @@ export default function Home() {
     []
   );
 
+  async function connectWallet() {
+    if (!window.ethereum) {
+      setStatus("No browser wallet found. Install MetaMask or another EVM wallet to connect.");
+      return;
+    }
+
+    const accounts = (await window.ethereum.request({ method: "eth_requestAccounts" })) as string[];
+    const account = accounts[0];
+
+    if (!account) {
+      setStatus("Wallet connection was cancelled.");
+      return;
+    }
+
+    setConnectedWallet(account);
+    setStatus(`Wallet connected: ${shortHash(account)}`);
+  }
+
   async function refreshIntegrationStatus() {
     const response = await fetch("/api/integrations/status");
     const payload = (await response.json()) as IntegrationStatus;
@@ -104,7 +133,7 @@ export default function Home() {
     const receiptRoot = makeRoot({
       type: "deposit",
       amountUsd: depositUsd,
-      owner: demoAgent.owner,
+      owner: connectedWallet ?? demoAgent.owner,
       createdAt: new Date().toISOString()
     });
 
@@ -231,10 +260,16 @@ export default function Home() {
             <p className="eyebrow">Track 3 / Agentic Economy</p>
             <h1>AgiCards</h1>
           </div>
-          <a className="externalButton" href={contractExplorerLink()} target="_blank" rel="noreferrer">
-            Explorer
-            <ExternalLink size={16} />
-          </a>
+          <div className="topActions">
+            <button className="walletButton" type="button" onClick={connectWallet}>
+              <Wallet size={16} />
+              {connectedWallet ? shortHash(connectedWallet) : "Connect wallet"}
+            </button>
+            <a className="externalButton" href={contractExplorerLink()} target="_blank" rel="noreferrer">
+              Explorer
+              <ExternalLink size={16} />
+            </a>
+          </div>
         </header>
 
         <section className="statusBar" aria-live="polite">
@@ -299,6 +334,7 @@ export default function Home() {
               </div>
             </div>
             <div className="rootList">
+              <RootItem label="Owner" value={connectedWallet ?? demoAgent.owner} />
               <RootItem label="Agent root" value={demoAgent.storageRoot} />
               <RootItem label="Memory root" value={demoAgent.memoryRoot} />
               <RootItem label="Policy root" value={demoPolicy.storageRoot} />

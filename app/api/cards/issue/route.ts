@@ -23,8 +23,18 @@ export async function POST(request: Request) {
     metadata
   });
   const requestIdRoot = makeRoot({ requestId: cardRequest.id }) as Hex;
+  const agentIdRoot = makeRoot({ agentId: cardRequest.agentId }) as Hex;
+  const policyIdRoot = makeRoot({ policyId: cardRequest.policyId }) as Hex;
   const decisionRoot = (cardRequest.decisionRoot || makeRoot({ requestId: cardRequest.id, status: "approved" })) as Hex;
   const cardMetadataRoot = makeRoot(metadata) as Hex;
+  const requestProof = await ogChain.requestCard({
+    requestId: requestIdRoot,
+    agentId: agentIdRoot,
+    policyId: policyIdRoot,
+    amountOg: String(cardRequest.amountUsd),
+    requestRoot: cardRequest.requestRoot as Hex,
+    stripeMode: cardRequest.mode === "stripe"
+  });
   const approvalProof = await ogChain.approveCardRequest(requestIdRoot, decisionRoot);
   const cardProof =
     cardRequest.mode === "stripe"
@@ -39,6 +49,7 @@ export async function POST(request: Request) {
     metadata,
     receiptRoot: receipt.root,
     chainProofs: [
+      { label: "Card requested", hash: requestProof.hash, mode: requestProof.mode },
       { label: "Card approval", hash: approvalProof.hash, mode: approvalProof.mode },
       {
         label: cardRequest.mode === "stripe" ? "Stripe card linked" : "0G Web3 card created",

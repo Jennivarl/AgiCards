@@ -2,6 +2,14 @@ import { makeId } from "../id";
 import type { CardRequest, StripeCardMetadata } from "../types";
 
 export class StripeIssuingAdapter {
+  status() {
+    return {
+      configured: Boolean(process.env.STRIPE_SECRET_KEY),
+      issuingEnabled: process.env.STRIPE_ISSUING_ENABLED === "true",
+      mode: process.env.STRIPE_SECRET_KEY ? "test-ready" : "mock"
+    };
+  }
+
   async createVirtualCard(request: CardRequest): Promise<StripeCardMetadata> {
     return {
       provider: "stripe",
@@ -16,4 +24,3 @@ export class StripeIssuingAdapter {
 }
 
 export const stripeIssuing = new StripeIssuingAdapter();
-

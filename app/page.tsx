@@ -32,6 +32,13 @@ type RequestFormState = {
   purpose: string;
 };
 
+type IntegrationStatus = {
+  chain: { mode: string; configured: boolean };
+  storage: { mode: string; configured: boolean };
+  compute: { mode: string; configured: boolean };
+  stripe: { mode: string; configured: boolean; issuingEnabled: boolean };
+};
+
 const categoryOptions = ["SaaS", "AI tools", "Marketing", "Hosting", "Travel"];
 
 const defaultForm: RequestFormState = {
@@ -49,6 +56,7 @@ export default function Home() {
   const [form, setForm] = useState<RequestFormState>(defaultForm);
   const [isBusy, setIsBusy] = useState(false);
   const [status, setStatus] = useState("Ready for agent card requests.");
+  const [integrationStatus, setIntegrationStatus] = useState<IntegrationStatus | null>(null);
 
   const latestRequest = requests[0];
   const available = availableWalletBalance(wallet);
@@ -83,6 +91,13 @@ export default function Home() {
     ],
     []
   );
+
+  async function refreshIntegrationStatus() {
+    const response = await fetch("/api/integrations/status");
+    const payload = (await response.json()) as IntegrationStatus;
+    setIntegrationStatus(payload);
+    setStatus("Integration status refreshed.");
+  }
 
   async function handleDeposit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -225,7 +240,31 @@ export default function Home() {
         <section className="statusBar" aria-live="polite">
           <Activity size={18} />
           <span>{status}</span>
+          <button className="statusButton" type="button" onClick={refreshIntegrationStatus}>
+            Check integrations
+          </button>
         </section>
+
+        {integrationStatus ? (
+          <section className="integrationGrid" aria-label="Integration status">
+            <IntegrationCard label="0G Chain" mode={integrationStatus.chain.mode} configured={integrationStatus.chain.configured} />
+            <IntegrationCard
+              label="0G Storage"
+              mode={integrationStatus.storage.mode}
+              configured={integrationStatus.storage.configured}
+            />
+            <IntegrationCard
+              label="0G Compute"
+              mode={integrationStatus.compute.mode}
+              configured={integrationStatus.compute.configured}
+            />
+            <IntegrationCard
+              label="Stripe"
+              mode={integrationStatus.stripe.mode}
+              configured={integrationStatus.stripe.configured}
+            />
+          </section>
+        ) : null}
 
         <section className="metrics" id="wallet">
           <MetricCard icon={Coins} label="Deposited" value={formatUsd(wallet.depositedUsd)} tone="green" />
@@ -456,6 +495,16 @@ function MetricCard({
       <Icon size={22} />
       <span>{label}</span>
       <strong>{value}</strong>
+    </article>
+  );
+}
+
+function IntegrationCard({ label, mode, configured }: { label: string; mode: string; configured: boolean }) {
+  return (
+    <article className="integrationCard">
+      <span>{label}</span>
+      <strong>{mode}</strong>
+      <small>{configured ? "Configured" : "Fallback active"}</small>
     </article>
   );
 }

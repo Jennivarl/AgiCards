@@ -170,7 +170,7 @@ export default function Dashboard() {
             0G Layer Status
           </h2>
           <div className="space-y-4">
-            {['0G Chain Connected', '0G Storage Synced', 'Compute Layer Active'].map((status, idx) => (
+            {['0G Chain contract deployed', '0G Storage roots recorded', '0G Compute decision root recorded'].map((status, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, x: 10 }}
@@ -185,7 +185,7 @@ export default function Dashboard() {
             ))}
             <div className="text-xs mt-4 p-3 rounded-lg"
               style={{ background: 'rgba(67, 212, 131, 0.05)', color: 'rgba(255, 246, 232, 0.7)' }}>
-              Contract: 0xc757...668e · Chain 16661
+              Contract: 0xc757...668e &middot; Chain 16661
             </div>
           </div>
         </motion.div>

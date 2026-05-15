@@ -86,7 +86,7 @@ export function VirtualCard({ variant = 'default', delay = 0, index = 0 }: Virtu
               </div>
             </div>
             <div className="text-right">
-              <div className="text-xs font-medium opacity-80 mb-1" style={{ color: '#FFF7E8' }}>0G verified</div>
+              <div className="text-xs font-medium opacity-80 mb-1" style={{ color: '#FFF7E8' }}>0G proof-ready</div>
               <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}

@@ -99,9 +99,9 @@ export default function LandingPage() {
                 className="grid grid-cols-3 gap-5"
               >
                 {[
-                  { num: '16661', label: '0G mainnet ready' },
+                  { num: '16661', label: '0G mainnet chain ID' },
                   { num: '24/7', label: 'Policy checks' },
-                  { num: '3', label: 'Agent spend modes' }
+                  { num: '2', label: 'Agent spend paths' }
                 ].map((stat, idx) => (
                   <motion.div
                     key={idx}

@@ -107,7 +107,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <span className="text-xs font-semibold" style={{ color: '#43D483' }}>0G Connected</span>
             </div>
             <p className="text-xs leading-relaxed" style={{ color: 'rgba(255, 246, 232, 0.6)' }}>
-              All proof verified on mainnet
+              Contract deployed on 0G Mainnet
             </p>
           </motion.div>
         </motion.aside>

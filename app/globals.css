@@ -314,6 +314,10 @@ button:disabled {
   grid-column: span 2;
 }
 
+.generatorPanel {
+  grid-column: span 2;
+}
+
 .muted {
   margin: 0;
   line-height: 1.55;
@@ -475,6 +479,12 @@ textarea {
   border-radius: 8px;
   background: #0c111a;
   padding: 6px;
+}
+
+.miniGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .modeSwitch button {
@@ -645,6 +655,10 @@ textarea {
   .activityPanel {
     grid-column: auto;
   }
+
+  .generatorPanel {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 640px) {
@@ -665,6 +679,7 @@ textarea {
 
   .metrics,
   .integrationGrid,
+  .miniGrid,
   .policyGrid,
   .proofGrid,
   .navList {

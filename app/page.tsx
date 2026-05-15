@@ -49,6 +49,15 @@ type IntegrationStatus = {
   stripe: { mode: string; configured: boolean; issuingEnabled: boolean };
 };
 
+type AgentFormState = {
+  name: string;
+  purpose: string;
+  maxPerRequestUsd: number;
+  dailyLimitUsd: number;
+  autoApproveBelowUsd: number;
+  allowedCategories: string;
+};
+
 const categoryOptions = ["SaaS", "AI tools", "Marketing", "Hosting", "Travel"];
 
 const defaultForm: RequestFormState = {
@@ -59,12 +68,24 @@ const defaultForm: RequestFormState = {
   purpose: "Review landing page copy before launch"
 };
 
+const defaultAgentForm: AgentFormState = {
+  name: "Research Agent",
+  purpose: "Find useful AI tools and request controlled cards for approved software purchases.",
+  maxPerRequestUsd: 20,
+  dailyLimitUsd: 80,
+  autoApproveBelowUsd: 8,
+  allowedCategories: "SaaS,AI tools,Marketing"
+};
+
 export default function Home() {
   const [wallet, setWallet] = useState<WalletState>(demoWallet);
   const [connectedWallet, setConnectedWallet] = useState<string | null>(null);
   const [depositUsd, setDepositUsd] = useState(50);
   const [requests, setRequests] = useState<CardRequest[]>(initialRequests);
   const [form, setForm] = useState<RequestFormState>(defaultForm);
+  const [agentForm, setAgentForm] = useState<AgentFormState>(defaultAgentForm);
+  const [generatedAgent, setGeneratedAgent] = useState(demoAgent);
+  const [generatedPolicy, setGeneratedPolicy] = useState(demoPolicy);
   const [isBusy, setIsBusy] = useState(false);
   const [status, setStatus] = useState("Ready for agent card requests.");
   const [integrationStatus, setIntegrationStatus] = useState<IntegrationStatus | null>(null);
@@ -72,7 +93,7 @@ export default function Home() {
 
   const latestRequest = requests[0];
   const available = availableWalletBalance(wallet);
-  const policyUsage = Math.min(100, ((wallet.spentUsd + wallet.reservedUsd) / demoPolicy.dailyLimitUsd) * 100);
+  const policyUsage = Math.min(100, ((wallet.spentUsd + wallet.reservedUsd) / generatedPolicy.dailyLimitUsd) * 100);
 
   const proofItems = useMemo(
     () => [
@@ -132,7 +153,12 @@ export default function Home() {
   async function registerAgentProof() {
     setStatus("Registering agent and policy proof...");
     const response = await fetch("/api/agents/register", {
-      method: "POST"
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        agent: generatedAgent,
+        policy: generatedPolicy
+      })
     });
     const payload = (await response.json()) as {
       agentRoot: string;
@@ -144,6 +170,53 @@ export default function Home() {
     setStatus(`Agent and policy proof created: ${shortHash(payload.chainProofs[0].hash)}.`);
   }
 
+  function generateAgent(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const agentId = makeId("agent", `${agentForm.name}:${agentForm.purpose}`);
+    const policyId = makeId("policy", `${agentId}:${agentForm.allowedCategories}`);
+    const categories = agentForm.allowedCategories
+      .split(",")
+      .map((category) => category.trim())
+      .filter(Boolean);
+    const agentRoot = makeRoot({
+      agentId,
+      name: agentForm.name,
+      purpose: agentForm.purpose
+    });
+    const policyRoot = makeRoot({
+      policyId,
+      agentId,
+      maxPerRequestUsd: agentForm.maxPerRequestUsd,
+      dailyLimitUsd: agentForm.dailyLimitUsd,
+      autoApproveBelowUsd: agentForm.autoApproveBelowUsd,
+      categories
+    });
+
+    setGeneratedAgent({
+      id: agentId,
+      name: agentForm.name,
+      purpose: agentForm.purpose,
+      owner: connectedWallet ?? demoAgent.owner,
+      storageRoot: agentRoot,
+      memoryRoot: makeRoot({ agentId, memory: [] }),
+      status: "active"
+    });
+    setGeneratedPolicy({
+      id: policyId,
+      agentId,
+      name: `${agentForm.name} Card Policy`,
+      maxPerRequestUsd: agentForm.maxPerRequestUsd,
+      dailyLimitUsd: agentForm.dailyLimitUsd,
+      autoApproveBelowUsd: agentForm.autoApproveBelowUsd,
+      allowedCategories: categories,
+      expiresInHours: 24,
+      storageRoot: policyRoot
+    });
+    setRequests([]);
+    setAgentProofs([]);
+    setStatus(`${agentForm.name} generated with a controlled card policy.`);
+  }
+
   async function handleDeposit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const response = await fetch("/api/wallet/deposit", {
@@ -151,7 +224,7 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         amountUsd: depositUsd,
-        owner: connectedWallet ?? demoAgent.owner
+      owner: connectedWallet ?? demoAgent.owner
       })
     });
     const deposit = (await response.json()) as {
@@ -179,7 +252,7 @@ export default function Home() {
 
     const requestRoot = makeRoot({
       agentId: demoAgent.id,
-      policyId: demoPolicy.id,
+      policyId: generatedPolicy.id,
       ...form
     });
     const requestId = makeId("req", requestRoot);
@@ -196,7 +269,7 @@ export default function Home() {
     const nextRequest: CardRequest = {
       id: requestId,
       agentId: demoAgent.id,
-      policyId: demoPolicy.id,
+      policyId: generatedPolicy.id,
       mode: form.mode,
       merchant: form.merchant,
       category: form.category,
@@ -340,34 +413,34 @@ export default function Home() {
             <div className="panelHeader">
               <div>
                 <p className="eyebrow">Active Agent</p>
-                <h2>{demoAgent.name}</h2>
+                <h2>{generatedAgent.name}</h2>
               </div>
               <span className="pill success">Active</span>
             </div>
-            <p className="muted">{demoAgent.purpose}</p>
+            <p className="muted">{generatedAgent.purpose}</p>
             <button className="secondaryButton" type="button" onClick={registerAgentProof}>
               Register agent proof
             </button>
             <div className="policyBox">
               <div>
                 <span>Policy</span>
-                <strong>{demoPolicy.name}</strong>
+                <strong>{generatedPolicy.name}</strong>
               </div>
               <div className="policyTrack">
                 <span style={{ width: `${policyUsage}%` }} />
               </div>
               <div className="policyGrid">
-                <PolicyStat label="Max/request" value={formatUsd(demoPolicy.maxPerRequestUsd)} />
-                <PolicyStat label="Daily limit" value={formatUsd(demoPolicy.dailyLimitUsd)} />
-                <PolicyStat label="Auto approve" value={`< ${formatUsd(demoPolicy.autoApproveBelowUsd)}`} />
-                <PolicyStat label="Expires" value={`${demoPolicy.expiresInHours}h`} />
+                <PolicyStat label="Max/request" value={formatUsd(generatedPolicy.maxPerRequestUsd)} />
+                <PolicyStat label="Daily limit" value={formatUsd(generatedPolicy.dailyLimitUsd)} />
+                <PolicyStat label="Auto approve" value={`< ${formatUsd(generatedPolicy.autoApproveBelowUsd)}`} />
+                <PolicyStat label="Expires" value={`${generatedPolicy.expiresInHours}h`} />
               </div>
             </div>
             <div className="rootList">
-              <RootItem label="Owner" value={connectedWallet ?? demoAgent.owner} />
-              <RootItem label="Agent root" value={demoAgent.storageRoot} />
-              <RootItem label="Memory root" value={demoAgent.memoryRoot} />
-              <RootItem label="Policy root" value={demoPolicy.storageRoot} />
+              <RootItem label="Owner" value={connectedWallet ?? generatedAgent.owner} />
+              <RootItem label="Agent root" value={generatedAgent.storageRoot} />
+              <RootItem label="Memory root" value={generatedAgent.memoryRoot} />
+              <RootItem label="Policy root" value={generatedPolicy.storageRoot} />
             </div>
             {agentProofs.length ? (
               <div className="chainProofs">
@@ -381,6 +454,77 @@ export default function Home() {
                 ))}
               </div>
             ) : null}
+          </div>
+
+          <div className="panel generatorPanel">
+            <div className="panelHeader">
+              <div>
+                <p className="eyebrow">Agent Setup</p>
+                <h2>Generate Agent</h2>
+              </div>
+              <Bot size={24} />
+            </div>
+            <form className="requestForm" onSubmit={generateAgent}>
+              <label>
+                Agent name
+                <input
+                  value={agentForm.name}
+                  onChange={(event) => setAgentForm((current) => ({ ...current, name: event.target.value }))}
+                />
+              </label>
+              <label>
+                Purpose
+                <textarea
+                  value={agentForm.purpose}
+                  onChange={(event) => setAgentForm((current) => ({ ...current, purpose: event.target.value }))}
+                />
+              </label>
+              <label>
+                Allowed categories
+                <input
+                  value={agentForm.allowedCategories}
+                  onChange={(event) =>
+                    setAgentForm((current) => ({ ...current, allowedCategories: event.target.value }))
+                  }
+                />
+              </label>
+              <div className="miniGrid">
+                <label>
+                  Max/request
+                  <input
+                    type="number"
+                    min="1"
+                    value={agentForm.maxPerRequestUsd}
+                    onChange={(event) =>
+                      setAgentForm((current) => ({ ...current, maxPerRequestUsd: Number(event.target.value) }))
+                    }
+                  />
+                </label>
+                <label>
+                  Daily limit
+                  <input
+                    type="number"
+                    min="1"
+                    value={agentForm.dailyLimitUsd}
+                    onChange={(event) =>
+                      setAgentForm((current) => ({ ...current, dailyLimitUsd: Number(event.target.value) }))
+                    }
+                  />
+                </label>
+                <label>
+                  Auto approve
+                  <input
+                    type="number"
+                    min="0"
+                    value={agentForm.autoApproveBelowUsd}
+                    onChange={(event) =>
+                      setAgentForm((current) => ({ ...current, autoApproveBelowUsd: Number(event.target.value) }))
+                    }
+                  />
+                </label>
+              </div>
+              <button type="submit">Generate agent</button>
+            </form>
           </div>
 
           <div className="panel depositPanel">

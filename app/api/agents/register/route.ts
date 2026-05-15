@@ -1,15 +1,21 @@
 import { NextResponse } from "next/server";
 import { ogChain } from "@/lib/adapters/chain";
 import { ogStorage } from "@/lib/adapters/storage";
-import { demoAgent, demoPolicy } from "@/lib/demoData";
 import { makeRoot } from "@/lib/id";
+import type { AgentProfile, SpendingPolicy } from "@/lib/types";
 import type { Hex } from "viem";
 
-export async function POST() {
-  const agentObject = await ogStorage.store("agent", demoAgent);
-  const policyObject = await ogStorage.store("policy", demoPolicy);
-  const agentId = makeRoot({ agentId: demoAgent.id }) as Hex;
-  const policyId = makeRoot({ policyId: demoPolicy.id }) as Hex;
+type RegisterAgentBody = {
+  agent: AgentProfile;
+  policy: SpendingPolicy;
+};
+
+export async function POST(request: Request) {
+  const body = (await request.json()) as RegisterAgentBody;
+  const agentObject = await ogStorage.store("agent", body.agent);
+  const policyObject = await ogStorage.store("policy", body.policy);
+  const agentId = makeRoot({ agentId: body.agent.id }) as Hex;
+  const policyId = makeRoot({ policyId: body.policy.id }) as Hex;
 
   const agentProof = await ogChain.registerAgent({
     agentId,
@@ -19,8 +25,8 @@ export async function POST() {
     policyId,
     agentId,
     policyRoot: policyObject.root as Hex,
-    maxPerRequestOg: String(demoPolicy.maxPerRequestUsd),
-    dailyLimitOg: String(demoPolicy.dailyLimitUsd)
+    maxPerRequestOg: String(body.policy.maxPerRequestUsd),
+    dailyLimitOg: String(body.policy.dailyLimitUsd)
   });
 
   return NextResponse.json({

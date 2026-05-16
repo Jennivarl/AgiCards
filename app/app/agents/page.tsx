@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from 'motion/react';
-import { Plus, Shield, CheckCircle2, Pause } from 'lucide-react';
+import { Plus, Shield, CheckCircle2, Pause, CreditCard } from 'lucide-react';
 
 const DEMO_AGENT = {
   name: 'Research Agent',
@@ -133,6 +133,47 @@ export default function Agents() {
             Agent registered on 0G Chain · Policy hash anchored to 0G Storage
           </span>
           <Shield className="w-4 h-4 ml-auto" style={{ color: 'rgba(255, 179, 49, 0.5)' }} />
+        </div>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
+        whileHover={{ y: -4 }}
+        className="p-7 rounded-xl glass-panel-elevated mt-6"
+      >
+        <h2 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: '#FFF7E8' }}>
+          <CreditCard className="w-6 h-6" style={{ color: '#FFB331' }} />
+          Latest Card Request
+        </h2>
+        <div className="space-y-4">
+          {[
+            { label: 'Merchant', value: 'Cursor AI' },
+            { label: 'Amount', value: '$7.00', highlight: true },
+            { label: 'Risk Score', value: 'Low · 12/100', badge: 'low' },
+            { label: 'Status', value: 'Approved', badge: 'approved' }
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              className="flex justify-between items-center p-3 rounded-lg"
+              style={{ background: 'rgba(11, 7, 5, 0.5)' }}
+            >
+              <span className="text-sm font-medium" style={{ color: 'rgba(255, 246, 232, 0.7)' }}>{item.label}</span>
+              {item.badge ? (
+                <span className="text-xs px-3 py-1 rounded-full font-semibold"
+                  style={{
+                    background: item.badge === 'approved' ? 'rgba(67, 212, 131, 0.15)' : 'rgba(255, 179, 49, 0.15)',
+                    color: item.badge === 'approved' ? '#43D483' : '#FFB331'
+                  }}>
+                  {item.value}
+                </span>
+              ) : (
+                <span className="text-sm font-semibold"
+                  style={{ color: item.highlight ? '#FFB331' : '#FFF7E8' }}>{item.value}</span>
+              )}
+            </div>
+          ))}
         </div>
       </motion.div>
     </div>

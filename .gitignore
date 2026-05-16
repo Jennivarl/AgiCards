@@ -9,3 +9,5 @@ coverage
 tsconfig.tsbuildinfo
 artifacts
 docs/DEPLOYMENT.md
+
+.vercel

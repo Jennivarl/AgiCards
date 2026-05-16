@@ -45,6 +45,10 @@ contract AgiCardsRegistry {
     mapping(bytes32 => CardRequest) public requests;
     mapping(address => uint256) public depositedBalance;
     mapping(address => uint256) public reservedBalance;
+    // policyId => UTC day (block.timestamp / 1 days) => total spent that day
+    mapping(bytes32 => mapping(uint256 => uint256)) public dailySpent;
+
+    uint256 private _locked = 1;
 
     event AgentRegistered(bytes32 indexed agentId, address indexed owner, bytes32 metadataRoot);
     event AgentPaused(bytes32 indexed agentId, bool paused);
@@ -70,6 +74,13 @@ contract AgiCardsRegistry {
     event StripeAuthorizationLogged(bytes32 indexed requestId, uint256 amount, bytes32 receiptRoot);
     event ReceiptStored(bytes32 indexed entityId, bytes32 receiptRoot);
     event AgentMemoryUpdated(bytes32 indexed agentId, bytes32 memoryRoot);
+
+    modifier nonReentrant() {
+        require(_locked == 1, "reentrant");
+        _locked = 2;
+        _;
+        _locked = 1;
+    }
 
     modifier onlyAgentOwner(bytes32 agentId) {
         require(agents[agentId].owner == msg.sender, "not agent owner");
@@ -106,7 +117,7 @@ contract AgiCardsRegistry {
         emit WalletFunded(msg.sender, msg.value, receiptRoot);
     }
 
-    function withdrawFunds(uint256 amount, bytes32 receiptRoot) external {
+    function withdrawFunds(uint256 amount, bytes32 receiptRoot) external nonReentrant {
         require(amount > 0, "invalid amount");
         require(availableBalance(msg.sender) >= amount, "insufficient available");
 
@@ -165,6 +176,10 @@ contract AgiCardsRegistry {
         require(amount > 0, "invalid amount");
         require(amount <= policy.maxPerRequest, "over max request");
         require(availableBalance(msg.sender) >= amount, "insufficient funds");
+
+        uint256 today = block.timestamp / 1 days;
+        require(dailySpent[policyId][today] + amount <= policy.dailyLimit, "daily limit exceeded");
+        dailySpent[policyId][today] += amount;
 
         reservedBalance[msg.sender] += amount;
         requests[requestId] = CardRequest({
@@ -227,7 +242,10 @@ contract AgiCardsRegistry {
     function logWeb3Spend(bytes32 requestId, uint256 amount, bytes32 receiptRoot) external requestOwner(requestId) {
         CardRequest storage cardRequest = requests[requestId];
         require(cardRequest.status == RequestStatus.Approved, "not approved");
+        require(!cardRequest.stripeMode, "use logStripeAuthorization");
+        require(amount > 0, "invalid spend amount");
         require(amount <= cardRequest.reservedAmount, "over reserved");
+        require(!agents[cardRequest.agentId].paused, "agent paused");
 
         cardRequest.status = RequestStatus.Completed;
         _consumeReserved(requestId, amount);
@@ -240,7 +258,9 @@ contract AgiCardsRegistry {
         CardRequest storage cardRequest = requests[requestId];
         require(cardRequest.status == RequestStatus.Approved, "not approved");
         require(cardRequest.stripeMode, "not stripe request");
+        require(amount > 0, "invalid spend amount");
         require(amount <= cardRequest.reservedAmount, "over reserved");
+        require(!agents[cardRequest.agentId].paused, "agent paused");
 
         cardRequest.status = RequestStatus.Completed;
         _consumeReserved(requestId, amount);
@@ -293,4 +313,3 @@ contract AgiCardsRegistry {
         }
     }
 }
-

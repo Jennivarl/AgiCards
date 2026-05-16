@@ -118,27 +118,11 @@ export default function Dashboard() {
         </motion.div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6 mb-10">
+      <div className="mb-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="p-7 rounded-xl glass-panel-elevated"
-          style={{ opacity: 0.5 }}
-        >
-          <h2 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: '#FFF7E8' }}>
-            <CreditCard className="w-6 h-6" style={{ color: '#FFB331' }} />
-            Latest Card Request
-          </h2>
-          <p className="text-sm" style={{ color: 'rgba(255, 246, 232, 0.5)' }}>
-            See the Agents tab for the latest request from Research Agent.
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
           className="p-7 rounded-xl glass-panel-elevated"
         >
           <h2 className="text-xl font-semibold mb-6 flex items-center gap-2" style={{ color: '#FFF7E8' }}>

@@ -1,4 +1,5 @@
 > AgiCards | 245 nSLOC | f47acfa (`main`) | custom (no Foundry/Hardhat config) | 15/05/26
+> Auditor: Mustapha Abdulaziz · [@mustaphaabdulazizdambatta](https://github.com/mustaphaabdulazizdambatta) · mustaphaabdulaziz001@gmail.com
 
 
 ## 1. Protocol Overview

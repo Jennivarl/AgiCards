@@ -328,4 +328,4 @@ All 28 tests pass. Every fixed finding has at least one dedicated regression tes
 
 > This report does not guarantee the complete absence of vulnerabilities. Independent review, a bug bounty program, and on-chain monitoring are strongly recommended before and after deployment.
 >
-> For a consultation, contact [SpectraSec Lab](https://spectraseclab.com)
+> For a consultation, contact [SpectraSec Lab](https://spectrasec-lab.vercel.app)

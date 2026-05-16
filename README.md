@@ -215,4 +215,10 @@ AgiCards requires users to deposit funds before agents can request cards. The wa
 
 ## Two Spend Paths — One Proof Layer
 
-AgiCards is a hybrid. The Web3 card path is live today — enforced entirely on-chain with full 0G proof. The Stripe adapter is architected and ready for when issuer-backed real cards are needed in supported jurisdictions. Both paths sit behind the same smart contract policy engine and produce the same verifiable proof trail. On-chain enforcement and traditional payment rails working together, not competing.
+AgiCards is designed as a hybrid from day one — not patched together as an afterthought.
+
+**What is live today:** The Web3 card path. Every agent request is evaluated by the 0G Compute policy engine, approved by the smart contract, and recorded with verifiable proof on 0G Storage and 0G Chain. This works right now, on mainnet, with no dependency on any external payment provider.
+
+**What is coming next:** The Stripe Issuing adapter. Stripe Issuing allows platforms to programmatically create and control real Visa and Mastercard virtual cards. AgiCards already has this adapter layer architected — once a request clears the smart contract policy engine, it can be routed to Stripe to issue a real card usable anywhere Visa and Mastercard are accepted. This path requires a Stripe Issuing programme approval and is subject to jurisdiction availability, which is why it ships as a roadmap item rather than a live feature today.
+
+**Why this architecture matters:** The same policy engine, the same 0G proof layer, and the same smart contract enforcement govern both paths. An agent approved to spend on a Web3 card today will be approved the exact same way on a real Stripe-issued card tomorrow. The proof trail does not change — only the card rails do. On-chain enforcement and traditional payment infrastructure working together, not competing.

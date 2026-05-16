@@ -2,6 +2,9 @@
 
 Target length: under 3 minutes.
 
+> Note: The dashboard is pre-loaded with demo data to illustrate a real session.
+> Wallet: $2,450.00 · Agent: Research Agent · Latest request: $7.00 to Cursor AI · Status: Approved
+
 ## 1. Open Dashboard
 
 Show AgiCards as a wallet and card-control layer for AI agents.
@@ -35,15 +38,17 @@ Explain which ones are live-ready or in fallback mode.
 
 Use the `Generate Agent` form.
 
-Example:
+Point to the pre-filled demo agent on the dashboard first — Name: Research Agent, Purpose: AI tools & SaaS procurement, Daily Cap: $80.00, Status: Active (green).
+
+Then show the form with these values (matches the demo data already loaded):
 
 ```txt
 Agent: Research Agent
-Purpose: Find useful AI tools and request controlled cards for approved software purchases.
-Categories: SaaS, AI tools, Marketing
-Max/request: 20
-Daily limit: 80
-Auto approve: 8
+Purpose: AI tools & SaaS procurement
+Categories: SaaS, AI Tools
+Max/request: $20
+Daily limit: $80
+Auto approve: Under $8
 ```
 
 Click `Generate agent`.
@@ -72,16 +77,18 @@ Show:
 
 ## 7. Create Card Order
 
-Use the `Card Order` panel.
+Point to the Latest Card Request panel on the dashboard — Merchant: Cursor AI, Amount: $7.00, Risk Score: Low · 12/100, Status: Approved (green).
 
-Example:
+Say: "This $7.00 request to Cursor AI was under the $8 auto-approval threshold — 0G Compute evaluated the policy and approved it automatically."
+
+Then show the card order form with these values:
 
 ```txt
 Mode: 0G Web3
-Merchant: AI Landing Reviewer
-Category: AI tools
-Amount: 7
-Purpose: Review landing page copy before launch
+Merchant: Cursor AI
+Category: AI Tools
+Amount: $7
+Purpose: AI-assisted code review for launch sprint
 ```
 
 Click `Evaluate and issue`.

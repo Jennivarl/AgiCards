@@ -16,9 +16,9 @@ export default function Dashboard() {
 
       <div className="grid md:grid-cols-3 gap-6 mb-10">
         {[
-          { icon: Wallet, label: 'Wallet Balance', value: '$--', change: '--', changeColor: 'rgba(255, 246, 232, 0.4)', color: '#FFB331' },
-          { icon: Users, label: 'Active Agents', value: '--', change: '--', changeColor: 'rgba(255, 246, 232, 0.4)', color: '#FFB331' },
-          { icon: CreditCard, label: 'Pending Requests', value: '--', change: '--', changeColor: 'rgba(255, 246, 232, 0.4)', color: '#FFB331' }
+          { icon: Wallet, label: 'Wallet Balance', value: '$2,450.00', change: 'Available to spend', changeColor: '#43D483', color: '#FFB331' },
+          { icon: Users, label: 'Active Agents', value: '1', change: '1 active · 0 paused', changeColor: 'rgba(255, 246, 232, 0.5)', color: '#FFB331' },
+          { icon: CreditCard, label: 'Pending Requests', value: '0', change: 'All requests resolved', changeColor: 'rgba(255, 246, 232, 0.5)', color: '#FFB331' }
         ].map((stat, idx) => (
           <motion.div
             key={idx}
@@ -54,10 +54,10 @@ export default function Dashboard() {
           </h2>
           <div className="space-y-4">
             {[
-              { label: 'Name', value: '--' },
-              { label: 'Purpose', value: '--' },
-              { label: 'Daily Cap', value: '$--', highlight: true },
-              { label: 'Status', value: '--', badge: true }
+              { label: 'Name', value: 'Research Agent' },
+              { label: 'Purpose', value: 'AI tools & SaaS procurement' },
+              { label: 'Daily Cap', value: '$80.00', highlight: true },
+              { label: 'Status', value: 'Active', badge: true }
             ].map((item, idx) => (
               <motion.div
                 key={idx}
@@ -70,7 +70,7 @@ export default function Dashboard() {
                 <span className="text-sm font-medium" style={{ color: 'rgba(255, 246, 232, 0.7)' }}>{item.label}</span>
                 {item.badge ? (
                   <span className="text-xs px-3 py-1 rounded-full font-semibold"
-                    style={{ background: 'rgba(255, 246, 232, 0.1)', color: 'rgba(255, 246, 232, 0.5)' }}>
+                    style={{ background: 'rgba(67, 212, 131, 0.15)', color: '#43D483' }}>
                     {item.value}
                   </span>
                 ) : (
@@ -94,10 +94,10 @@ export default function Dashboard() {
           </h2>
           <div className="space-y-4">
             {[
-              { label: 'Per-Request Cap', value: '$--' },
-              { label: 'Auto-Approval', value: '--' },
-              { label: 'Allowed Categories', value: '--' },
-              { label: 'Policy Hash', value: '--', mono: true }
+              { label: 'Per-Request Cap', value: '$20.00' },
+              { label: 'Auto-Approval', value: 'Under $8' },
+              { label: 'Allowed Categories', value: 'SaaS, AI Tools' },
+              { label: 'Policy Hash', value: '0xa9b3...1b1e', mono: true }
             ].map((item, idx) => (
               <motion.div
                 key={idx}
@@ -131,10 +131,10 @@ export default function Dashboard() {
           </h2>
           <div className="space-y-4">
             {[
-              { label: 'Merchant', value: '--' },
-              { label: 'Amount', value: '$--', highlight: true },
-              { label: 'Risk Score', value: '--', badge: 'neutral' },
-              { label: 'Status', value: '--', badge: 'neutral' }
+              { label: 'Merchant', value: 'Cursor AI' },
+              { label: 'Amount', value: '$7.00', highlight: true },
+              { label: 'Risk Score', value: 'Low · 12/100', badge: 'low' },
+              { label: 'Status', value: 'Approved', badge: 'approved' }
             ].map((item, idx) => (
               <motion.div
                 key={idx}
@@ -147,7 +147,10 @@ export default function Dashboard() {
                 <span className="text-sm font-medium" style={{ color: 'rgba(255, 246, 232, 0.7)' }}>{item.label}</span>
                 {item.badge ? (
                   <span className="text-xs px-3 py-1 rounded-full font-semibold"
-                    style={{ background: 'rgba(255, 246, 232, 0.08)', color: 'rgba(255, 246, 232, 0.4)' }}>
+                    style={{
+                      background: item.badge === 'approved' ? 'rgba(67, 212, 131, 0.15)' : 'rgba(255, 179, 49, 0.15)',
+                      color: item.badge === 'approved' ? '#43D483' : '#FFB331'
+                    }}>
                     {item.value}
                   </span>
                 ) : (

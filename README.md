@@ -216,8 +216,6 @@ lib/adapters/           0G, Stripe, and Web3 card adapters
 lib/policyEngine.ts     funding, limit, and approval checks
 ```
 
-See [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) for the 3-minute hackathon demo flow.
-See [docs/ARCHITECTURE_DIAGRAM.md](docs/ARCHITECTURE_DIAGRAM.md) for the system diagram.
 
 ## User Deposit Layer
 

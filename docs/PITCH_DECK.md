@@ -15,6 +15,13 @@
 
 ---
 
+## Slide 1b — Demo Disclosure *(add as a small footnote on the title slide or as a brief intro card)*
+
+> The wallet balances, agent profiles, and card activity shown in this demo are simulated to illustrate the full product flow.
+> All on-chain proof — including the deployed contract, 0G Storage roots, and compute decision root — is real and verifiable on 0G Mainnet (Chain 16661).
+
+---
+
 ## Slide 2 — The Problem
 
 ### AI agents can act. But can you trust them to spend?

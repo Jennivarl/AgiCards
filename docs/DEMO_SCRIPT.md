@@ -2,8 +2,11 @@
 
 Target length: under 3 minutes.
 
-> Note: The dashboard is pre-loaded with demo data to illustrate a real session.
-> Wallet: $2,450.00 · Agent: Research Agent · Latest request: $7.00 to Cursor AI · Status: Approved
+> **Disclosure to say at the start of the video:**
+> "The wallet balances, agent data, and card activity shown in this demo are simulated to illustrate the full product flow.
+> All on-chain proof — contract address, storage roots, and compute decision roots on the 0G Layer page — are real and verifiable on 0G Mainnet."
+
+> Demo values loaded: Wallet $2,450.00 · Agent: Research Agent · Latest request: $7.00 to Cursor AI · Status: Approved
 
 ## 1. Open Dashboard
 

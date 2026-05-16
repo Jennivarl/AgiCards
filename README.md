@@ -213,6 +213,6 @@ See [docs/ARCHITECTURE_DIAGRAM.md](docs/ARCHITECTURE_DIAGRAM.md) for the system 
 
 AgiCards requires users to deposit funds before agents can request cards. The wallet tracks deposited, reserved, spent, and available balances. Every card request reserves funds first; rejected requests release funds, and completed spends reduce the user's available balance.
 
-## Stripe Strategy
+## Two Spend Paths — One Proof Layer
 
-Stripe Issuing is used as a future real-card adapter. Because live issuing has country and program restrictions, the hackathon MVP supports Stripe test/mock mode plus a working 0G-native Web3 card flow.
+AgiCards is a hybrid. The Web3 card path is live today — enforced entirely on-chain with full 0G proof. The Stripe adapter is architected and ready for when issuer-backed real cards are needed in supported jurisdictions. Both paths sit behind the same smart contract policy engine and produce the same verifiable proof trail. On-chain enforcement and traditional payment rails working together, not competing.

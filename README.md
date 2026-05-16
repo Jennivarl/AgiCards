@@ -196,6 +196,10 @@ The submission includes:
 | Compute Decision Root | 0xa12eb9cfe85854f721aeaf36230a7d562bc376b9635fe2bddf490f40dad7773f |
 | Memory Root | 0xf599f6a4430673f2ecc201e0216248f3ae540d0991d8a0ae3bee31181d331e6b |
 
+## Design
+
+The dashboard UI was built from a Figma design export. All pages — wallet, agents, card orders, and 0G Layer — were implemented in Next.js 15 from the Figma source.
+
 ## Repository Structure
 
 ```txt

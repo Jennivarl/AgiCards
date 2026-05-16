@@ -37,6 +37,7 @@ contract AgiCardsRegistry {
         bytes32 requestRoot;
         RequestStatus status;
         bool stripeMode;
+        bool cardLinked;
         uint256 createdAt;
     }
 
@@ -48,7 +49,13 @@ contract AgiCardsRegistry {
     // policyId => UTC day (block.timestamp / 1 days) => total spent that day
     mapping(bytes32 => mapping(uint256 => uint256)) public dailySpent;
 
+    address public immutable treasury;
     uint256 private _locked = 1;
+
+    constructor(address _treasury) {
+        require(_treasury != address(0), "zero treasury");
+        treasury = _treasury;
+    }
 
     event AgentRegistered(bytes32 indexed agentId, address indexed owner, bytes32 metadataRoot);
     event AgentPaused(bytes32 indexed agentId, bool paused);
@@ -191,6 +198,7 @@ contract AgiCardsRegistry {
             requestRoot: requestRoot,
             status: RequestStatus.Pending,
             stripeMode: stripeMode,
+            cardLinked: false,
             createdAt: block.timestamp
         });
 
@@ -223,7 +231,9 @@ contract AgiCardsRegistry {
         CardRequest storage cardRequest = requests[requestId];
         require(cardRequest.status == RequestStatus.Approved, "not approved");
         require(cardRequest.stripeMode, "not stripe request");
+        require(!cardRequest.cardLinked, "card already linked");
 
+        cardRequest.cardLinked = true;
         emit StripeCardLinked(requestId, stripeCardHash, cardMetadataRoot);
     }
 
@@ -235,7 +245,9 @@ contract AgiCardsRegistry {
         CardRequest storage cardRequest = requests[requestId];
         require(cardRequest.status == RequestStatus.Approved, "not approved");
         require(!cardRequest.stripeMode, "not web3 request");
+        require(!cardRequest.cardLinked, "card already linked");
 
+        cardRequest.cardLinked = true;
         emit Web3CardCreated(requestId, web3CardId, cardMetadataRoot);
     }
 
@@ -295,6 +307,7 @@ contract AgiCardsRegistry {
         if (amount > 0) {
             cardRequest.reservedAmount = 0;
             reservedBalance[cardRequest.owner] -= amount;
+            dailySpent[cardRequest.policyId][cardRequest.createdAt / 1 days] -= amount;
             emit FundsReleased(cardRequest.owner, requestId, amount);
         }
     }
@@ -310,6 +323,10 @@ contract AgiCardsRegistry {
 
         if (unusedAmount > 0) {
             emit FundsReleased(cardRequest.owner, requestId, unusedAmount);
+        }
+        if (spentAmount > 0) {
+            (bool sent,) = treasury.call{value: spentAmount}("");
+            require(sent, "treasury transfer failed");
         }
     }
 }

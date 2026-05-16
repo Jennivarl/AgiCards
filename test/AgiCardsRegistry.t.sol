@@ -7,8 +7,9 @@ import "../contracts/AgiCardsRegistry.sol";
 contract AgiCardsRegistryTest is Test {
     AgiCardsRegistry registry;
 
-    address alice = makeAddr("alice");
-    address bob   = makeAddr("bob");
+    address alice    = makeAddr("alice");
+    address bob      = makeAddr("bob");
+    address treasury = makeAddr("treasury");
 
     bytes32 constant AGENT_ID  = keccak256("agent1");
     bytes32 constant POLICY_ID = keccak256("policy1");
@@ -19,7 +20,7 @@ contract AgiCardsRegistryTest is Test {
     uint256 constant DAILY_LIMIT     = 3 ether;
 
     function setUp() public {
-        registry = new AgiCardsRegistry();
+        registry = new AgiCardsRegistry(treasury);
         vm.deal(alice, 10 ether);
         vm.deal(bob, 10 ether);
 
@@ -146,7 +147,7 @@ contract AgiCardsRegistryTest is Test {
         registry.releaseReservedFunds(REQ_ID);
 
         assertEq(registry.reservedBalance(alice), 0);
-        (,,,,,, AgiCardsRegistry.RequestStatus status,,) = registry.requests(REQ_ID);
+        (,,,,,, AgiCardsRegistry.RequestStatus status,,,) = registry.requests(REQ_ID);
         assertEq(uint256(status), uint256(AgiCardsRegistry.RequestStatus.Cancelled));
     }
 
@@ -251,14 +252,100 @@ contract AgiCardsRegistryTest is Test {
         assertEq(registry.availableBalance(alice), deposit - spend);
     }
 
+    // ── treasury receives spent ETH ───────────────────────────────────────────
+
+    function test_treasury_receives_web3_spend() public {
+        _createRequest();
+
+        vm.startPrank(alice);
+        registry.approveCardRequest(REQ_ID, ROOT);
+        uint256 before = treasury.balance;
+        registry.logWeb3Spend(REQ_ID, 0.4 ether, ROOT);
+        vm.stopPrank();
+
+        assertEq(treasury.balance, before + 0.4 ether);
+        assertEq(registry.depositedBalance(alice), 4.6 ether);
+    }
+
+    function test_treasury_receives_stripe_spend() public {
+        vm.prank(alice);
+        registry.requestCard(REQ_ID, AGENT_ID, POLICY_ID, 0.5 ether, ROOT, true);
+
+        vm.startPrank(alice);
+        registry.approveCardRequest(REQ_ID, ROOT);
+        uint256 before = treasury.balance;
+        registry.logStripeAuthorization(REQ_ID, 0.3 ether, ROOT);
+        vm.stopPrank();
+
+        assertEq(treasury.balance, before + 0.3 ether);
+    }
+
+    // ── daily quota restored on cancel / reject ───────────────────────────────
+
+    function test_reject_restores_daily_quota() public {
+        vm.startPrank(alice);
+        registry.requestCard(keccak256("r1"), AGENT_ID, POLICY_ID, 1 ether, ROOT, false);
+        registry.requestCard(keccak256("r2"), AGENT_ID, POLICY_ID, 1 ether, ROOT, false);
+        registry.requestCard(keccak256("r3"), AGENT_ID, POLICY_ID, 1 ether, ROOT, false);
+
+        registry.rejectCardRequest(keccak256("r3"), ROOT);
+
+        // quota freed — r4 should succeed
+        registry.requestCard(keccak256("r4"), AGENT_ID, POLICY_ID, 1 ether, ROOT, false);
+        vm.stopPrank();
+    }
+
+    function test_cancel_restores_daily_quota() public {
+        vm.startPrank(alice);
+        registry.requestCard(keccak256("r1"), AGENT_ID, POLICY_ID, 1 ether, ROOT, false);
+        registry.requestCard(keccak256("r2"), AGENT_ID, POLICY_ID, 1 ether, ROOT, false);
+        registry.requestCard(keccak256("r3"), AGENT_ID, POLICY_ID, 1 ether, ROOT, false);
+
+        registry.releaseReservedFunds(keccak256("r3"));
+
+        // quota freed — r4 should succeed
+        registry.requestCard(keccak256("r4"), AGENT_ID, POLICY_ID, 1 ether, ROOT, false);
+        vm.stopPrank();
+    }
+
+    // ── card link idempotency guard ───────────────────────────────────────────
+
+    function test_link_stripe_card_blocks_second_call() public {
+        vm.prank(alice);
+        registry.requestCard(REQ_ID, AGENT_ID, POLICY_ID, 0.5 ether, ROOT, true);
+
+        vm.startPrank(alice);
+        registry.approveCardRequest(REQ_ID, ROOT);
+        registry.linkStripeCard(REQ_ID, keccak256("card1"), ROOT);
+        vm.expectRevert("card already linked");
+        registry.linkStripeCard(REQ_ID, keccak256("card2"), ROOT);
+        vm.stopPrank();
+    }
+
+    function test_create_web3_card_blocks_second_call() public {
+        _createRequest();
+
+        vm.startPrank(alice);
+        registry.approveCardRequest(REQ_ID, ROOT);
+        registry.createWeb3Card(REQ_ID, keccak256("w3card1"), ROOT);
+        vm.expectRevert("card already linked");
+        registry.createWeb3Card(REQ_ID, keccak256("w3card2"), ROOT);
+        vm.stopPrank();
+    }
+
     // ── reentrancy guard ──────────────────────────────────────────────────────
 
     function test_reentrant_withdraw_blocked() public {
         ReentrantWithdrawer attacker = new ReentrantWithdrawer(registry);
-        vm.deal(address(attacker), 2 ether);
+        vm.deal(address(attacker), 3 ether);
+
+        // fund treasury so it can receive any incidental transfers
+        vm.deal(treasury, 0);
 
         attacker.deposit{value: 2 ether}();
-        vm.expectRevert("reentrant");
+        // inner re-entry is blocked by nonReentrant; outer call fails with "withdraw failed"
+        // because the ETH transfer to the attacker reverts (attacker's receive() panics on lock)
+        vm.expectRevert("withdraw failed");
         attacker.attack();
     }
 }

@@ -112,8 +112,14 @@ flowchart TD
 
 | Name | Role | GitHub |
 | --- | --- | --- |
-| varl999 | Builder — full-stack, smart contract, 0G integration | [@Jennivarl](https://github.com/Jennivarl) |
+| varl999 | Builder & Product Designer — full-stack, smart contract, 0G integration, UI/UX design | [@Jennivarl](https://github.com/Jennivarl) |
 | Mustapha Abdulaziz | Smart Contract Auditor — security review, audit report | [@mustaphaabdulazizdambatta](https://github.com/mustaphaabdulazizdambatta) |
+
+## Security Audit
+
+The smart contract was independently reviewed by Mustapha Abdulaziz of SpectraSec Lab. Nine findings were identified — one high, five medium, and three low severity. Eight were resolved before submission, including ETH egress to treasury, daily limit enforcement, reentrancy guard, mode checks, pause gates, and quota accounting. One low-severity finding remains open (transient DoS on `requestId` slot; no funds at risk).
+
+The full report is available at [audit/audit-report.md](audit/audit-report.md).
 
 ## Reviewer Notes
 

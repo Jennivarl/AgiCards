@@ -1,5 +1,7 @@
 # AgiCards
 
+[View Pitch Deck (Canva)](https://canva.link/zmsa35v5h1axhom)
+
 AgiCards lets AI agents request controlled virtual cards, with spending policies, approvals, memory, and audit trails powered by 0G.
 
 ## Overview

@@ -73,7 +73,7 @@ export default function LandingPage() {
                     boxShadow: '0 8px 24px rgba(255, 90, 18, 0.4)'
                   }}
                 >
-                  <span className="relative z-10">Open MVP</span>
+                  <span className="relative z-10">Open Dashboard</span>
                   <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
                 </Link>

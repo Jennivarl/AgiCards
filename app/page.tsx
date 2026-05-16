@@ -121,11 +121,14 @@ export default function LandingPage() {
                 </motion.div>
 
                 <motion.div
-                  className="flex-1 p-5 rounded-xl"
+                  className="flex-1 p-5 rounded-xl cursor-default"
+                  initial={{ opacity: 0.55 }}
+                  animate={{ opacity: 0.55 }}
+                  whileHover={{ opacity: 0.8, y: -3, scale: 1.02 }}
+                  transition={{ duration: 0.25, ease: 'easeOut' }}
                   style={{
                     background: 'rgba(11, 7, 5, 0.4)',
                     border: '1px solid rgba(255, 129, 32, 0.15)',
-                    opacity: 0.55
                   }}
                 >
                   <div className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'rgba(255, 179, 49, 0.6)' }}>

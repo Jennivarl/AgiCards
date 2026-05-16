@@ -326,6 +326,6 @@ All 28 tests pass. Every fixed finding has at least one dedicated regression tes
 
 ## 8. Disclaimer
 
-> This report was produced by an AI-assisted audit pipeline. AI analysis cannot verify the complete absence of vulnerabilities. No guarantee of security is given. Independent human review, a bug bounty program, and on-chain monitoring are strongly recommended before and after deployment.
+> This report does not guarantee the complete absence of vulnerabilities. Independent review, a bug bounty program, and on-chain monitoring are strongly recommended before and after deployment.
 >
-> For a consultation, visit [SpectraSec Lab](https://spectraseclab.com)
+> For a consultation, contact [SpectraSec Lab](https://spectraseclab.com)

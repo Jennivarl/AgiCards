@@ -5,7 +5,7 @@
 **Network:** 0G Mainnet · `0xc757698204543af249e328764e89530464de668e`  
 **Audit Date:** 2026-05-16  
 **nSLOC:** 245  
-**Auditor:** Pashov AI Audit  
+**Auditor:** SpectraSec Lab  
 
 ---
 
@@ -328,4 +328,4 @@ All 28 tests pass. Every fixed finding has at least one dedicated regression tes
 
 > This report was produced by an AI-assisted audit pipeline. AI analysis cannot verify the complete absence of vulnerabilities. No guarantee of security is given. Independent human review, a bug bounty program, and on-chain monitoring are strongly recommended before and after deployment.
 >
-> For a consultation, visit [https://www.pashov.com](https://www.pashov.com)
+> For a consultation, visit [SpectraSec Lab](https://spectraseclab.com)

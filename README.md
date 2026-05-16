@@ -108,6 +108,13 @@ flowchart TD
 - 0G Compute support for risk decisions.
 - Stripe is isolated behind an adapter for future real-card support.
 
+## Team
+
+| Name | Role | GitHub |
+| --- | --- | --- |
+| varl999 | Builder — full-stack, smart contract, 0G integration | [@Jennivarl](https://github.com/Jennivarl) |
+| Mustapha Abdulaziz | Smart Contract Auditor — security review, audit report | [@mustaphaabdulazizdambatta](https://github.com/mustaphaabdulazizdambatta) |
+
 ## Reviewer Notes
 
 The live MVP is deployed at **https://agicards.dev** — no local setup required to evaluate the product.

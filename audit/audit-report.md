@@ -1,5 +1,3 @@
-![SpectraSec Lab](spectrasec-logo.jpg){ width=120px }
-
 # Security Audit Report — AgiCardsRegistry
 
 **Project:** AgiCards  

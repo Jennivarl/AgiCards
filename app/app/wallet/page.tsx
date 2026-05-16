@@ -3,7 +3,7 @@
 import { motion } from 'motion/react';
 import { Wallet, TrendingUp, Database, CheckCircle2 } from 'lucide-react';
 
-const depositAmounts = ['--', '--', '--', '--'];
+const depositAmounts = ['50', '100', '500', '1000'];
 
 export default function WalletPage() {
   return (
@@ -32,8 +32,8 @@ export default function WalletPage() {
 
       <div className="grid md:grid-cols-2 gap-6 mb-10">
         {[
-          { icon: Wallet, label: 'Total Deposited', value: '$--', color: '#FFB331' },
-          { icon: TrendingUp, label: 'Available Balance', value: '$--', color: '#43D483' }
+          { icon: Wallet, label: 'Total Deposited', value: '$2,450.00', color: '#FFB331' },
+          { icon: TrendingUp, label: 'Available Balance', value: '$2,443.00', color: '#43D483' }
         ].map((stat, idx) => (
           <motion.div
             key={idx}
@@ -57,8 +57,8 @@ export default function WalletPage() {
 
       <div className="grid md:grid-cols-2 gap-6 mb-10">
         {[
-          { label: 'Reserved Balance', value: '$--', desc: 'Locked for pending requests', color: '#FFB331' },
-          { label: 'Total Spent', value: '$--', desc: 'This month', color: '#FFF7E8' }
+          { label: 'Reserved Balance', value: '$0.00', desc: 'Locked for pending requests', color: '#FFB331' },
+          { label: 'Total Spent', value: '$7.00', desc: 'This month', color: '#FFF7E8' }
         ].map((stat, idx) => (
           <motion.div
             key={idx}

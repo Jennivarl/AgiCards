@@ -106,6 +106,22 @@ flowchart TD
 - 0G Compute support for risk decisions.
 - Stripe is isolated behind an adapter for future real-card support.
 
+## Reviewer Notes
+
+The live MVP is deployed at **https://agicards.dev** — no local setup required to evaluate the product.
+
+The 0G Layer page at **https://agicards.dev/app/proof** contains all verifiable proof in one place:
+- Deployed contract address with 0G Explorer link
+- All five 0G Storage roots from a real proof run
+- Compute decision root confirming a live policy evaluation
+
+To test locally with live 0G modules, you will need:
+- `OG_STORAGE_PRIVATE_KEY` — funded on 0G Mainnet for storage uploads (get A0GI from the [0G faucet](https://faucet.0g.ai))
+- `OG_COMPUTE_API_KEY` — from the 0G Compute Router for AI policy evaluation
+- `DEPLOYER_PRIVATE_KEY` — for redeploying the contract to 0G Mainnet
+
+Without these, the app runs in fallback mode: mock Merkle roots for storage, deterministic policy engine for compute. All UI flows still work.
+
 ## Local Development
 
 ```bash

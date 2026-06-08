@@ -13,10 +13,12 @@ function short(addr: string) {
 
 export function MintCardButton({
   wallet,
-  intent
+  intent,
+  onMinted
 }: {
   wallet: ConnectedWallet;
   intent: ValidatedIntent;
+  onMinted?: () => void;
 }) {
   const [status, setStatus] = useState<string>();
   const [cardId, setCardId] = useState<string>();
@@ -62,6 +64,7 @@ export function MintCardButton({
 
       setCardId(saved.card.id);
       setStatus(undefined);
+      onMinted?.();
     } catch (e) {
       setError(e instanceof Error ? e.message : "Minting failed.");
       setStatus(undefined);

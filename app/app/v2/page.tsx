@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { ConnectWalletButton } from "./ConnectWalletButton";
 import { CreateCardPrompt } from "./CreateCardPrompt";
 import { MintCardButton } from "./MintCardButton";
+import { CardsList } from "./CardsList";
 import type { ConnectedWallet } from "@/lib/v2/wallet";
 import type { ValidatedIntent } from "@/lib/v2/intent";
 
@@ -30,6 +31,7 @@ function Panel({
 export default function V2Page() {
   const [wallet, setWallet] = useState<ConnectedWallet>();
   const [intent, setIntent] = useState<ValidatedIntent>();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   return (
     <div className="max-w-3xl">
@@ -66,12 +68,23 @@ export default function V2Page() {
           3 · Mint
         </h2>
         {wallet && intent ? (
-          <MintCardButton wallet={wallet} intent={intent} />
+          <MintCardButton
+            wallet={wallet}
+            intent={intent}
+            onMinted={() => setRefreshKey((k) => k + 1)}
+          />
         ) : (
           <p className="text-sm" style={{ color: "rgba(255, 246, 232, 0.5)" }}>
             Connect your wallet and preview a card above to enable minting.
           </p>
         )}
+      </Panel>
+
+      <Panel delay={0.3}>
+        <h2 className="text-xl font-semibold mb-6" style={{ color: "#FFF7E8" }}>
+          4 · Your cards
+        </h2>
+        <CardsList refreshKey={refreshKey} />
       </Panel>
     </div>
   );

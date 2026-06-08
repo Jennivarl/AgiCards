@@ -10,14 +10,17 @@ export function getV2EnvStatus() {
       id: V2_CHAIN.id,
       rpcUrl: RPC_URL,
       explorerUrl: EXPLORER_URL,
-      hasCustomRpc: Boolean(process.env.NEXT_PUBLIC_LINEA_RPC_URL)
+      hasCustomRpc: Boolean(process.env.NEXT_PUBLIC_SEPOLIA_RPC_URL)
     },
     relayer: {
-      // 1Shot — gasless EIP-7702 upgrade + delegation redemption.
-      hasApiKey: Boolean(process.env.ONESHOT_API_KEY),
-      hasApiSecret: Boolean(process.env.ONESHOT_API_SECRET),
-      hasBusinessId: Boolean(process.env.ONESHOT_BUSINESS_ID),
-      hasWebhookSecret: Boolean(process.env.ONESHOT_WEBHOOK_SECRET)
+      // 1Shot public relayer — PERMISSIONLESS gasless EIP-7702/7710 execution.
+      // No API key/secret: authentication is via signed delegation payloads.
+      // JSON-RPC endpoint; status comes back via signed Ed25519 webhooks.
+      endpoint:
+        process.env.ONESHOT_RELAYER_URL || "https://relayer.1shotapi.com/relayers",
+      permissionless: true,
+      // Our public URL where 1Shot POSTs webhook status events (destinationUrl).
+      hasWebhookUrl: Boolean(process.env.PUBLIC_WEBHOOK_URL)
     },
     venice: {
       // Natural-language intent -> structured permission JSON.
@@ -41,8 +44,7 @@ export function getMissingV2Env() {
   const env = getV2EnvStatus();
   const missing: string[] = [];
 
-  if (!env.relayer.hasApiKey) missing.push("ONESHOT_API_KEY");
-  if (!env.relayer.hasApiSecret) missing.push("ONESHOT_API_SECRET");
+  // 1Shot public relayer needs no credentials — nothing to check there.
   if (!env.venice.hasApiKey) missing.push("VENICE_API_KEY");
   if (!env.signer.configured) {
     missing.push(

@@ -3,22 +3,18 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Sparkles, AlertTriangle, ShieldCheck } from "lucide-react";
-
-type Intent = {
-  purpose: string;
-  token: string;
-  dailyCapUsd: number;
-  perCallCapUsd: number;
-  allowedTargets: string[];
-  expiresInDays: number;
-};
+import type { ValidatedIntent } from "@/lib/v2/intent";
 
 const EXAMPLE =
   "Let an agent pay for AI tools and APIs, up to $50/day and $10 per charge, for 7 days.";
 
-export function CreateCardPrompt() {
+export function CreateCardPrompt({
+  onIntent
+}: {
+  onIntent?: (intent: ValidatedIntent | undefined) => void;
+}) {
   const [prompt, setPrompt] = useState("");
-  const [intent, setIntent] = useState<Intent>();
+  const [intent, setIntent] = useState<ValidatedIntent>();
   const [mode, setMode] = useState<string>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
@@ -27,6 +23,7 @@ export function CreateCardPrompt() {
     setLoading(true);
     setError(undefined);
     setIntent(undefined);
+    onIntent?.(undefined);
     try {
       const res = await fetch("/api/v2/intent", {
         method: "POST",
@@ -40,6 +37,7 @@ export function CreateCardPrompt() {
       }
       setIntent(data.intent);
       setMode(data.mode);
+      onIntent?.(data.intent);
     } catch {
       setError("Could not reach the intent parser.");
     } finally {

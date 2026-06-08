@@ -1,4 +1,4 @@
-import { privateKeyToAccount } from "viem/accounts";
+import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import type { Account, Hex } from "viem";
 
 // The agent's "session key" — the thing that redeems an AgiCard's delegation to
@@ -61,12 +61,17 @@ export function getAgentSigner(): AgentSigner {
   }
 
   const key = process.env.AGENT_LOCAL_PRIVATE_KEY as Hex | undefined;
-  if (!key) {
-    throw new Error(
-      "No agent signer configured. Set AGENT_SIGNER_PROVIDER=turnkey|privy " +
-        "(production) or AGENT_LOCAL_PRIVATE_KEY (dev/testnet only)."
-    );
+  if (key) {
+    cached = new LocalKeyAgentSigner(key);
+    return cached;
   }
-  cached = new LocalKeyAgentSigner(key);
+
+  // Dev convenience: no key set -> generate an ephemeral one so the flow works
+  // with zero config. Cards minted to it won't survive a server restart. NEVER
+  // rely on this in production — set a managed signer instead.
+  console.warn(
+    "[agent-signer] No AGENT_LOCAL_PRIVATE_KEY set; using an ephemeral dev key."
+  );
+  cached = new LocalKeyAgentSigner(generatePrivateKey());
   return cached;
 }

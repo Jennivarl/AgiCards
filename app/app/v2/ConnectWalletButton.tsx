@@ -3,14 +3,18 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Wallet, CheckCircle2, AlertTriangle } from "lucide-react";
-import { connectMetaMask } from "@/lib/v2/wallet";
+import { connectMetaMask, type ConnectedWallet } from "@/lib/v2/wallet";
 import { toUserSmartAccount } from "@/lib/v2/smartAccount";
 
 function short(addr: string) {
   return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
 }
 
-export function ConnectWalletButton() {
+export function ConnectWalletButton({
+  onConnected
+}: {
+  onConnected?: (wallet: ConnectedWallet) => void;
+}) {
   const [eoa, setEoa] = useState<string>();
   const [smartAccount, setSmartAccount] = useState<string>();
   const [error, setError] = useState<string>();
@@ -20,11 +24,12 @@ export function ConnectWalletButton() {
     setLoading(true);
     setError(undefined);
     try {
-      const { address, walletClient } = await connectMetaMask();
-      setEoa(address);
+      const wallet = await connectMetaMask();
+      setEoa(wallet.address);
       // Wrap the connected EOA as a MetaMask Stateless-7702 smart account.
-      const account = await toUserSmartAccount(walletClient, address);
+      const account = await toUserSmartAccount(wallet.walletClient, wallet.address);
       setSmartAccount(account.address);
+      onConnected?.(wallet);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to connect wallet.");
     } finally {

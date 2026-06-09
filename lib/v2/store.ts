@@ -137,10 +137,15 @@ class PostgresStore implements Store {
   }
 }
 
-let store: Store | null = null;
+// Share one instance across route bundles and dev hot-reloads. In serverless
+// production each instance is isolated, so set DATABASE_URL for shared state.
+const globalForStore = globalThis as unknown as { __agicardsStore?: Store };
 
 export function getStore(): Store {
-  if (store) return store;
-  store = process.env.DATABASE_URL ? new PostgresStore() : new InMemoryStore();
-  return store;
+  if (!globalForStore.__agicardsStore) {
+    globalForStore.__agicardsStore = process.env.DATABASE_URL
+      ? new PostgresStore()
+      : new InMemoryStore();
+  }
+  return globalForStore.__agicardsStore;
 }

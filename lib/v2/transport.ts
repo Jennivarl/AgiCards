@@ -1,5 +1,7 @@
-import type { Hex } from "viem";
-import { V2_CHAIN } from "./chains";
+import { createWalletClient, http, type Hex } from "viem";
+import { erc7710WalletActions } from "@metamask/smart-accounts-kit/actions";
+import { V2_CHAIN, RPC_URL } from "./chains";
+import { getAgentSigner } from "./signer";
 import type { AgiCard } from "./types";
 import type { SkillCall } from "./skills/types";
 
@@ -10,9 +12,9 @@ export type TransportResult = {
 };
 
 // How a skill call actually reaches the chain. Pluggable so the demo runs
-// without funds while the production gasless path slots in unchanged.
+// without funds while the real on-chain / gasless paths slot in unchanged.
 export interface ExecutionTransport {
-  readonly kind: "simulated" | "1shot";
+  readonly kind: "simulated" | "wallet" | "1shot";
   submit(call: SkillCall, card: AgiCard): Promise<TransportResult>;
 }
 
@@ -62,9 +64,37 @@ class OneShotRelayerTransport implements ExecutionTransport {
   }
 }
 
-export function getTransport(): ExecutionTransport {
-  if ((process.env.EXECUTION_TRANSPORT || "").toLowerCase() === "1shot") {
-    return new OneShotRelayerTransport();
+// Real on-chain redemption: the agent's EOA (the card's delegate) sends a
+// transaction that redeems the delegation, executing the skill call on the
+// user's behalf within the on-chain caveat. The EOA pays its own gas in ETH, so
+// it must be funded (and stable via AGENT_LOCAL_PRIVATE_KEY). No bundler needed.
+class WalletTransport implements ExecutionTransport {
+  readonly kind = "wallet" as const;
+  async submit(call: SkillCall, card: AgiCard): Promise<TransportResult> {
+    const account = await getAgentSigner().getAccount(card.id);
+    const walletClient = createWalletClient({
+      account,
+      chain: V2_CHAIN,
+      transport: http(RPC_URL)
+    }).extend(erc7710WalletActions());
+
+    const txHash = await walletClient.sendTransactionWithDelegation({
+      account,
+      chain: V2_CHAIN,
+      to: call.to,
+      data: call.data,
+      value: call.value,
+      permissionContext: card.permissionsContext,
+      delegationManager: card.delegationManager
+    });
+
+    return { status: "confirmed", txHash };
   }
+}
+
+export function getTransport(): ExecutionTransport {
+  const choice = (process.env.EXECUTION_TRANSPORT || "").toLowerCase();
+  if (choice === "wallet") return new WalletTransport();
+  if (choice === "1shot") return new OneShotRelayerTransport();
   return new SimulatedTransport();
 }

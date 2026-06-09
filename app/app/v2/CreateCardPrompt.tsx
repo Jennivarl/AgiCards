@@ -15,7 +15,6 @@ export function CreateCardPrompt({
 }) {
   const [prompt, setPrompt] = useState("");
   const [intent, setIntent] = useState<ValidatedIntent>();
-  const [mode, setMode] = useState<string>();
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
 
@@ -36,7 +35,6 @@ export function CreateCardPrompt({
         return;
       }
       setIntent(data.intent);
-      setMode(data.mode);
       onIntent?.(data.intent);
     } catch {
       setError("Could not reach the intent parser.");
@@ -93,14 +91,6 @@ export function CreateCardPrompt({
             <span className="font-semibold" style={{ color: "#FFF7E8" }}>
               {intent.purpose}
             </span>
-            {mode === "fallback" && (
-              <span
-                className="text-xs px-2 py-0.5 rounded-full ml-auto"
-                style={{ background: "rgba(255, 179, 49, 0.15)", color: "#FFB331" }}
-              >
-                offline preview
-              </span>
-            )}
           </div>
           <Row label="Daily cap" value={`$${intent.dailyCapUsd.toFixed(2)} ${intent.token}`} />
           <Row label="Per-charge cap" value={`$${intent.perCallCapUsd.toFixed(2)} ${intent.token}`} />

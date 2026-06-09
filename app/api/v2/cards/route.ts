@@ -4,7 +4,7 @@ import { saveCard, listCards } from "@/lib/v2/cardStore";
 import type { AgiCard, PermissionIntent } from "@/lib/v2/types";
 
 export async function GET() {
-  return NextResponse.json({ ok: true, cards: listCards() });
+  return NextResponse.json({ ok: true, cards: await listCards() });
 }
 
 // Store a freshly-minted card after the browser completes the ERC-7715 grant.
@@ -45,6 +45,6 @@ export async function POST(request: Request) {
     auditRoots: []
   };
 
-  saveCard(card);
+  await saveCard(card);
   return NextResponse.json({ ok: true, card });
 }

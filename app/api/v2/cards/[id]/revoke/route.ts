@@ -9,9 +9,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  if (!getCard(id)) {
+  if (!(await getCard(id))) {
     return NextResponse.json({ ok: false, error: "Card not found." }, { status: 404 });
   }
-  const card = updateCard(id, { status: "revoked" });
+  const card = await updateCard(id, { status: "revoked" });
   return NextResponse.json({ ok: true, card });
 }

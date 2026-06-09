@@ -28,6 +28,10 @@ export function getV2EnvStatus() {
       baseUrl: process.env.VENICE_BASE_URL || "https://api.venice.ai/api/v1",
       model: process.env.VENICE_MODEL || "venice-uncensored"
     },
+    storage: {
+      // In-memory by default; Postgres when DATABASE_URL is set.
+      driver: process.env.DATABASE_URL ? "postgres" : "memory"
+    },
     signer: {
       // The background agent's session key (Option B: server-side).
       provider: (process.env.AGENT_SIGNER_PROVIDER || "local").toLowerCase(),

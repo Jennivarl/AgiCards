@@ -21,7 +21,7 @@ export async function executeCardCall(
   cardId: string,
   input: ExecuteInput
 ): Promise<AgentExecution> {
-  const card = getCard(cardId);
+  const card = await getCard(cardId);
   if (!card) throw new Error("Card not found.");
   if (card.status !== "active") throw new Error(`Card is ${card.status}.`);
   if (!card.intent.allowedTargets.includes(input.skill)) {
@@ -52,23 +52,22 @@ export async function executeCardCall(
     status: "relaying",
     createdAt: new Date().toISOString()
   };
-  addExecution(execution);
+  await addExecution(execution);
 
   const result = await getTransport().submit(call, card);
   const auditRoot = await logExecution(card, call, result);
 
   if (result.status === "confirmed") {
-    updateCard(cardId, {
+    await updateCard(cardId, {
       spentUsd: card.spentUsd + call.amountUsd,
       auditRoots: [...card.auditRoots, auditRoot]
     });
   }
 
-  return (
-    updateExecution(execution.id, {
-      status: result.status,
-      txHash: result.txHash,
-      auditRoot
-    }) ?? execution
-  );
+  const updated = await updateExecution(execution.id, {
+    status: result.status,
+    txHash: result.txHash,
+    auditRoot
+  });
+  return updated ?? execution;
 }

@@ -10,7 +10,7 @@ import { addExecution, updateExecution } from "./executionStore";
 
 export type ExecuteInput = {
   skill: TargetKey;
-  seller: Address;
+  target: Address;
   amountUsd: number;
   note?: string;
 };
@@ -37,9 +37,10 @@ export async function executeCardCall(
 
   const skill = getSkill(input.skill);
   const call = await skill.buildCall({
-    seller: input.seller,
+    target: input.target,
     amountUsd: input.amountUsd,
-    note: input.note
+    note: input.note,
+    account: card.owner
   });
 
   const execution: AgentExecution = {

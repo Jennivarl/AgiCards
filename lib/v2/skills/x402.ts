@@ -15,9 +15,9 @@ export const x402Skill: AgentSkill = {
     const data = encodeFunctionData({
       abi: erc20Abi,
       functionName: "transfer",
-      args: [input.seller, amount]
+      args: [input.target, amount]
     });
-    const who = `${input.seller.slice(0, 6)}…${input.seller.slice(-4)}`;
+    const who = `${input.target.slice(0, 6)}…${input.target.slice(-4)}`;
     return {
       to: USDC_ADDRESS,
       data,

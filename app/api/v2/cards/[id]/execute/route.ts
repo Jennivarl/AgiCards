@@ -9,16 +9,16 @@ export async function POST(
 ) {
   const { id } = await params;
 
-  let body: { skill?: TargetKey; seller?: string; amountUsd?: number; note?: string };
+  let body: { skill?: TargetKey; target?: string; amountUsd?: number; note?: string };
   try {
     body = await request.json();
   } catch {
     return NextResponse.json({ ok: false, error: "Invalid JSON body." }, { status: 400 });
   }
 
-  if (!body.skill || !body.seller || !body.amountUsd) {
+  if (!body.skill || !body.target || !body.amountUsd) {
     return NextResponse.json(
-      { ok: false, error: "Missing skill, seller, or amountUsd." },
+      { ok: false, error: "Missing skill, target, or amountUsd." },
       { status: 400 }
     );
   }
@@ -26,7 +26,7 @@ export async function POST(
   try {
     const execution = await executeCardCall(id, {
       skill: body.skill,
-      seller: body.seller as Address,
+      target: body.target as Address,
       amountUsd: body.amountUsd,
       note: body.note
     });

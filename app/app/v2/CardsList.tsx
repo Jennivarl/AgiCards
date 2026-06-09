@@ -73,7 +73,7 @@ export function CardsList({ refreshKey }: { refreshKey: number }) {
 }
 
 function CardItem({ card, onChange }: { card: Card; onChange: () => void }) {
-  const [seller, setSeller] = useState("");
+  const [target, setTarget] = useState("");
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
   const [executions, setExecutions] = useState<Execution[]>([]);
@@ -102,7 +102,7 @@ function CardItem({ card, onChange }: { card: Card; onChange: () => void }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           skill: card.intent.allowedTargets[0],
-          seller,
+          target,
           amountUsd: Number(amount),
           note: note || undefined
         })
@@ -197,9 +197,13 @@ function CardItem({ card, onChange }: { card: Card; onChange: () => void }) {
       {active && (
         <div className="grid sm:grid-cols-[1fr_auto_auto] gap-2 mb-4">
           <input
-            value={seller}
-            onChange={(e) => setSeller(e.target.value)}
-            placeholder="Seller address (0x…)"
+            value={target}
+            onChange={(e) => setTarget(e.target.value)}
+            placeholder={
+              card.intent.allowedTargets[0] === "uniswap-v3"
+                ? "Token to buy (0x…)"
+                : "Seller address (0x…)"
+            }
             className="px-3 py-2 rounded-lg text-sm font-mono outline-none"
             style={{ background: "rgba(11, 7, 5, 0.6)", border: "1px solid rgba(255, 129, 32, 0.25)", color: "#FFF7E8" }}
           />
@@ -212,7 +216,7 @@ function CardItem({ card, onChange }: { card: Card; onChange: () => void }) {
           />
           <button
             onClick={run}
-            disabled={busy || !seller || !amount}
+            disabled={busy || !target || !amount}
             className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold disabled:opacity-50"
             style={{ background: "linear-gradient(135deg, #FFB331, #FF5A12)", color: "#050403" }}
           >

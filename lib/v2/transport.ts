@@ -1,6 +1,6 @@
 import { createWalletClient, http, type Hex } from "viem";
 import { erc7710WalletActions } from "@metamask/smart-accounts-kit/actions";
-import { V2_CHAIN, RPC_URL } from "./chains";
+import { V2_CHAIN, RPC_URL, publicClient } from "./chains";
 import { getAgentSigner } from "./signer";
 import type { AgiCard } from "./types";
 import type { SkillCall } from "./skills/types";
@@ -88,7 +88,13 @@ class WalletTransport implements ExecutionTransport {
       delegationManager: card.delegationManager
     });
 
-    return { status: "confirmed", txHash };
+    // Wait for the receipt so "confirmed" means actually mined, and a reverted
+    // redemption is reported as such instead of being counted as a spend.
+    const receipt = await publicClient().waitForTransactionReceipt({ hash: txHash });
+    return {
+      status: receipt.status === "success" ? "confirmed" : "reverted",
+      txHash
+    };
   }
 }
 

@@ -48,12 +48,14 @@ export function getMissingV2Env() {
   const env = getV2EnvStatus();
   const missing: string[] = [];
 
-  // 1Shot public relayer needs no credentials — nothing to check there.
-  if (!env.venice.hasApiKey) missing.push("VENICE_API_KEY");
+  // Only the pieces truly required for live on-chain operation. Venice (offline
+  // parser fallback) and 1Shot (wallet-transport fallback) are optional, so they
+  // do not block readiness.
   if (!env.signer.configured) {
-    missing.push(
-      "AGENT_LOCAL_PRIVATE_KEY (dev) or a managed signer (TURNKEY_API_PRIVATE_KEY / PRIVY_APP_SECRET)"
-    );
+    missing.push("AGENT_LOCAL_PRIVATE_KEY (or a managed signer)");
+  }
+  if (env.storage.driver !== "postgres") {
+    missing.push("DATABASE_URL (Postgres) for durable storage");
   }
 
   return missing;

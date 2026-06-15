@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, type ReactNode } from "react";
-import { Shield, Zap, Wallet, FileCheck, Lock, RefreshCw, Activity, ChevronDown, ArrowDown } from "lucide-react";
+import { Shield, Zap, Wallet, FileCheck, ChevronDown, ArrowDown } from "lucide-react";
 import { useWallet } from "../WalletProvider";
 
 function AgiCard({ rotate, translateX, translateY, zIndex, scale, blur, gradient = "linear-gradient(135deg, #FFE45D 0%, #FFB331 45%, #FF5A12 100%)", last4 = "1661", amount = "$20 / day" }: {
@@ -92,7 +92,7 @@ function InfoCard({ icon, title, desc }: { icon: ReactNode; title: string; desc:
   );
 }
 
-const SECTION_BY_LABEL: Record<string, string> = { Home: "top", Cards: "cards", Features: "features", Security: "security", FAQ: "faq" };
+const SECTION_BY_LABEL: Record<string, string> = { Home: "top", Cards: "cards", Features: "features", Docs: "docs", FAQ: "faq" };
 
 export function Landing({ onLaunchApp }: { onLaunchApp: () => void }) {
   const { address, short } = useWallet();
@@ -141,7 +141,7 @@ export function Landing({ onLaunchApp }: { onLaunchApp: () => void }) {
     { label: "App", onClick: onLaunchApp },
     { label: "Cards", id: "cards" },
     { label: "Features", id: "features" },
-    { label: "Security", id: "security" },
+    { label: "Docs", id: "docs" },
     { label: "FAQ", id: "faq" },
   ];
 
@@ -392,14 +392,14 @@ export function Landing({ onLaunchApp }: { onLaunchApp: () => void }) {
               letterSpacing: "-0.03em", lineHeight: 1.12,
               margin: "0 0 14px", maxWidth: "640px",
             }}>
-              Your agent gets a card.<br/>You keep the keys.
+              Permission cards<br/>for AI agents
             </h1>
 
             <p style={{
               fontSize: "15px", color: "#888", textAlign: "center",
               maxWidth: "430px", lineHeight: 1.65, margin: "0 0 26px", fontWeight: 400,
             }}>
-              Your AI agent spends. You set the limits.
+              Give your agent controlled on-chain powers, within limits the blockchain enforces.
             </p>
 
             <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
@@ -517,72 +517,47 @@ export function Landing({ onLaunchApp }: { onLaunchApp: () => void }) {
         </div>
       </section>
 
-      {/* ── SECURITY SECTION ── */}
-      <section id="security" style={{ scrollMarginTop: "90px", padding: "110px 40px", maxWidth: "1140px", margin: "0 auto" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "48px", alignItems: "center" }}>
-          <div>
-            <span style={{ fontSize: "20px", fontWeight: 700, color: "#E8590C", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>Security</span>
-            <h2 style={{ fontSize: "clamp(15px, 1.4vw, 16px)", fontWeight: 700, color: "#111", letterSpacing: "-0.03em", margin: "12px 0 16px" }}>Your money stays yours</h2>
-            <p style={{ fontSize: "15px", color: "#8a7d6c", lineHeight: 1.7, margin: "0 0 28px", maxWidth: "440px" }}>
-              AgiCards never holds your funds. Your limits live in your own account on Base, and you stay in control the whole time.
+      {/* ── DOCS SECTION ── */}
+      <section id="docs" style={{ scrollMarginTop: "90px", padding: "110px 40px", maxWidth: "1140px", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
+          <span style={{ fontSize: "20px", fontWeight: 700, color: "#E8590C", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>Docs</span>
+          <h2 style={{ fontSize: "clamp(15px, 1.4vw, 16px)", fontWeight: 700, color: "#111", letterSpacing: "-0.03em", margin: "12px 0 0" }}>Whitepaper and roadmap</h2>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px", alignItems: "stretch" }}>
+          {/* Whitepaper */}
+          <div style={{ background: "linear-gradient(160deg, #1a1208 0%, #2a1c0c 100%)", borderRadius: "20px", padding: "32px", border: "1px solid rgba(255,180,60,0.15)", boxShadow: "0 20px 50px rgba(80,40,10,0.25)", display: "flex", flexDirection: "column" }}>
+            <div style={{ width: "48px", height: "48px", borderRadius: "14px", background: "linear-gradient(135deg, #FFE45D, #FF5A12)", display: "flex", alignItems: "center", justifyContent: "center", color: "#1a0a00", marginBottom: "18px" }}><FileCheck size={24} /></div>
+            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#FFF3E0", margin: "0 0 8px" }}>Whitepaper</h3>
+            <p style={{ fontSize: "14px", color: "rgba(255,235,200,0.65)", lineHeight: 1.6, margin: "0 0 20px", flex: 1 }}>
+              How AgiCards turns a MetaMask Smart Account permission into a scoped, on-chain-enforced capability card for AI agents: the delegation model, caveats, redemption, and the 0G audit trail.
             </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-              {[
-                { icon: <Lock size={18} />, t: "You keep custody", d: "Your money stays in your MetaMask Smart Account, and it can only ever be spent within the limits you set." },
-                { icon: <RefreshCw size={18} />, t: "Revoke anytime", d: "Turn off a card in one click and the agent loses access right away." },
-                { icon: <Activity size={18} />, t: "Enforced on chain", d: "Every payment is checked against your limits by the account on chain." },
-              ].map((s) => (
-                <div key={s.t} style={{ display: "flex", gap: "14px", alignItems: "flex-start" }}>
-                  <div style={{
-                    width: "38px", height: "38px", flexShrink: 0, borderRadius: "11px",
-                    background: "linear-gradient(135deg, rgba(255,228,93,0.35), rgba(255,90,18,0.18))",
-                    border: "1px solid rgba(255,120,20,0.2)",
-                    display: "flex", alignItems: "center", justifyContent: "center", color: "#E8590C",
-                  }}>{s.icon}</div>
-                  <div>
-                    <div style={{ fontSize: "15px", fontWeight: 600, color: "#1a1a1a", marginBottom: "2px" }}>{s.t}</div>
-                    <div style={{ fontSize: "13.5px", color: "#7c7264", lineHeight: 1.6 }}>{s.d}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <a href="https://github.com/Jennivarl/AgiCards" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", alignSelf: "flex-start", background: "linear-gradient(135deg, #FFE45D, #FFB331, #FF5A12)", color: "#1a0a00", fontSize: "14px", fontWeight: 700, padding: "11px 22px", borderRadius: "40px", textDecoration: "none" }}>
+              Read the whitepaper ↗
+            </a>
           </div>
 
-          {/* Visual */}
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{
-              width: "100%", maxWidth: "380px",
-              background: "linear-gradient(160deg, #1a1208 0%, #2a1c0c 100%)",
-              borderRadius: "24px", padding: "36px 32px",
-              boxShadow: "0 30px 70px rgba(80,40,10,0.3)",
-              border: "1px solid rgba(255,180,60,0.15)",
-            }}>
-              <div style={{
-                width: "56px", height: "56px", borderRadius: "16px",
-                background: "linear-gradient(135deg, #FFE45D, #FF5A12)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                color: "#1a0a00", marginBottom: "22px",
-                boxShadow: "0 8px 24px rgba(255,120,20,0.4)",
-              }}><Lock size={26} /></div>
-              <div style={{ fontSize: "13px", color: "rgba(255,235,200,0.6)", marginBottom: "6px" }}>Permission scope</div>
+          {/* Roadmap */}
+          <div style={{ background: "rgba(255,255,255,0.8)", border: "1px solid rgba(0,0,0,0.07)", borderRadius: "20px", padding: "32px", boxShadow: "0 10px 30px rgba(120,70,20,0.06)" }}>
+            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#1a1a1a", margin: "0 0 4px" }}>Roadmap</h3>
+            <p style={{ fontSize: "13.5px", color: "#8a7d6c", margin: "0 0 18px" }}>Same card, more powers — what an agent can be granted.</p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
               {[
-                { k: "Daily cap", v: "$20.00" },
-                { k: "Token", v: "USDC" },
-                { k: "Expires", v: "in 30 days" },
-                { k: "Network", v: "Base" },
-              ].map((r, i) => (
-                <div key={r.k} style={{
-                  display: "flex", justifyContent: "space-between", padding: "12px 0",
-                  borderTop: i === 0 ? "none" : "1px solid rgba(255,255,255,0.08)",
-                }}>
-                  <span style={{ fontSize: "13.5px", color: "rgba(255,235,200,0.7)" }}>{r.k}</span>
-                  <span style={{ fontSize: "13.5px", color: "#FFD9A0", fontWeight: 600 }}>{r.v}</span>
+                { name: "Pay & subscribe (x402)", live: true },
+                { name: "Swap (Uniswap V3)", live: true },
+                { name: "Trade", live: false },
+                { name: "Predict (Polymarket)", live: false },
+                { name: "Yield actions", live: false },
+                { name: "NFT bids", live: false },
+                { name: "Buy data", live: false },
+              ].map((c) => (
+                <div key={c.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 14px", borderRadius: "12px", background: c.live ? "rgba(31,168,100,0.08)" : "rgba(0,0,0,0.03)", border: c.live ? "1px solid rgba(31,168,100,0.2)" : "1px solid rgba(0,0,0,0.05)" }}>
+                  <span style={{ fontSize: "14px", fontWeight: 600, color: "#1a1a1a" }}>{c.name}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", fontSize: "11px", fontWeight: 700, color: c.live ? "#1FA864" : "#9b8f7e" }}>
+                    {c.live && <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#4ade80" }} />}
+                    {c.live ? "LIVE" : "ROADMAP"}
+                  </span>
                 </div>
               ))}
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "18px" }}>
-                <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#4ade80", animation: "pulseGreen 2s ease-in-out infinite" }} />
-                <span style={{ fontSize: "12.5px", color: "rgba(255,235,200,0.75)" }}>Active · revocable anytime</span>
-              </div>
             </div>
           </div>
         </div>

@@ -46,6 +46,30 @@ The card is revocable at any moment. Revoking removes the permission immediately
 
 ---
 
+## Proof — live on Base mainnet
+
+AgiCards is not a mockup. Real Advanced Permissions (ERC-7715) are granted in MetaMask, and the agent redeems them on-chain (ERC-7710 `redeemDelegations`) to make capped USDC payments. Everything below is verifiable on Basescan.
+
+**Agent wallet** (redeems delegations, pays its own gas):
+[`0xAB1b…51F1`](https://basescan.org/address/0xAB1b6EC9E808Ea97bb9C9013B02f5569736151F1)
+
+**Delegation Manager** (where each redemption is enforced):
+[`0xdb9b…7dB3`](https://basescan.org/address/0xdb9b1e94b5b69df7e401ddbede43491141047db3)
+
+**ERC-7710 redemptions** — the agent calling `redeemDelegations` (selector `0xcef6d209`) to spend inside the cap, one transaction per charge (a subscription run, all succeeded):
+
+- [Charge 1](https://basescan.org/tx/0xf5a465c1a5a500e3fd1d95d171084c5c90f1789a32b3d5560e3d92c1b08b49bd)
+- [Charge 2](https://basescan.org/tx/0xb91e78cdcafb81f2297a5726c86161d5135f0f60826ab88a56553cc941af70c3)
+- [Charge 3](https://basescan.org/tx/0xea0008a2d8f02ad0c35c3f63d0309d60864aa6fd07c3ed4bbd07f5497adf95a3)
+- [Charge 4](https://basescan.org/tx/0xf8c528b7c5eeb7e87e1fbf82d42a8c4514ade3001a91e3b185463486f97143b1)
+- [Charge 5](https://basescan.org/tx/0x2ecab5e9c7f774eb6b35e31d69e6f25a07f61c6ad737373c1f0d9858d4ad4a5c)
+- [Charge 6](https://basescan.org/tx/0x5760bc5d16b910ad552b7d5d64b54b19f20925f799f508ac6cac3efd58d41e1e)
+
+**First live spend** (earlier test agent):
+[tx `0x3b0a…c64d`](https://basescan.org/tx/0x3b0a725ce079e49e42a7bf97f7ed86456e07170eda997318102114bf3b78c64d)
+
+---
+
 ## Built with
 
 | Area | Tech |

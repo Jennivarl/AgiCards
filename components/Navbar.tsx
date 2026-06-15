@@ -1,10 +1,12 @@
 "use client";
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 
 export function Navbar() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -14,6 +16,9 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // The new /studio design has its own nav — hide the legacy 0G navbar there.
+  if (pathname?.startsWith('/studio')) return null;
 
   return (
     <motion.nav

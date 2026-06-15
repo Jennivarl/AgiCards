@@ -22,12 +22,6 @@ export function getV2EnvStatus() {
       // Our public URL where 1Shot POSTs webhook status events (destinationUrl).
       hasWebhookUrl: Boolean(process.env.PUBLIC_WEBHOOK_URL)
     },
-    venice: {
-      // Natural-language intent -> structured permission JSON.
-      hasApiKey: Boolean(process.env.VENICE_API_KEY),
-      baseUrl: process.env.VENICE_BASE_URL || "https://api.venice.ai/api/v1",
-      model: process.env.VENICE_MODEL || "venice-uncensored"
-    },
     storage: {
       // In-memory by default; Postgres when DATABASE_URL is set.
       driver: process.env.DATABASE_URL ? "postgres" : "memory"
@@ -48,9 +42,8 @@ export function getMissingV2Env() {
   const env = getV2EnvStatus();
   const missing: string[] = [];
 
-  // Only the pieces truly required for live on-chain operation. Venice (offline
-  // parser fallback) and 1Shot (wallet-transport fallback) are optional, so they
-  // do not block readiness.
+  // Only the pieces truly required for live on-chain operation. 1Shot
+  // (wallet-transport fallback) is optional, so it does not block readiness.
   if (!env.signer.configured) {
     missing.push("AGENT_LOCAL_PRIVATE_KEY (or a managed signer)");
   }

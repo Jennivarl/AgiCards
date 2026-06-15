@@ -65,3 +65,17 @@ export async function upgradeEoaTo7702(
     to: zeroAddress
   });
 }
+
+// Make sure the connected account is an EIP-7702 smart account on this chain. If
+// it has no code yet, run the one-time upgrade (a 7702 transaction the user signs
+// in MetaMask) and wait for it to land. Required before any delegation the account
+// signs can be redeemed by the agent.
+export async function ensureUserUpgraded(
+  walletClient: ConnectedWalletClient
+): Promise<void> {
+  const address = walletClient.account.address;
+  const code = await publicClient().getCode({ address });
+  if (code && code !== "0x") return; // already a smart account
+  const hash = await upgradeEoaTo7702(walletClient);
+  await publicClient().waitForTransactionReceipt({ hash });
+}

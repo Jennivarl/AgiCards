@@ -6,9 +6,9 @@ import type { Address, Hex } from "viem";
 
 export type CardStatus = "active" | "expired" | "exhausted" | "revoked";
 
-// The user's plain-English intent, after Venice AI parses it and BEFORE it is
-// compiled into on-chain caveats. Every field is validated by a zod schema
-// (lib/v2/intent.ts) — the LLM never produces raw addresses or calldata.
+// The user's plain-English intent, after the prompt parser reads it and BEFORE
+// it is compiled into on-chain caveats. Every field is validated by a zod schema
+// (lib/v2/intent.ts); the parser never produces raw addresses or calldata.
 export type PermissionIntent = {
   purpose: string; // human label, e.g. "DeFi research subscriptions"
   token: "USDC"; // spend asset (allowlisted, not free-form)

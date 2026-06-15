@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { parseIntent } from "@/lib/v2/venice";
+import { parseIntent } from "@/lib/v2/parseIntent";
 
 // Prompt bar -> structured, validated permission intent.
 export async function POST(request: Request) {

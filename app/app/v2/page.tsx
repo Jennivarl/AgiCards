@@ -44,8 +44,8 @@ export default function V2Page() {
           AgiCards v2
         </h1>
         <p className="mb-4" style={{ color: "rgba(255, 246, 232, 0.6)" }}>
-          Connect MetaMask (Flask 13.5+ on Sepolia), describe a card in plain
-          English, then mint it. The agent can spend only inside the limits you set.
+          Connect MetaMask on Base, describe a card in plain English, then mint
+          it. The agent can spend only inside the limits you set.
         </p>
       </motion.div>
 

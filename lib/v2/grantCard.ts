@@ -13,10 +13,16 @@ export type GrantedCard = {
   expiry: number;
 };
 
-// Mint the AgiCard: ask MetaMask (ERC-7715) to grant the agent's session account
-// a daily USDC spend permission. The on-chain caveat enforcer — not our code —
-// guarantees the agent can never exceed this. Returns what we store and later
-// redeem.
+// Mint the AgiCard via MetaMask Advanced Permissions (ERC-7715). One MetaMask
+// step grants the agent's session key a daily USDC spend permission AND upgrades
+// the user's account to an EIP-7702 smart account, so the agent can later REDEEM
+// the permission on-chain. The on-chain caveat enforcer guarantees the agent can
+// never exceed the daily cap or act after expiry.
+//
+// REQUIRES MetaMask Flask (the Advanced Permissions / wallet_requestExecutionPermissions
+// method is not in regular MetaMask). The raw ERC-7710 path was tried but a browser
+// wallet cannot sign the EIP-7702 upgrade (viem signAuthorization needs a raw key),
+// so 7715 is the only flow that works for a MetaMask user.
 export async function grantCard(params: {
   walletClient: ConnectedWallet["walletClient"];
   intent: ValidatedIntent;

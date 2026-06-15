@@ -31,14 +31,14 @@ function getProvider(): Eip1193Provider {
   return eth;
 }
 
-const SEPOLIA_HEX = "0xaa36a7"; // 11155111
+const BASE_HEX = "0x2105"; // 8453
 
-// Make sure the wallet is pointed at Sepolia (where ERC-7715 permissions work).
-async function ensureSepolia(provider: Eip1193Provider) {
+// Make sure the wallet is pointed at Base mainnet (where the agent spends real USDC).
+async function ensureBase(provider: Eip1193Provider) {
   try {
     await provider.request({
       method: "wallet_switchEthereumChain",
-      params: [{ chainId: SEPOLIA_HEX }]
+      params: [{ chainId: BASE_HEX }]
     });
   } catch {
     // Chain not added in the wallet yet — add it, then it becomes selectable.
@@ -46,7 +46,7 @@ async function ensureSepolia(provider: Eip1193Provider) {
       method: "wallet_addEthereumChain",
       params: [
         {
-          chainId: SEPOLIA_HEX,
+          chainId: BASE_HEX,
           chainName: V2_CHAIN.name,
           nativeCurrency: V2_CHAIN.nativeCurrency,
           rpcUrls: V2_CHAIN.rpcUrls.default.http,
@@ -61,7 +61,20 @@ async function ensureSepolia(provider: Eip1193Provider) {
 // be wrapped as a MetaMask smart account.
 export async function connectMetaMask(): Promise<ConnectedWallet> {
   const provider = getProvider();
-  await ensureSepolia(provider);
+
+  // Always show MetaMask's connect prompt (account selection) rather than silently
+  // reconnecting a site that was permitted before. eth_requestAccounts alone is
+  // silent once permission exists; wallet_requestPermissions forces the popup.
+  try {
+    await provider.request({
+      method: "wallet_requestPermissions",
+      params: [{ eth_accounts: {} }]
+    });
+  } catch {
+    throw new Error("Wallet connection was rejected.");
+  }
+
+  await ensureBase(provider);
 
   const probe = createWalletClient({
     chain: V2_CHAIN,

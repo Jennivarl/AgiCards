@@ -16,6 +16,7 @@ export interface Store {
   updateCard(id: string, patch: Partial<AgiCard>): Promise<AgiCard | undefined>;
   addExecution(execution: AgentExecution): Promise<AgentExecution>;
   listExecutions(cardId: string): Promise<AgentExecution[]>;
+  listAllExecutions(): Promise<AgentExecution[]>;
   updateExecution(
     id: string,
     patch: Partial<AgentExecution>
@@ -54,6 +55,11 @@ class InMemoryStore implements Store {
   }
   async listExecutions(cardId: string) {
     return this.execs.get(cardId) ?? [];
+  }
+  async listAllExecutions() {
+    return [...this.execs.values()]
+      .flat()
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
   async updateExecution(id: string, patch: Partial<AgentExecution>) {
     for (const list of this.execs.values()) {
@@ -124,6 +130,11 @@ class PostgresStore implements Store {
     const sql = await this.connect();
     const rows = await sql`select data from agicard_executions
       where card_id = ${cardId} order by created_at desc`;
+    return rows.map((r) => r.data as AgentExecution);
+  }
+  async listAllExecutions() {
+    const sql = await this.connect();
+    const rows = await sql`select data from agicard_executions order by created_at desc`;
     return rows.map((r) => r.data as AgentExecution);
   }
   async updateExecution(id: string, patch: Partial<AgentExecution>) {

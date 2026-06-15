@@ -124,6 +124,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
     protocol: c.intent.allowedTargets[0] ?? "x402",
     spent: c.spentUsd,
     limit: c.intent.dailyCapUsd,
+    delegate: c.delegate,
     unit: "daily",
     status: c.status,
     color: c.status === "active" ? "#1FA864" : "#FF5A12",
@@ -854,6 +855,36 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             </button>
           </div>
 
+          {/* Capabilities */}
+          <div
+            style={{
+              background: "white",
+              borderRadius: 14,
+              border: "1px solid #EFE6D8",
+              padding: 16,
+              boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
+            }}
+          >
+            <h4 style={{ color: "#1C1714", marginBottom: 12 }}>Capabilities</h4>
+            <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+              {[
+                { name: "Pay & subscribe", live: true },
+                { name: "Swap", live: true },
+                { name: "Trade", live: false },
+                { name: "Predict", live: false },
+                { name: "Yield · Bid · Data", live: false },
+              ].map((c) => (
+                <div key={c.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12.5 }}>
+                  <span style={{ color: "#1C1714", fontWeight: 500 }}>{c.name}</span>
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 700, color: c.live ? "#1FA864" : "#9A8A79" }}>
+                    {c.live && <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1FA864" }} />}
+                    {c.live ? "LIVE" : "SOON"}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Recent Activity */}
           <div
             style={{
@@ -1086,7 +1117,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {cards.map((card, i) => {
                 const online = !pausedAgents.includes(card.id);
-                const key = ["0x8F0B…9f1", "0x21c7…f23", "0x4a9b…2e1", "0xab1b…89f"][i] || "0x…";
+                const key = short(card.delegate);
                 const time = ["2 min ago", "1 hr ago", "12 min ago", "3 hr ago"][i] || "—";
                 return (
                   <div
@@ -1110,7 +1141,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                       </div>
                       <div style={{ minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                          <span style={{ fontWeight: 600, color: "#1C1714", fontSize: 14 }}>{card.label} agent</span>
+                          <span style={{ fontWeight: 600, color: "#1C1714", fontSize: 14 }}>{card.label}</span>
                           <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, color: online ? "#1FA864" : "#9A8A79" }}>
                             <span style={{ width: 6, height: 6, borderRadius: "50%", background: online ? "#1FA864" : "#C9BCAD" }} />
                             {online ? "Online" : "Paused"}
@@ -1120,7 +1151,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                           </span>
                         </div>
                         <div style={{ fontSize: 12, color: "#7A6A59", marginTop: 2 }}>
-                          {card.label} · ${card.spent.toFixed(2)} / ${card.limit} {card.unit}
+                          ${card.spent.toFixed(2)} / ${card.limit} {card.unit}
                         </div>
                         <div style={{ fontSize: 11, color: "#A89A88", fontFamily: "monospace", marginTop: 1 }}>{key}</div>
                       </div>

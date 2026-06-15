@@ -51,6 +51,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
 
   const [step, setStep] = useState<Step>(status === "connected" ? "describe" : "connect");
   const [description, setDescription] = useState(initialDescription ?? "");
+  const [name, setName] = useState("");
   const [intent, setIntent] = useState<ValidatedIntent>();
   const [previewing, setPreviewing] = useState(false);
   const [previewError, setPreviewError] = useState<string>();
@@ -96,7 +97,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
   // straight to mint, so the card is never described twice.
   useEffect(() => {
     if (initialDescription && status === "connected") {
-      preview().then((it) => { if (it) setStep("mint"); });
+      preview();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -126,6 +127,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: session.cardId,
+          name: name.trim() || undefined,
           intent,
           owner: address,
           delegate: session.sessionAddress,
@@ -408,6 +410,23 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
               <p style={{ color: "#7A6A59", fontSize: 13, marginBottom: 16, lineHeight: 1.5 }}>
                 Describe what your agent can spend on. We&apos;ll parse it into spending limits.
               </p>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Name your agent (e.g. Research Agent)"
+                style={{
+                  width: "100%",
+                  background: "#F8F2E9",
+                  border: "1px solid #EFE6D8",
+                  borderRadius: 10,
+                  padding: "12px",
+                  fontSize: 14,
+                  color: "#1C1714",
+                  outline: "none",
+                  boxSizing: "border-box",
+                  marginBottom: 12,
+                }}
+              />
               <textarea
                 value={description}
                 onChange={(e) => {

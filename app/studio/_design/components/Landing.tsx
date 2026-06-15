@@ -518,44 +518,47 @@ export function Landing({ onLaunchApp }: { onLaunchApp: () => void }) {
       </section>
 
       {/* ── DOCS SECTION ── */}
-      <section id="docs" style={{ scrollMarginTop: "90px", padding: "110px 40px", maxWidth: "1140px", margin: "0 auto" }}>
-        <div style={{ textAlign: "center", marginBottom: "48px" }}>
+      <section id="docs" style={{ scrollMarginTop: "90px", background: "#fff", borderTop: "1px solid rgba(0,0,0,0.06)", borderBottom: "1px solid rgba(0,0,0,0.06)" }}>
+        <div style={{ padding: "100px 40px", maxWidth: "760px", margin: "0 auto" }}>
           <span style={{ fontSize: "20px", fontWeight: 700, color: "#E8590C", letterSpacing: "0.08em", textTransform: "uppercase" as const }}>Docs</span>
-          <h2 style={{ fontSize: "clamp(15px, 1.4vw, 16px)", fontWeight: 700, color: "#111", letterSpacing: "-0.03em", margin: "12px 0 0" }}>Whitepaper and roadmap</h2>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "24px", alignItems: "stretch" }}>
-          {/* Whitepaper */}
-          <div style={{ background: "linear-gradient(160deg, #1a1208 0%, #2a1c0c 100%)", borderRadius: "20px", padding: "32px", border: "1px solid rgba(255,180,60,0.15)", boxShadow: "0 20px 50px rgba(80,40,10,0.25)", display: "flex", flexDirection: "column" }}>
-            <div style={{ width: "48px", height: "48px", borderRadius: "14px", background: "linear-gradient(135deg, #FFE45D, #FF5A12)", display: "flex", alignItems: "center", justifyContent: "center", color: "#1a0a00", marginBottom: "18px" }}><FileCheck size={24} /></div>
-            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#FFF3E0", margin: "0 0 8px" }}>Whitepaper</h3>
-            <p style={{ fontSize: "14px", color: "rgba(255,235,200,0.65)", lineHeight: 1.6, margin: "0 0 20px", flex: 1 }}>
-              How AgiCards turns a MetaMask Smart Account permission into a scoped, on-chain-enforced capability card for AI agents: the delegation model, caveats, redemption, and the 0G audit trail.
-            </p>
-            <a href="https://github.com/Jennivarl/AgiCards" target="_blank" rel="noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "8px", alignSelf: "flex-start", background: "linear-gradient(135deg, #FFE45D, #FFB331, #FF5A12)", color: "#1a0a00", fontSize: "14px", fontWeight: 700, padding: "11px 22px", borderRadius: "40px", textDecoration: "none" }}>
-              Read the whitepaper ↗
-            </a>
-          </div>
+          <h2 style={{ fontSize: "clamp(15px, 1.4vw, 16px)", fontWeight: 700, color: "#111", letterSpacing: "-0.03em", margin: "12px 0 28px" }}>Whitepaper and roadmap</h2>
 
-          {/* Roadmap */}
-          <div style={{ background: "rgba(255,255,255,0.8)", border: "1px solid rgba(0,0,0,0.07)", borderRadius: "20px", padding: "32px", boxShadow: "0 10px 30px rgba(120,70,20,0.06)" }}>
-            <h3 style={{ fontSize: "18px", fontWeight: 700, color: "#1a1a1a", margin: "0 0 4px" }}>Roadmap</h3>
-            <p style={{ fontSize: "13.5px", color: "#8a7d6c", margin: "0 0 18px" }}>Same card, more powers — what an agent can be granted.</p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "9px" }}>
+          <div style={{ fontSize: "15px", color: "#3a342c", lineHeight: 1.75 }}>
+            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#111", margin: "26px 0 8px" }}>Overview</h3>
+            <p style={{ margin: 0 }}>
+              AgiCards turns a MetaMask Smart Account permission into a scoped capability card for an AI agent, enforced on chain. The agent gets a controlled power, today spending, and can use it only within the limits the user sets. Funds never leave the user&apos;s account.
+            </p>
+
+            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#111", margin: "26px 0 8px" }}>How it works</h3>
+            <p style={{ margin: "0 0 10px" }}><strong>1. Grant.</strong> The user approves one Advanced Permission (ERC-7715) in MetaMask: a daily USDC cap with an expiry, granted to the agent&apos;s session key. This also upgrades the user&apos;s account to an EIP-7702 smart account.</p>
+            <p style={{ margin: "0 0 10px" }}><strong>2. Enforce.</strong> The cap and expiry are checked by the account&apos;s caveat enforcer on chain, not by a server. The agent can never exceed them.</p>
+            <p style={{ margin: "0 0 10px" }}><strong>3. Redeem.</strong> A background agent redeems the delegation (ERC-7710) to run the action, for example an x402 USDC payment, on the user&apos;s behalf and inside the caveat.</p>
+            <p style={{ margin: 0 }}><strong>4. Audit.</strong> Each execution is recorded to 0G storage, giving a verifiable trail.</p>
+
+            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#111", margin: "26px 0 8px" }}>Trust model</h3>
+            <p style={{ margin: 0 }}>
+              Non-custodial: funds stay in the user&apos;s MetaMask Smart Account. Every spend is enforced on chain on Base, and the card is revocable at any time. Revoking removes the permission immediately.
+            </p>
+
+            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#111", margin: "26px 0 8px" }}>Capability model</h3>
+            <p style={{ margin: 0 }}>
+              A card is a capability primitive. The same permission model can scope any allowlisted on-chain action within limits, so payments are the first of many powers a card can grant.
+            </p>
+
+            <h3 style={{ fontSize: "16px", fontWeight: 700, color: "#111", margin: "26px 0 12px" }}>Roadmap</h3>
+            <div style={{ borderTop: "1px solid rgba(0,0,0,0.1)" }}>
               {[
-                { name: "Pay & subscribe (x402)", live: true },
-                { name: "Swap (Uniswap V3)", live: true },
-                { name: "Trade", live: false },
-                { name: "Predict (Polymarket)", live: false },
-                { name: "Yield actions", live: false },
-                { name: "NFT bids", live: false },
-                { name: "Buy data", live: false },
+                { name: "Pay & subscribe (x402)", status: "Live" },
+                { name: "Swap (Uniswap V3)", status: "Live" },
+                { name: "Trade", status: "Roadmap" },
+                { name: "Predict (Polymarket)", status: "Roadmap" },
+                { name: "Yield actions", status: "Roadmap" },
+                { name: "NFT bids", status: "Roadmap" },
+                { name: "Buy data", status: "Roadmap" },
               ].map((c) => (
-                <div key={c.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "11px 14px", borderRadius: "12px", background: c.live ? "rgba(31,168,100,0.08)" : "rgba(0,0,0,0.03)", border: c.live ? "1px solid rgba(31,168,100,0.2)" : "1px solid rgba(0,0,0,0.05)" }}>
-                  <span style={{ fontSize: "14px", fontWeight: 600, color: "#1a1a1a" }}>{c.name}</span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: "5px", fontSize: "11px", fontWeight: 700, color: c.live ? "#1FA864" : "#9b8f7e" }}>
-                    {c.live && <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#4ade80" }} />}
-                    {c.live ? "LIVE" : "ROADMAP"}
-                  </span>
+                <div key={c.name} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: "1px solid rgba(0,0,0,0.1)", fontSize: "14.5px" }}>
+                  <span style={{ color: "#1a1a1a" }}>{c.name}</span>
+                  <span style={{ color: c.status === "Live" ? "#1FA864" : "#9b8f7e", fontWeight: 600 }}>{c.status}</span>
                 </div>
               ))}
             </div>

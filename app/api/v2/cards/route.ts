@@ -3,14 +3,20 @@ import type { Address, Hex } from "viem";
 import { saveCard, listCards } from "@/lib/v2/cardStore";
 import type { AgiCard, PermissionIntent } from "@/lib/v2/types";
 
-export async function GET() {
-  return NextResponse.json({ ok: true, cards: await listCards() });
+export async function GET(request: Request) {
+  const owner = new URL(request.url).searchParams.get("owner");
+  const all = await listCards();
+  const cards = owner
+    ? all.filter((c) => c.owner.toLowerCase() === owner.toLowerCase())
+    : all;
+  return NextResponse.json({ ok: true, cards });
 }
 
 // Store a freshly-minted card after the browser completes the ERC-7715 grant.
 export async function POST(request: Request) {
   let body: {
     id?: string;
+    name?: string;
     intent?: PermissionIntent;
     owner?: string;
     delegate?: string;
@@ -32,7 +38,7 @@ export async function POST(request: Request) {
   const now = new Date().toISOString();
   const card: AgiCard = {
     id,
-    label: intent.purpose,
+    label: body.name?.trim() || intent.purpose,
     owner: owner as Address,
     delegate: delegate as Address,
     status: "active",

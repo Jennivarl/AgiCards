@@ -4,7 +4,7 @@ import { Navbar } from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "AgiCards",
-  description: "0G-powered spending cards for autonomous AI agents."
+  description: "Permission cards for AI agents. Give your agent controlled on-chain powers, within limits the blockchain enforces."
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

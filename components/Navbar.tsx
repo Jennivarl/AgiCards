@@ -17,8 +17,8 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // The new /studio design has its own nav — hide the legacy 0G navbar there.
-  if (pathname?.startsWith('/studio')) return null;
+  // The new AgiCards v2 app (root and /studio) has its own nav — hide the legacy 0G navbar there.
+  if (pathname === '/' || pathname?.startsWith('/studio')) return null;
 
   return (
     <motion.nav

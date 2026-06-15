@@ -117,8 +117,12 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
   const { executions } = useExecutions();
 
   // Live cards from the backend, mapped to the dashboard's display shape.
+  // Revoked cards drop off the dashboard entirely (the card detail page still
+  // shows them with a REVOKED badge for history).
   const { cards: rawCards } = useCards();
-  const cards = rawCards.map((c) => ({
+  const cards = rawCards
+    .filter((c) => c.status !== "revoked")
+    .map((c) => ({
     id: c.id,
     label: c.label,
     task: c.intent.purpose,

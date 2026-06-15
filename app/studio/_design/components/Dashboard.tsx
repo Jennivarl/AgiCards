@@ -121,6 +121,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
   const cards = rawCards.map((c) => ({
     id: c.id,
     label: c.label,
+    task: c.intent.purpose,
     protocol: c.intent.allowedTargets[0] ?? "x402",
     spent: c.spentUsd,
     limit: c.intent.dailyCapUsd,
@@ -133,7 +134,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
   // Derived search / notification values (depend on cards + executions above).
   const q = query.trim().toLowerCase();
   const visibleCards = q
-    ? cards.filter((c) => c.label.toLowerCase().includes(q) || c.protocol.toLowerCase().includes(q))
+    ? cards.filter((c) => c.task.toLowerCase().includes(q) || c.label.toLowerCase().includes(q) || c.protocol.toLowerCase().includes(q))
     : cards;
   const visibleActivity = q
     ? executions.filter((e) => e.summary.toLowerCase().includes(q))
@@ -470,7 +471,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                       }}
                     >
                       <span style={{ fontSize: 13, fontWeight: 700, color: "rgba(0,0,0,0.82)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                        {card.label}
+                        {card.task}
                       </span>
                       <div
                         style={{
@@ -746,7 +747,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
               {cards.filter(c => c.status === "active").map((card) => (
                 <div key={card.id} style={{ marginBottom: 10 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3, fontSize: 11 }}>
-                    <span style={{ color: "#7A6A59" }}>{card.label}</span>
+                    <span style={{ color: "#7A6A59", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "60%" }}>{card.task}</span>
                     <span style={{ color: "#1C1714", fontWeight: 600 }}>
                       ${card.spent}/${card.limit}
                     </span>
@@ -1062,7 +1063,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                       <div>
-                        <div style={{ fontWeight: 600, color: "#1C1714", fontSize: 14 }}>{card.label}</div>
+                        <div style={{ fontWeight: 600, color: "#1C1714", fontSize: 14 }}>{card.task}</div>
                         <div style={{ fontSize: 11, color: "#9A8A79", marginTop: 2 }}>{card.protocol}</div>
                       </div>
                       <div style={{ width: 8, height: 8, borderRadius: "50%", background: card.color, marginTop: 4 }} />

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   ArrowLeft,
   Flame,
@@ -10,6 +10,8 @@ import {
   Clock,
   Activity,
   Bot,
+  Repeat,
+  Pause,
 } from "lucide-react";
 import { useCards } from "../useCards";
 import { cardGradient } from "../cardColors";
@@ -47,6 +49,9 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
   const [running, setRunning] = useState(false);
   const [runError, setRunError] = useState<string>();
   const [revoking, setRevoking] = useState(false);
+  const [auto, setAuto] = useState(false);
+  const [intervalSec, setIntervalSec] = useState(30);
+  const [autoCount, setAutoCount] = useState(0);
 
   const loadExecutions = useCallback(async () => {
     try {
@@ -102,8 +107,10 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
 
   const isActive = card.status === "active";
 
-  async function runAgent() {
-    if (!card || !recipient.trim() || !runAmount.trim()) return;
+  // One charge through the card's delegation. Returns true on success so the
+  // subscription loop can stop itself when the on-chain cap finally rejects it.
+  const charge = async (): Promise<boolean> => {
+    if (!card || !recipient.trim() || !runAmount.trim()) return false;
     setRunning(true);
     setRunError(undefined);
     try {
@@ -114,15 +121,45 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Run failed.");
-      setRecipient("");
-      setRunAmount("");
       await Promise.all([refresh(), loadExecutions()]);
+      return true;
     } catch (e) {
       setRunError(e instanceof Error ? e.message : "Run failed.");
+      return false;
     } finally {
       setRunning(false);
     }
+  };
+
+  async function runAgent() {
+    const ok = await charge();
+    if (ok) {
+      setRecipient("");
+      setRunAmount("");
+    }
   }
+
+  // Subscription: start it once and the agent pays on its own every interval,
+  // with no more clicks — until the on-chain daily cap rejects a charge (then it
+  // stops itself) or you press Stop.
+  const chargeRef = useRef(charge);
+  chargeRef.current = charge;
+  useEffect(() => {
+    if (!auto) return;
+    let cancelled = false;
+    const tick = async () => {
+      const ok = await chargeRef.current();
+      if (cancelled) return;
+      if (ok) setAutoCount((n) => n + 1);
+      else setAuto(false);
+    };
+    tick();
+    const id = setInterval(tick, intervalSec * 1000);
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, [auto, intervalSec]);
 
   async function revoke() {
     if (!card) return;
@@ -166,7 +203,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
             >
               <ArrowLeft size={16} />
             </button>
-            <h2 style={{ color: "#1C1714" }}>{card.label}</h2>
+            <h2 style={{ color: "#1C1714" }}>{card.intent.purpose}</h2>
             <span
               style={{
                 background: statusBg,
@@ -227,7 +264,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
             <div style={{ position: "absolute", top: -40, right: -40, width: 160, height: 160, borderRadius: "50%", background: "rgba(255,255,255,0.08)" }} />
             <div style={{ position: "absolute", bottom: -20, left: -20, width: 100, height: 100, borderRadius: "50%", background: "rgba(255,255,255,0.06)" }} />
             <div style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{card.label}</div>
+              <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{card.intent.purpose}</div>
               <div style={{ fontSize: 12, opacity: 0.7, fontFamily: "monospace" }}>
                 {targets} · {short(card.delegate)}
               </div>
@@ -287,7 +324,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
                 placeholder={skill === "uniswap-v3" ? "Token to buy (0x…)" : "Pay to (0x…)"}
-                disabled={!isActive}
+                disabled={!isActive || auto}
                 style={{
                   width: "100%",
                   background: "#F8F2E9",
@@ -306,7 +343,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                 value={runAmount}
                 onChange={(e) => setRunAmount(e.target.value)}
                 placeholder="Amount in USD e.g. 5.00"
-                disabled={!isActive}
+                disabled={!isActive || auto}
                 style={{
                   width: "100%",
                   background: "#F8F2E9",
@@ -344,6 +381,51 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
               {runError && (
                 <div style={{ marginTop: 8, fontSize: 11.5, color: "#E0533B", lineHeight: 1.5 }}>{runError}</div>
               )}
+
+              {/* Subscription: start once, the agent keeps paying on its own. */}
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #EFE6D8" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "#1C1714" }}>Auto-pay (subscription)</span>
+                  <select
+                    value={intervalSec}
+                    onChange={(e) => setIntervalSec(Number(e.target.value))}
+                    disabled={auto || !isActive}
+                    style={{ fontSize: 11, padding: "3px 6px", borderRadius: 6, border: "1px solid #EFE6D8", background: "#F8F2E9", color: "#1C1714" }}
+                  >
+                    <option value={15}>every 15s</option>
+                    <option value={30}>every 30s</option>
+                    <option value={60}>every 1 min</option>
+                    <option value={300}>every 5 min</option>
+                  </select>
+                </div>
+                <button
+                  onClick={() => { setRunError(undefined); if (!auto) setAutoCount(0); setAuto((a) => !a); }}
+                  disabled={!isActive || (!auto && (!recipient.trim() || !runAmount.trim()))}
+                  style={{
+                    width: "100%",
+                    padding: "9px",
+                    borderRadius: 8,
+                    border: "1px solid",
+                    borderColor: auto ? "rgba(224,83,59,0.3)" : "#EFE6D8",
+                    background: auto ? "rgba(224,83,59,0.06)" : "#F8F2E9",
+                    color: auto ? "#E0533B" : !isActive || !recipient.trim() || !runAmount.trim() ? "#9A8A79" : "#1C1714",
+                    cursor: !isActive || (!auto && (!recipient.trim() || !runAmount.trim())) ? "not-allowed" : "pointer",
+                    fontWeight: 600,
+                    fontSize: 12.5,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 6,
+                  }}
+                >
+                  {auto ? <><Pause size={13} /> Stop subscription</> : <><Repeat size={13} /> Start subscription</>}
+                </button>
+                {auto && (
+                  <div style={{ marginTop: 6, fontSize: 11, color: "#1FA864", textAlign: "center" }}>
+                    Paying every {intervalSec < 60 ? `${intervalSec}s` : `${intervalSec / 60} min`} · {autoCount} charge{autoCount === 1 ? "" : "s"} so far
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -67,57 +67,19 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
     loadExecutions();
   }, [loadExecutions]);
 
-  // Loading / not-found.
-  if (!card) {
-    return (
-      <div style={{ background: "#FDF8F0", minHeight: "100vh", padding: 24 }}>
-        <div style={{ maxWidth: 900, margin: "0 auto" }}>
-          <button
-            onClick={onBack}
-            style={{ background: "white", border: "1px solid #EFE6D8", borderRadius: 8, padding: "6px 10px", cursor: "pointer", color: "#7A6A59", display: "flex", alignItems: "center", gap: 6 }}
-          >
-            <ArrowLeft size={16} /> Back
-          </button>
-          <div style={{ marginTop: 40, textAlign: "center", color: "#9A8A79", fontSize: 14 }}>
-            {loading ? "Loading card…" : "Card not found."}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const dailyLimit = card.intent.dailyCapUsd;
-  const spent = card.spentUsd;
-  const pct = dailyLimit > 0 ? Math.round((spent / dailyLimit) * 100) : 0;
-  const targets = card.intent.allowedTargets.join(", ");
-  const skill = (card.intent.allowedTargets[0] ?? "x402") as TargetKey;
-
-  const expMs = new Date(card.expiresAt).getTime();
-  const daysLeft = Math.ceil((expMs - Date.now()) / 86_400_000);
-  const expiryLabel = daysLeft > 0 ? `in ${daysLeft} day${daysLeft === 1 ? "" : "s"}` : "Expired";
-
-  const statusColor =
-    card.status === "active" ? "#1FA864" : card.status === "revoked" ? "#FF5A12" : "#F59E0B";
-  const statusBg =
-    card.status === "active"
-      ? "rgba(31,168,100,0.12)"
-      : card.status === "revoked"
-      ? "rgba(255,90,18,0.12)"
-      : "rgba(245,158,11,0.12)";
-
-  const isActive = card.status === "active";
-
   // One charge through the card's delegation. Returns true on success so the
   // subscription loop can stop itself when the on-chain cap finally rejects it.
+  // NOTE: all hooks below MUST stay above the `if (!card)` early return.
   const charge = async (): Promise<boolean> => {
     if (!card || !recipient.trim() || !runAmount.trim()) return false;
+    const callSkill = (card.intent.allowedTargets[0] ?? "x402") as TargetKey;
     setRunning(true);
     setRunError(undefined);
     try {
       const res = await fetch(`/api/v2/cards/${card.id}/execute`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ skill, target: recipient.trim(), amountUsd: Number(runAmount) }),
+        body: JSON.stringify({ skill: callSkill, target: recipient.trim(), amountUsd: Number(runAmount) }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Run failed.");
@@ -160,6 +122,46 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
       clearInterval(id);
     };
   }, [auto, intervalSec]);
+
+  // Loading / not-found.
+  if (!card) {
+    return (
+      <div style={{ background: "#FDF8F0", minHeight: "100vh", padding: 24 }}>
+        <div style={{ maxWidth: 900, margin: "0 auto" }}>
+          <button
+            onClick={onBack}
+            style={{ background: "white", border: "1px solid #EFE6D8", borderRadius: 8, padding: "6px 10px", cursor: "pointer", color: "#7A6A59", display: "flex", alignItems: "center", gap: 6 }}
+          >
+            <ArrowLeft size={16} /> Back
+          </button>
+          <div style={{ marginTop: 40, textAlign: "center", color: "#9A8A79", fontSize: 14 }}>
+            {loading ? "Loading card…" : "Card not found."}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const dailyLimit = card.intent.dailyCapUsd;
+  const spent = card.spentUsd;
+  const pct = dailyLimit > 0 ? Math.round((spent / dailyLimit) * 100) : 0;
+  const targets = card.intent.allowedTargets.join(", ");
+  const skill = (card.intent.allowedTargets[0] ?? "x402") as TargetKey;
+
+  const expMs = new Date(card.expiresAt).getTime();
+  const daysLeft = Math.ceil((expMs - Date.now()) / 86_400_000);
+  const expiryLabel = daysLeft > 0 ? `in ${daysLeft} day${daysLeft === 1 ? "" : "s"}` : "Expired";
+
+  const statusColor =
+    card.status === "active" ? "#1FA864" : card.status === "revoked" ? "#FF5A12" : "#F59E0B";
+  const statusBg =
+    card.status === "active"
+      ? "rgba(31,168,100,0.12)"
+      : card.status === "revoked"
+      ? "rgba(255,90,18,0.12)"
+      : "rgba(245,158,11,0.12)";
+
+  const isActive = card.status === "active";
 
   async function revoke() {
     if (!card) return;

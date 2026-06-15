@@ -8,6 +8,10 @@ coverage
 *.log
 tsconfig.tsbuildinfo
 artifacts
-docs/DEPLOYMENT.md
+
+# Local-only scratch / private docs (never pushed)
+docs/
+.design-import/
+.design-landing/
 
 .vercel

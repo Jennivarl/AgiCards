@@ -2,17 +2,12 @@
   "name": "agicards",
   "version": "0.1.0",
   "private": true,
-  "description": "0G-powered agent spending cards with Stripe and Web3 card adapters.",
+  "description": "Permission cards for AI agents — scoped, on-chain-enforced spending via MetaMask Smart Accounts on Base.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "compile:contract": "node scripts/compile-contract.mjs",
-    "deploy:0g": "node scripts/deploy-0g.mjs",
-    "demo:proof": "tsx scripts/demo-proof.ts",
     "start": "next start",
-    "test": "tsx --test tests/policyEngine.test.ts",
-    "typecheck": "tsc --noEmit",
-    "verify": "npm run test && npm run typecheck && npm run compile:contract"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@0gfoundation/0g-storage-ts-sdk": "^1.2.9",
@@ -23,7 +18,6 @@
     "@types/react-dom": "^19.0.0",
     "ethers": "^6.13.1",
     "lucide-react": "^0.468.0",
-    "motion": "^12.38.0",
     "next": "^15.0.0",
     "postgres": "^3.4.9",
     "react": "^19.0.0",
@@ -35,7 +29,6 @@
     "zod": "^3.24.0"
   },
   "devDependencies": {
-    "solc": "^0.8.35",
     "tsx": "^4.22.0"
   }
 }

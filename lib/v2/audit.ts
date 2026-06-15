@@ -1,4 +1,4 @@
-import { ogStorage } from "../adapters/storage";
+import { ogStorage } from "./storage";
 import type { AgiCard } from "./types";
 import type { SkillCall } from "./skills/types";
 import type { TransportResult } from "./transport";

@@ -1,232 +1,117 @@
 # AgiCards
 
-[View Pitch Deck (Canva)](https://canva.link/zmsa35v5h1axhom)
+**Permission cards for AI agents.** Give your agent controlled on-chain powers — within limits the blockchain itself enforces.
 
-AgiCards lets AI agents request controlled virtual cards, with spending policies, approvals, memory, and audit trails powered by 0G.
+🔗 **Live app:** [agicards.dev](https://agicards.dev) · 🎤 **Pitch deck:** [Canva](https://canva.link/zmsa35v5h1axhom)
 
-## Overview
+Built for the **MetaMask Smart Accounts Kit** track, on **Base** mainnet.
 
-AgiCards is an agent wallet and card-control layer for autonomous AI agents. Users fund a wallet, generate an AI agent, assign spending rules, and let that agent request controlled card orders or Web3 spends.
+---
 
-The goal is simple:
+## The problem
 
-```txt
-AI agents should be able to spend, but only inside user-defined rules with verifiable 0G proof.
-```
+AI agents are starting to pay for things on their own — APIs, tools, subscriptions. But there's no safe way to let them.
 
-## Problem
+Today you have two bad options:
 
-AI agents are becoming capable of taking real actions, but giving them direct spending power is risky. Users need a way to control:
+- Give the agent your private key, and it can drain your whole wallet.
+- Approve every single payment by hand, which defeats the point of an agent.
 
-- how much an agent can spend
-- where an agent can spend
-- when human approval is required
-- how every decision and spend can be audited later
+There's no safe middle ground.
 
-## Solution
+## The solution
 
-- Users deposit funds into an AgiCards wallet before delegating spend authority.
-- Users generate an agent and assign a spending policy.
-- The agent creates a card order for a specific task.
-- 0G Compute evaluates the request against the policy.
-- AgiCards reserves funds before approval.
-- The order routes to either a 0G-native Web3 card flow or a Stripe adapter.
-- Receipts, policy decisions, and memory are stored and proven through 0G.
+AgiCards gives your agent a **permission card**. The agent can spend, but only inside limits you set: a daily cap, an expiry, and what it's allowed to pay for. Your money never leaves your own MetaMask Smart Account, and you can switch the card off anytime.
 
-## 0G Modules Used
+---
 
-| Module | Use |
+## How it works
+
+1. **Grant.** You describe a card in plain English (for example, *"pay for cloud compute, $1 a day, $0.20 per charge"*). AgiCards turns that into limits and asks MetaMask for **one Advanced Permission** (ERC-7715): a daily USDC cap with an expiry, granted to the agent's key. Approving it also upgrades your account to an **EIP-7702** smart account.
+2. **Enforce.** The cap and expiry are checked by the account's **caveat enforcer on-chain**, not by a server. The agent can never exceed them.
+3. **Redeem.** A background agent **redeems the delegation** (ERC-7710) to run the action — for example, a USDC payment through x402 — on your behalf and inside the caveat. You don't sign each time.
+4. **Audit.** Every execution is recorded to **0G Storage**, giving a verifiable, tamper-evident trail.
+
+The card is revocable at any moment. Revoking removes the permission immediately.
+
+---
+
+## What it does today
+
+- **Pay-per-use and subscriptions** in USDC (x402) — the agent pays once, or on a repeating schedule, all inside the on-chain cap.
+- **One-click revoke** and a **live spend meter** per card.
+- **Audit trail** of every payment.
+
+**On the roadmap** (the same card model, more powers): swaps, trades, prediction markets, yield actions, NFT bids, and data purchases.
+
+---
+
+## Built with
+
+| Area | Tech |
 | --- | --- |
-| 0G Chain | Smart contract proof for deposits, agents, policies, approvals, card actions, and spend receipts |
-| 0G Storage | Persistent storage for agent profiles, policies, memory, decisions, and receipts |
-| 0G Compute | Risk and policy evaluation through the 0G Compute Router when configured |
-| Agent ID path | MVP uses contract-level agent identity, with a path to official 0G Agent ID |
-| Persistent Memory path | MVP stores memory on 0G Storage, with a path to native 0G Persistent Memory |
+| Smart accounts | MetaMask Smart Accounts Kit — Advanced Permissions (ERC-7715), delegation (ERC-7710), EIP-7702 |
+| Network | Base mainnet · USDC |
+| Payments | x402 (pay-per-use) |
+| Audit | 0G Storage |
+| App | Next.js 15 (App Router), React 19, TypeScript, viem |
+| Data | Postgres (Neon) |
 
-## Demo Flow
+> Granting an Advanced Permission needs **MetaMask Flask**. Everything else (minting, viewing, revoking) works in regular MetaMask.
 
-```txt
-Connect wallet
-  -> Generate agent
-  -> Register agent proof
-  -> Deposit funds
-  -> Create card order
-  -> 0G Compute evaluates risk
-  -> Funds are reserved
-  -> Card/Web3 spend is issued
-  -> Receipt and proof hashes are shown
+---
+
+## Project structure
+
+```
+app/
+  page.tsx              # the app, served at the site root (agicards.dev)
+  layout.tsx
+  studio/_design/       # UI — landing, dashboard, card detail, create, settings
+  api/v2/               # API — cards, execute, revoke, intent, executions, status
+lib/v2/
+  grantCard.ts          # builds the ERC-7715 permission request
+  transport.ts          # redeems the ERC-7710 delegation on-chain
+  skills/               # what a card can do (x402 pay, Uniswap swap)
+  parseIntent.ts        # plain English -> spending limits
+  storage.ts            # 0G Storage audit trail
+  chains.ts, tokens.ts  # Base + USDC config
+scripts/                # agent wallet setup helpers
 ```
 
-## Architecture
+---
 
-```mermaid
-flowchart TD
-  User[User Wallet] --> Deposit[Deposit Funds]
-  User --> AgentForm[Generate Agent]
-
-  Deposit --> Wallet[AgiCards Wallet Balance]
-  AgentForm --> AgentProfile[Agent Profile]
-  AgentForm --> Policy[Spending Policy]
-
-  AgentProfile --> Storage1[0G Storage: Agent + Memory]
-  Policy --> Storage2[0G Storage: Policy JSON]
-  AgentProfile --> Chain1[0G Chain: AgentRegistered]
-  Policy --> Chain2[0G Chain: PolicyCreated]
-
-  Wallet --> Request[Agent Card Order]
-  Policy --> Request
-  Request --> Compute[0G Compute: Risk + Policy Decision]
-
-  Compute -->|Approved| Reserve[Reserve Funds]
-  Compute -->|Rejected| Reject[Reject Request]
-  Compute -->|Review| Human[Human Approval]
-
-  Human --> Reserve
-  Reserve --> Mode{Spend Mode}
-
-  Mode --> Stripe[Stripe Adapter: Future Real Card]
-  Mode --> Web3[0G Web3 Card: MVP Spend Flow]
-
-  Stripe --> Receipt[Redacted Receipt]
-  Web3 --> Receipt
-
-  Receipt --> Storage3[0G Storage: Receipt + Audit]
-  Receipt --> Chain3[0G Chain: Spend + Receipt Proof]
-
-  Chain1 --> Explorer[0G Explorer Proof]
-  Chain2 --> Explorer
-  Chain3 --> Explorer
-```
-
-## What This MVP Proves
-
-- Controlled agent spending with user-defined limits.
-- User deposits before any agent can spend.
-- Agent and policy generation from the dashboard.
-- 0G Chain proof hooks for core actions.
-- 0G Storage support for policies, receipts, and memory.
-- 0G Compute support for risk decisions.
-- Stripe is isolated behind an adapter for future real-card support.
-
-## Team
-
-| Name | Role | GitHub |
-| --- | --- | --- |
-| varl999 | Builder & Product Designer — full-stack, smart contract, 0G integration, UI/UX design | [@Jennivarl](https://github.com/Jennivarl) |
-| Mustapha Abdulaziz | Smart Contract Auditor — security review, audit report | [@mustaphaabdulazizdambatta](https://github.com/mustaphaabdulazizdambatta) |
-
-## Security Audit
-
-The smart contract was independently reviewed by Mustapha Abdulaziz of SpectraSec Lab. Nine findings were identified — one high, five medium, and three low severity. Eight were resolved before submission, including ETH egress to treasury, daily limit enforcement, reentrancy guard, mode checks, pause gates, and quota accounting. One low-severity finding remains open (transient DoS on `requestId` slot; no funds at risk).
-
-The full report is available at [audit/audit-report.md](audit/audit-report.md).
-
-## Reviewer Notes
-
-The live MVP is deployed at **https://agicards.dev** — no local setup required to evaluate the product.
-
-The 0G Layer page at **https://agicards.dev/app/proof** contains all verifiable proof in one place:
-- Deployed contract address with 0G Explorer link
-- All five 0G Storage roots from a real proof run
-- Compute decision root confirming a live policy evaluation
-
-To test locally with live 0G modules, you will need:
-- `OG_STORAGE_PRIVATE_KEY` — funded on 0G Mainnet for storage uploads (get A0GI from the [0G faucet](https://faucet.0g.ai))
-- `OG_COMPUTE_API_KEY` — from the 0G Compute Router for AI policy evaluation
-- `DEPLOYER_PRIVATE_KEY` — for redeploying the contract to 0G Mainnet
-
-Without these, the app runs in fallback mode: mock Merkle roots for storage, deterministic policy engine for compute. All UI flows still work.
-
-## Local Development
+## Run it locally
 
 ```bash
+git clone https://github.com/Jennivarl/AgiCards.git
+cd AgiCards
 npm install
-npm run dev
+cp .env.example .env.local   # then fill in the values
+npm run dev                  # http://localhost:3000
 ```
 
-Then open `http://localhost:3000`.
+### Environment variables
 
-## Checks
+See [`.env.example`](.env.example) for the full list. The important ones:
 
-```bash
-npm run test
-npm run typecheck
-npm run compile:contract
-npm run build
-```
-
-Or run the core non-build checks together:
-
-```bash
-npm run verify
-```
-
-GitHub Actions runs `npm run verify` and `npm run build` on pushes and pull requests.
-
-## Contract Compile And Deploy
-
-```bash
-npm run compile:contract
-npm run deploy:0g
-```
-
-See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the 0G Mainnet deployment flow.
-
-Use `/api/integrations/status` locally to see which live-mode environment variables are still missing.
-
-## 0G Integration
-
-The deployed contract is `contracts/AgiCardsRegistry.sol` on 0G Mainnet (Chain ID 16661).
-
-For local development, storage returns mock Merkle roots unless `OG_STORAGE_PRIVATE_KEY` or `DEPLOYER_PRIVATE_KEY` is set. When configured, the storage adapter uploads JSON payloads to 0G Storage with the official TypeScript SDK.
-
-For local development, compute uses the deterministic policy engine unless `OG_COMPUTE_API_KEY` is set. When configured, the compute adapter calls the 0G Compute Router OpenAI-compatible `/chat/completions` endpoint. The default model is `OGM-1.0-35B-A3B`, with `deepseek-v4-pro` as the premium fallback model.
-
-The submission includes:
-
-- 0G Mainnet contract address
-- 0G Explorer link showing verifiable on-chain activity
-- 0G Storage roots for policies, memory, and receipts
-- Demo video showing the full user deposit -> agent request -> approval -> spend proof flow
-
-## Deployment Proof
-
-| Item | Value |
+| Variable | What it's for |
 | --- | --- |
-| 0G Contract Address | 0xc757698204543af249e328764e89530464de668e |
-| 0G Explorer Link | https://chainscan.0g.ai/address/0xc757698204543af249e328764e89530464de668e |
-| Deployment Transaction | https://chainscan.0g.ai/tx/0xb9e73926ec6a01df223b84a98a718022955838d09f7257da05cc76fb00fdc8b9 |
-| Agent Profile Root | 0xa9639b81ba042c45c8ba6d13b73a53110fc83be9e3067123cf933f7bd4de5140 |
-| Policy Root | 0xa9b39fc3e22c39058822aeee69800eeb6bfc83c5ca2b95201611886e8a6c1b1e |
-| Receipt Root | 0x5e8041c243afa263814d01c01c776876056d0369dae358f413c787c6e4dfa752 |
-| Compute Decision Root | 0xa12eb9cfe85854f721aeaf36230a7d562bc376b9635fe2bddf490f40dad7773f |
-| Memory Root | 0xf599f6a4430673f2ecc201e0216248f3ae540d0991d8a0ae3bee31181d331e6b |
+| `DATABASE_URL` | Postgres (Neon) — where cards are stored. Without it, cards live in memory and reset on restart. |
+| `AGENT_LOCAL_PRIVATE_KEY` | The agent's key. It redeems the delegation and pays gas, so its address needs a little Base ETH. |
+| `EXECUTION_TRANSPORT` | `wallet` for real on-chain spends, or `simulated` for a dry run. |
+| `NEXT_PUBLIC_BASE_RPC_URL` | Optional Base RPC URL (a default is used otherwise). |
+| `OG_STORAGE_PRIVATE_KEY` | Optional — enables the real 0G audit trail (a mock root is used otherwise). |
 
-## Design
+Agent wallet setup helpers live in [`scripts/`](scripts/).
 
-The dashboard UI was built from a Figma design export. All pages — wallet, agents, card orders, and 0G Layer — were implemented in Next.js 15 from the Figma source.
+---
 
-## Repository Structure
+## Scripts
 
-```txt
-app/                    Next.js dashboard and API routes
-contracts/              0G Chain proof registry
-docs/                   architecture and submission notes
-lib/adapters/           0G, Stripe, and Web3 card adapters
-lib/policyEngine.ts     funding, limit, and approval checks
-```
-
-
-## User Deposit Layer
-
-AgiCards requires users to deposit funds before agents can request cards. The wallet tracks deposited, reserved, spent, and available balances. Every card request reserves funds first; rejected requests release funds, and completed spends reduce the user's available balance.
-
-## Two Spend Paths — One Proof Layer
-
-AgiCards is designed as a hybrid from day one — not patched together as an afterthought.
-
-**What is live today:** The Web3 card path. Every agent request is evaluated by the 0G Compute policy engine, approved by the smart contract, and recorded with verifiable proof on 0G Storage and 0G Chain. This works right now, on mainnet, with no dependency on any external payment provider.
-
-**What is coming next:** The Stripe Issuing adapter. Stripe Issuing allows platforms to programmatically create and control real Visa and Mastercard virtual cards. AgiCards already has this adapter layer architected — once a request clears the smart contract policy engine, it can be routed to Stripe to issue a real card usable anywhere Visa and Mastercard are accepted. This path requires a Stripe Issuing programme approval and is subject to jurisdiction availability, which is why it ships as a roadmap item rather than a live feature today.
-
-**Why this architecture matters:** The same policy engine, the same 0G proof layer, and the same smart contract enforcement govern both paths. An agent approved to spend on a Web3 card today will be approved the exact same way on a real Stripe-issued card tomorrow. The proof trail does not change — only the card rails do. On-chain enforcement and traditional payment infrastructure working together, not competing.
+| Command | Does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Production build |
+| `npm run start` | Run the production build |
+| `npm run typecheck` | Type-check with no emit |

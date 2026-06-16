@@ -2,7 +2,10 @@
 
 **Permission cards for AI agents.** Give your agent controlled on-chain powers — within limits the blockchain itself enforces.
 
-🔗 **Live app:** [agicards.dev](https://agicards.dev) · 🎤 **Pitch deck:** [Canva](https://canva.link/zmsa35v5h1axhom)
+- **Live app:** https://agicards.dev
+- **Launch thread (X):** https://x.com/Agi_Cards/status/2066650102727663902
+- **Full write-up (Medium):** https://medium.com/@varl99911/permission-cards-for-ai-agents-building-agicards-on-metamask-smart-accounts-bc4032fb470a
+- **Pitch deck:** https://canva.link/zmsa35v5h1axhom
 
 Built for the **MetaMask Smart Accounts Kit** track, on **Base** mainnet.
 

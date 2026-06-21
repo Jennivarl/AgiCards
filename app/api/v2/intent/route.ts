@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import { parseIntent } from "@/lib/v2/parseIntent";
+import { understandIntent } from "@/lib/v2/intentAI";
 
 // Prompt bar -> structured, validated permission intent.
+// Understanding runs on the 0G Compute brain (with a deterministic fallback).
+// `source` tells the UI whether 0G ("0g-compute") or the fallback answered.
 export async function POST(request: Request) {
   let prompt: string;
   try {
@@ -11,6 +13,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Invalid JSON body." }, { status: 400 });
   }
 
-  const result = await parseIntent(prompt);
+  const result = await understandIntent(prompt);
   return NextResponse.json(result, { status: result.ok ? 200 : 400 });
 }

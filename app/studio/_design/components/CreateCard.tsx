@@ -55,6 +55,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
   const [intent, setIntent] = useState<ValidatedIntent>();
   const [previewing, setPreviewing] = useState(false);
   const [previewError, setPreviewError] = useState<string>();
+  const [brainSource, setBrainSource] = useState<string>();
   const [minting, setMinting] = useState(false);
   const [mintStatus, setMintStatus] = useState<string>();
   const [mintError, setMintError] = useState<string>();
@@ -72,6 +73,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
     setPreviewing(true);
     setPreviewError(undefined);
     setIntent(undefined);
+    setBrainSource(undefined);
     try {
       const res = await fetch("/api/v2/intent", {
         method: "POST",
@@ -85,6 +87,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
       }
       const parsed = data.intent as ValidatedIntent;
       setIntent(parsed);
+      setBrainSource(data.source);
       return parsed;
     } catch {
       setPreviewError("Could not reach the parser.");
@@ -467,6 +470,14 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                     <span style={{ fontSize: 12, fontWeight: 700, color: "#7A6A59", letterSpacing: 0.5 }}>
                       CARD PREVIEW
                     </span>
+                    {brainSource === "0g-compute" && (
+                      <span
+                        title="The plain-English request was understood by an AI model running on the 0G Compute Network."
+                        style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, color: "#7C3AED", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", borderRadius: 20, padding: "2px 8px", whiteSpace: "nowrap" }}
+                      >
+                        ⚡ Understood by 0G Compute
+                      </span>
+                    )}
                   </div>
                   {[
                     { label: "Purpose", value: intent.purpose },

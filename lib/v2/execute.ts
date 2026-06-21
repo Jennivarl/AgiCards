@@ -7,6 +7,7 @@ import { getSkill } from "./skills";
 import { getTransport } from "./transport";
 import { logExecution } from "./audit";
 import { addExecution, updateExecution } from "./executionStore";
+import { judgePayment } from "./og/decide";
 
 export type ExecuteInput = {
   skill: TargetKey;
@@ -35,6 +36,13 @@ export async function executeCardCall(
     throw new Error("Would exceed the card's daily cap.");
   }
 
+  // The agent's brain (0G Compute) checks that the payment fits the card's
+  // purpose — a semantic guard on top of the on-chain money caps above.
+  const verdict = await judgePayment(card, input);
+  if (!verdict.allow) {
+    throw new Error(`Agent declined: ${verdict.reason}`);
+  }
+
   const skill = getSkill(input.skill);
   const call = await skill.buildCall({
     target: input.target,
@@ -50,12 +58,13 @@ export async function executeCardCall(
     amountUsd: call.amountUsd,
     target: call.to,
     status: "relaying",
+    reasoning: verdict.reason,
     createdAt: new Date().toISOString()
   };
   await addExecution(execution);
 
   const result = await getTransport().submit(call, card);
-  const auditRoot = await logExecution(card, call, result);
+  const auditRoot = await logExecution(card, call, result, verdict.reason);
 
   if (result.status === "confirmed") {
     await updateCard(cardId, {

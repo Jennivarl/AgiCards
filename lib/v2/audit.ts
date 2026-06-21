@@ -9,7 +9,8 @@ import type { TransportResult } from "./transport";
 export async function logExecution(
   card: AgiCard,
   call: SkillCall,
-  result: TransportResult
+  result: TransportResult,
+  reasoning?: string
 ): Promise<string> {
   const object = await ogStorage.store("receipt", {
     kind: "agicard-execution",
@@ -22,6 +23,7 @@ export async function logExecution(
     status: result.status,
     txHash: result.txHash ?? null,
     taskId: result.taskId ?? null,
+    reasoning: reasoning ?? null, // the 0G Compute brain's decision, kept as memory
     at: new Date().toISOString()
   });
   return object.root;

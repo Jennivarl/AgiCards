@@ -26,37 +26,58 @@ export type ChatMessage = {
 };
 
 // 0G Compute Router base URLs (OpenAI-compatible).
+//   Mainnet: https://router-api.0g.ai/v1   (what AgiCards v1 used)
 //   Testnet: https://router-api-testnet.integratenetwork.work/v1
-//   Mainnet: https://router-api.0g.ai/v1
-const DEFAULT_BASE_URL = "https://router-api-testnet.integratenetwork.work/v1";
+// Defaults match v1, so only OG_COMPUTE_API_KEY is strictly required.
+const DEFAULT_BASE_URL = "https://router-api.0g.ai/v1";
+const DEFAULT_MODEL = "OGM-1.0-35B-A3B";
+const DEFAULT_FALLBACK_MODEL = "deepseek-v4-pro";
 
 function config() {
   return {
     apiKey: process.env.OG_COMPUTE_API_KEY,
-    model: process.env.OG_COMPUTE_MODEL,
+    model: process.env.OG_COMPUTE_MODEL || DEFAULT_MODEL,
+    fallbackModel: process.env.OG_COMPUTE_FALLBACK_MODEL || DEFAULT_FALLBACK_MODEL,
     baseUrl: process.env.OG_COMPUTE_BASE_URL || DEFAULT_BASE_URL
   };
 }
 
-// True only when both the API key and a model are set, so callers can fall back
-// gracefully (e.g. to the deterministic parser) when the brain is not wired yet.
+// Only the API key is required now (model has a known-good default), so callers
+// can fall back gracefully (e.g. to the deterministic parser) when no key is set.
 export function brainConfigured(): boolean {
-  const { apiKey, model } = config();
-  return Boolean(apiKey && model);
+  return Boolean(config().apiKey);
 }
 
-export function brainModel(): string | undefined {
+export function brainModel(): string {
   return config().model;
 }
 
 // Send a chat request to the 0G Compute Router and return the model's reply.
+// Tries the primary model, then the fallback model (as v1 did) before failing.
 export async function askBrain(
   messages: ChatMessage[],
   opts: { temperature?: number; maxTokens?: number } = {}
 ): Promise<string> {
-  const { apiKey, model, baseUrl } = config();
+  const { apiKey, model, fallbackModel } = config();
   if (!apiKey) throw new Error("OG_COMPUTE_API_KEY is not set.");
-  if (!model) throw new Error("OG_COMPUTE_MODEL is not set.");
+
+  try {
+    return await callRouter(model, messages, opts);
+  } catch (primaryError) {
+    if (fallbackModel && fallbackModel !== model) {
+      console.warn("0G Compute primary model failed; trying fallback.", primaryError);
+      return await callRouter(fallbackModel, messages, opts);
+    }
+    throw primaryError;
+  }
+}
+
+async function callRouter(
+  model: string,
+  messages: ChatMessage[],
+  opts: { temperature?: number; maxTokens?: number }
+): Promise<string> {
+  const { apiKey, baseUrl } = config();
 
   const res = await fetch(`${baseUrl}/chat/completions`, {
     method: "POST",
@@ -74,7 +95,7 @@ export async function askBrain(
 
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
-    throw new Error(`0G Compute router ${res.status}: ${detail.slice(0, 300)}`);
+    throw new Error(`0G Compute router ${res.status} (${model}): ${detail.slice(0, 300)}`);
   }
 
   const data = (await res.json()) as {

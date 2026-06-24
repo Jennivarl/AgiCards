@@ -93,7 +93,9 @@ async function callRouter(
       model,
       messages,
       temperature: opts.temperature ?? 0,
-      max_tokens: opts.maxTokens ?? 512
+      // 0gm is a reasoning model: it spends many tokens "thinking" before the
+      // answer, so give plenty of room or the final content gets cut off (empty).
+      max_tokens: opts.maxTokens ?? 2048
     })
   });
 

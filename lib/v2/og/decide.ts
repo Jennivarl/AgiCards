@@ -46,7 +46,7 @@ export async function judgePayment(
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userMsg }
       ],
-      { maxTokens: 1024 }
+      { maxTokens: 2048 }
     );
     const match = reply.match(/\{[\s\S]*\}/);
     if (match) {

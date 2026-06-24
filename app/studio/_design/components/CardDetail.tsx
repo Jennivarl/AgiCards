@@ -568,12 +568,20 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, color: "#1C1714", marginBottom: 4 }}>{tx.summary}</div>
                     {tx.reasoning && (
-                      <div
-                        title="The agent's reasoning, decided on the 0G Compute Network"
-                        style={{ fontSize: 11, color: "#7C3AED", marginBottom: 6, lineHeight: 1.4 }}
-                      >
-                        ⚡ 0G brain: {tx.reasoning}
-                      </div>
+                      tx.decidedBy === "0g-compute" ? (
+                        <div
+                          title="Decision made by the AI model running on the 0G Compute Network"
+                          style={{ fontSize: 11, color: "#7C3AED", marginBottom: 6, lineHeight: 1.4 }}
+                        >
+                          ⚡ Reviewed on 0G Compute: {tx.reasoning}
+                        </div>
+                      ) : (
+                        <div
+                          style={{ fontSize: 11, color: "#7A6A59", marginBottom: 6, lineHeight: 1.4 }}
+                        >
+                          🔒 {tx.reasoning}
+                        </div>
+                      )
                     )}
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                       {tx.txHash && (

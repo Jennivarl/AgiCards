@@ -59,6 +59,7 @@ export async function executeCardCall(
     target: call.to,
     status: "relaying",
     reasoning: verdict.reason,
+    decidedBy: verdict.source === "0g-compute" ? "0g-compute" : "caps",
     createdAt: new Date().toISOString()
   };
   await addExecution(execution);

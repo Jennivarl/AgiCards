@@ -33,7 +33,9 @@ const DEFAULT_BASE_URL = "https://router-api.0g.ai/v1";
 // Exact model id from the 0G Compute dashboard (pc.0g.ai) — the one this
 // account actually bills against. Case matters; keep it lowercase.
 const DEFAULT_MODEL = "0gm-1.0-35b-a3b";
-const DEFAULT_FALLBACK_MODEL = "deepseek-v4-pro";
+// No fallback model by default: a wrong second model just wastes 0G balance on a
+// doomed retry. Set OG_COMPUTE_FALLBACK_MODEL only to a real second model id.
+const DEFAULT_FALLBACK_MODEL = "";
 
 function config() {
   return {

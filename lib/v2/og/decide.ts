@@ -29,7 +29,7 @@ export async function judgePayment(
   input: { skill: string; target: string; amountUsd: number; note?: string }
 ): Promise<Verdict> {
   if (!brainConfigured()) {
-    return { allow: true, reason: "Allowed by on-chain caps (0G brain not configured).", source: "skipped" };
+    return { allow: true, reason: "Approved within your set limits.", source: "skipped" };
   }
 
   const userMsg = [
@@ -46,7 +46,7 @@ export async function judgePayment(
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userMsg }
       ],
-      { maxTokens: 200 }
+      { maxTokens: 1024 }
     );
     const match = reply.match(/\{[\s\S]*\}/);
     if (match) {
@@ -62,5 +62,5 @@ export async function judgePayment(
     // Brain unreachable — fail open; the on-chain caps still protect the user.
   }
 
-  return { allow: true, reason: "Allowed by on-chain caps (0G brain unavailable).", source: "skipped" };
+  return { allow: true, reason: "Approved within your set limits.", source: "skipped" };
 }

@@ -48,6 +48,7 @@ export type AgentExecution = {
   txHash?: Hex;
   status: "simulating" | "relaying" | "confirmed" | "reverted";
   auditRoot?: string; // 0G Storage root for this step's log
-  reasoning?: string; // why the 0G Compute brain allowed this payment
+  reasoning?: string; // the decision text (from the 0G brain, or the cap check)
+  decidedBy?: "0g-compute" | "caps"; // who made the call: the 0G brain or the on-chain caps
   createdAt: string;
 };

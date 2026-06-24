@@ -155,6 +155,7 @@ export function Landing({ onLaunchApp }: { onLaunchApp: () => void }) {
     { name: "MetaMask", img: "/brand/metamask.svg" },
     { name: "Base", img: "/brand/base.jpg" },
     { name: "0G", img: "/brand/0g.jpg" },
+    { name: "1Shot", img: "/brand/1shot.svg" },
     { name: "x402", fg: "#E8590C" },
   ] as { name: string; img?: string; fg?: string }[]);
 

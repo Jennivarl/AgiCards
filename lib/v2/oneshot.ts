@@ -29,9 +29,11 @@ import type { TransportResult } from "./transport";
 //   5. relayer_send7710Transaction (with the quote) -> TaskId
 //   6. relayer_getStatus poll -> 200 confirmed / 400 / 500
 //
-// ⚠️ NOT yet live-tested. The ONE thing only an on-chain run can confirm is the
-// delegation CHAIN ORDER in `permissionContext` (leaf-first vs root-first). If a
-// small-amount mainnet test reverts at redemption, flip the order (see below).
+// ✓ Validated read-only against the live relayer: getCapabilities, getFeeData,
+// the agent re-delegation (createDelegation + signDelegation), and
+// relayer_estimate7710Transaction all succeed, and the chain order is confirmed
+// (leaf-first). Only a tiny real send remains to confirm on-chain execution, so
+// the default stays EXECUTION_TRANSPORT="wallet" until that one test passes.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const RELAYER_URL =
@@ -80,9 +82,10 @@ export async function relayViaOneShot(call: SkillCall, card: AgiCard): Promise<T
   const chainCaps = caps[chainKey];
   if (!chainCaps) throw new Error(`1Shot does not support chain ${chainKey}.`);
 
-  // 2) Fee data: the minimum USDC fee to start from.
+  // 2) Fee data: the minimum USDC fee to start from. 1Shot returns minFee as a
+  // DECIMAL token amount (e.g. "0.01" USDC), not atoms — confirmed live.
   const feeData = await rpc<FeeData>("relayer_getFeeData", { chainId: chainKey, token: USDC_ADDRESS });
-  const minFee = BigInt(feeData.minFee);
+  const minFee = parseUnits(String(feeData.minFee), feeData.token.decimals);
 
   // The real work the agent wants to do (e.g. the x402 USDC transfer).
   const workExecution = { target: call.to, value: call.value, data: call.data };
@@ -122,8 +125,9 @@ export async function relayViaOneShot(call: SkillCall, card: AgiCard): Promise<T
     });
     const signedRedelegation = { ...redelegation, signature };
 
-    // Delegation chain: leaf (agent -> 1Shot) first, then the parent user
-    // delegation(s). VERIFY on a live run — if redemption reverts, reverse this.
+    // Delegation chain: leaf (agent -> 1Shot redeemer) FIRST, then the parent
+    // user delegation(s). Confirmed live — the relayer requires the first
+    // delegation's delegate to be its Target wallet, which is this re-delegation.
     const permissionContext = [
       signedRedelegation,
       ...decodeDelegations(card.permissionsContext)

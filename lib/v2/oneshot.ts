@@ -29,11 +29,11 @@ import type { TransportResult } from "./transport";
 //   5. relayer_send7710Transaction (with the quote) -> TaskId
 //   6. relayer_getStatus poll -> 200 confirmed / 400 / 500
 //
-// ✓ Validated read-only against the live relayer: getCapabilities, getFeeData,
-// the agent re-delegation (createDelegation + signDelegation), and
-// relayer_estimate7710Transaction all succeed, and the chain order is confirmed
-// (leaf-first). Only a tiny real send remains to confirm on-chain execution, so
-// the default stays EXECUTION_TRANSPORT="wallet" until that one test passes.
+// ✓ LIVE-CONFIRMED on Base mainnet: a real gasless send completed with the agent
+// holding zero ETH — 1Shot's relayer paid the gas, the fee was paid in USDC from
+// the card, and the agent re-delegation redeemed on-chain (tx
+// 0xfceea8ff67f94b32b05689f7c0cb196694f84037a1b6a3abbfc02fb6f87c9f66).
+// Turn it on with EXECUTION_TRANSPORT="1shot".
 // ─────────────────────────────────────────────────────────────────────────────
 
 const RELAYER_URL =

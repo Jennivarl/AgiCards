@@ -37,8 +37,8 @@ class SimulatedTransport implements ExecutionTransport {
 // re-delegates the card permission to 1Shot's redeemer and pays gas in USDC from
 // the bundle, so it never needs ETH. The full flow lives in ./oneshot.ts.
 //
-// NOT yet live-tested — keep EXECUTION_TRANSPORT="wallet" until a tiny mainnet
-// run confirms the delegation chain order (see the note in ./oneshot.ts).
+// Live-confirmed on Base mainnet (see ./oneshot.ts). Optional path: set
+// EXECUTION_TRANSPORT="1shot" to use it; default stays "wallet".
 class OneShotRelayerTransport implements ExecutionTransport {
   readonly kind = "1shot" as const;
   submit(call: SkillCall, card: AgiCard): Promise<TransportResult> {

@@ -81,8 +81,18 @@ class WalletTransport implements ExecutionTransport {
 }
 
 export function getTransport(): ExecutionTransport {
-  const choice = (process.env.EXECUTION_TRANSPORT || "").toLowerCase();
+  // trim() defends against stray whitespace/newlines in the env value (which
+  // once silently turned production into fake "simulated" payments).
+  const choice = (process.env.EXECUTION_TRANSPORT || "").trim().toLowerCase();
   if (choice === "wallet") return new WalletTransport();
   if (choice === "1shot") return new OneShotRelayerTransport();
+  if (choice === "simulated") return new SimulatedTransport();
+  // Any other value must NOT silently become fake payments. Fail loud in
+  // production; only fall back to simulated as an explicit local-dev default.
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      `EXECUTION_TRANSPORT must be "wallet", "1shot", or "simulated" (got "${process.env.EXECUTION_TRANSPORT ?? ""}").`
+    );
+  }
   return new SimulatedTransport();
 }

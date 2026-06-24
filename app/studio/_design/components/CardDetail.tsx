@@ -16,8 +16,11 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useCards } from "../useCards";
+import { useWallet } from "../WalletProvider";
 import { cardGradient } from "../cardColors";
 import { EXPLORER_URL } from "@/lib/v2/chains";
+import { buildAuthMessage, type OwnerAuth } from "@/lib/v2/auth";
+import type { Hex } from "viem";
 import type { AgentExecution } from "@/lib/v2/types";
 import type { TargetKey } from "@/lib/v2/intent";
 
@@ -43,7 +46,11 @@ function timeAgo(iso: string) {
 
 export function CardDetail({ cardId, onBack }: CardDetailProps) {
   const { cards, loading, refresh } = useCards();
+  const { wallet, address } = useWallet();
   const card = cards.find((c) => c.id === cardId);
+  // Cached owner-authorization signature (sign once per card, reused for the
+  // auto-pay loop) so the server can prove the caller owns this card.
+  const authRef = useRef<{ cardId: string; message: string; signature: Hex; expires: number } | undefined>(undefined);
 
   const [executions, setExecutions] = useState<AgentExecution[]>([]);
   const [recipient, setRecipient] = useState("");
@@ -69,6 +76,23 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
     loadExecutions();
   }, [loadExecutions]);
 
+  // Owner authorization: sign a short capability once per card (reused for the
+  // whole hour and the auto-pay loop), so the server can prove the caller owns
+  // the card before moving any money.
+  const ensureAuth = async (cId: string, owner: string): Promise<OwnerAuth> => {
+    const now = Date.now();
+    const cur = authRef.current;
+    if (cur && cur.cardId === cId && cur.expires - 60_000 > now) {
+      return { message: cur.message, signature: cur.signature };
+    }
+    if (!wallet || !address) throw new Error("Connect your wallet to authorize this card.");
+    const expires = now + 60 * 60 * 1000;
+    const message = buildAuthMessage(cId, owner, expires);
+    const signature = (await wallet.walletClient.signMessage({ account: address, message })) as Hex;
+    authRef.current = { cardId: cId, message, signature, expires };
+    return { message, signature };
+  };
+
   // One charge through the card's delegation. Returns true on success so the
   // subscription loop can stop itself when the on-chain cap finally rejects it.
   // NOTE: all hooks below MUST stay above the `if (!card)` early return.
@@ -78,10 +102,11 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
     setRunning(true);
     setRunError(undefined);
     try {
+      const auth = await ensureAuth(card.id, card.owner);
       const res = await fetch(`/api/v2/cards/${card.id}/execute`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ skill: callSkill, target: recipient.trim(), amountUsd: Number(runAmount) }),
+        body: JSON.stringify({ skill: callSkill, target: recipient.trim(), amountUsd: Number(runAmount), auth }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Run failed.");
@@ -168,10 +193,19 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
   async function revoke() {
     if (!card) return;
     setRevoking(true);
+    setRunError(undefined);
     try {
-      const res = await fetch(`/api/v2/cards/${card.id}/revoke`, { method: "POST" });
+      const auth = await ensureAuth(card.id, card.owner);
+      const res = await fetch(`/api/v2/cards/${card.id}/revoke`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ auth }),
+      });
       const data = await res.json();
       if (data.ok) await refresh();
+      else setRunError(data.error || "Revoke failed.");
+    } catch (e) {
+      setRunError(e instanceof Error ? e.message : "Revoke failed.");
     } finally {
       setRevoking(false);
     }

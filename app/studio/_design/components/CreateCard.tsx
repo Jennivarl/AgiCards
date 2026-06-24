@@ -8,6 +8,7 @@ import {
   Zap,
   ChevronRight,
   AlertTriangle,
+  BrainCircuit,
 } from "lucide-react";
 import { useWallet } from "../WalletProvider";
 import { grantCard } from "@/lib/v2/grantCard";
@@ -473,9 +474,9 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                     {brainSource === "0g-compute" && (
                       <span
                         title="The plain-English request was understood by an AI model running on the 0G Compute Network."
-                        style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, color: "#7C3AED", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", borderRadius: 20, padding: "2px 8px", whiteSpace: "nowrap" }}
+                        style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, color: "#7C3AED", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", borderRadius: 20, padding: "3px 9px", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 4 }}
                       >
-                        ⚡ Understood by 0G Compute
+                        <BrainCircuit size={11} /> Understood by 0G Compute
                       </span>
                     )}
                   </div>

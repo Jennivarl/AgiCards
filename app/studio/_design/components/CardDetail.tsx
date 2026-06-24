@@ -12,6 +12,8 @@ import {
   Bot,
   Repeat,
   Pause,
+  BrainCircuit,
+  ShieldCheck,
 } from "lucide-react";
 import { useCards } from "../useCards";
 import { cardGradient } from "../cardColors";
@@ -571,15 +573,17 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                       tx.decidedBy === "0g-compute" ? (
                         <div
                           title="Decision made by the AI model running on the 0G Compute Network"
-                          style={{ fontSize: 11, color: "#7C3AED", marginBottom: 6, lineHeight: 1.4 }}
+                          style={{ fontSize: 11, color: "#7C3AED", marginBottom: 6, lineHeight: 1.4, display: "flex", alignItems: "flex-start", gap: 5 }}
                         >
-                          ⚡ Reviewed on 0G Compute: {tx.reasoning}
+                          <BrainCircuit size={12} style={{ flexShrink: 0, marginTop: 1 }} />
+                          <span><strong>0G brain approved:</strong> {tx.reasoning}</span>
                         </div>
                       ) : (
                         <div
-                          style={{ fontSize: 11, color: "#7A6A59", marginBottom: 6, lineHeight: 1.4 }}
+                          style={{ fontSize: 11, color: "#7A6A59", marginBottom: 6, lineHeight: 1.4, display: "flex", alignItems: "flex-start", gap: 5 }}
                         >
-                          🔒 {tx.reasoning}
+                          <ShieldCheck size={12} style={{ flexShrink: 0, marginTop: 1 }} />
+                          <span>{tx.reasoning}</span>
                         </div>
                       )
                     )}

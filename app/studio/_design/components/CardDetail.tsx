@@ -12,8 +12,6 @@ import {
   Bot,
   Repeat,
   Pause,
-  BrainCircuit,
-  ShieldCheck,
 } from "lucide-react";
 import { useCards } from "../useCards";
 import { useWallet } from "../WalletProvider";
@@ -603,24 +601,6 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, color: "#1C1714", marginBottom: 4 }}>{tx.summary}</div>
-                    {tx.reasoning && (
-                      tx.decidedBy === "0g-compute" ? (
-                        <div
-                          title="Decision made by the AI model running on the 0G Compute Network"
-                          style={{ fontSize: 11, color: "#7C3AED", marginBottom: 6, lineHeight: 1.4, display: "flex", alignItems: "flex-start", gap: 5 }}
-                        >
-                          <BrainCircuit size={12} style={{ flexShrink: 0, marginTop: 1 }} />
-                          <span><strong>0G brain approved:</strong> {tx.reasoning}</span>
-                        </div>
-                      ) : (
-                        <div
-                          style={{ fontSize: 11, color: "#7A6A59", marginBottom: 6, lineHeight: 1.4, display: "flex", alignItems: "flex-start", gap: 5 }}
-                        >
-                          <ShieldCheck size={12} style={{ flexShrink: 0, marginTop: 1 }} />
-                          <span>{tx.reasoning}</span>
-                        </div>
-                      )
-                    )}
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                       {tx.txHash && (
                         <a

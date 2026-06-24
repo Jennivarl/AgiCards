@@ -30,7 +30,9 @@ export type ChatMessage = {
 //   Testnet: https://router-api-testnet.integratenetwork.work/v1
 // Defaults match v1, so only OG_COMPUTE_API_KEY is strictly required.
 const DEFAULT_BASE_URL = "https://router-api.0g.ai/v1";
-const DEFAULT_MODEL = "OGM-1.0-35B-A3B";
+// Exact model id from the 0G Compute dashboard (pc.0g.ai) — the one this
+// account actually bills against. Case matters; keep it lowercase.
+const DEFAULT_MODEL = "0gm-1.0-35b-a3b";
 const DEFAULT_FALLBACK_MODEL = "deepseek-v4-pro";
 
 function config() {

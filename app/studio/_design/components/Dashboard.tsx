@@ -140,9 +140,6 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
   const visibleCards = q
     ? cards.filter((c) => c.task.toLowerCase().includes(q) || c.label.toLowerCase().includes(q) || c.protocol.toLowerCase().includes(q))
     : cards;
-  const visibleActivity = q
-    ? executions.filter((e) => e.summary.toLowerCase().includes(q))
-    : executions;
   const unread = executions.filter((e) => new Date(e.createdAt).getTime() > lastSeen).length;
   const toggleNotifs = () => {
     const opening = !showNotifs;
@@ -736,61 +733,6 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             </div>
           </div>
 
-          {/* Recent Activity */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: 14,
-              border: "1px solid #EFE6D8",
-              padding: 16,
-              marginBottom: 20,
-              boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: 12,
-              }}
-            >
-              <h4 style={{ color: "#1C1714" }}>Recent Activity</h4>
-              <button
-                onClick={onActivity}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#FFB331", fontSize: 11 }}
-              >
-                View all
-              </button>
-            </div>
-            {visibleActivity.length === 0 ? (
-              <div style={{ fontSize: 12, color: "#9A8A79", padding: "4px 0 8px" }}>{q ? "No matching activity." : "No activity yet."}</div>
-            ) : (
-              visibleActivity.slice(0, 5).map((tx) => (
-                <div
-                  key={tx.id}
-                  style={{ paddingBottom: 10, marginBottom: 10, borderBottom: "1px solid #EFE6D8" }}
-                >
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3, gap: 8 }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "#1C1714", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tx.summary}</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: tx.status === "reverted" ? "#E0533B" : "#1C1714", flexShrink: 0 }}>
-                      ${tx.amountUsd.toFixed(2)}
-                    </span>
-                  </div>
-                  <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                    {tx.txHash ? (
-                      <a href={`${EXPLORER_URL}/tx/${tx.txHash}`} target="_blank" rel="noreferrer" style={{ fontSize: 10, fontFamily: "monospace", color: "#7A6A59", textDecoration: "none" }}>
-                        {short(tx.txHash)}
-                      </a>
-                    ) : (
-                      <span style={{ fontSize: 10, color: "#B0892F", fontWeight: 600 }}>{tx.status}</span>
-                    )}
-                    <span style={{ fontSize: 10, color: "#7A6A59", marginLeft: "auto" }}>{timeAgo(tx.createdAt)}</span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
         </div>
 
         {/* Right panel */}

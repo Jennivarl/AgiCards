@@ -73,26 +73,26 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
   };
 
   return (
-    <div style={{ background: "#FDF8F0", minHeight: "100vh", padding: "24px" }}>
+    <div style={{ background: "var(--st-fdf8f0)", minHeight: "100vh", padding: "24px" }}>
       <div style={{ maxWidth: 800, margin: "0 auto" }}>
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24 }}>
           <button
             onClick={onBack}
             style={{
-              background: "white",
-              border: "1px solid #EFE6D8",
+              background: "var(--st-surface)",
+              border: "1px solid var(--st-efe6d8)",
               borderRadius: 8,
               padding: "6px 10px",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
-              color: "#7A6A59",
+              color: "var(--st-7a6a59)",
             }}
           >
             <ArrowLeft size={16} />
           </button>
-          <h2 style={{ color: "#1C1714" }}>Settings</h2>
+          <h2 style={{ color: "var(--st-1c1714)" }}>Settings</h2>
         </div>
 
         <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
@@ -124,7 +124,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                       : "transparent",
                   borderLeft:
                     activeSection === s.id ? "2px solid #FFB331" : "2px solid transparent",
-                  color: activeSection === s.id ? "#FF5A12" : "#7A6A59",
+                  color: activeSection === s.id ? "#FF5A12" : "var(--st-7a6a59)",
                   cursor: "pointer",
                   fontSize: 13,
                   fontWeight: activeSection === s.id ? 600 : 400,
@@ -155,11 +155,11 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                 style={{
                   padding: "7px 14px",
                   borderRadius: 8,
-                  border: "1px solid #EFE6D8",
+                  border: "1px solid var(--st-efe6d8)",
                   background: activeSection === s.id
                     ? "linear-gradient(135deg, #FFB331, #FF5A12)"
-                    : "white",
-                  color: activeSection === s.id ? "#1C1714" : "#7A6A59",
+                    : "var(--st-surface)",
+                  color: activeSection === s.id ? "var(--st-1c1714)" : "var(--st-7a6a59)",
                   cursor: "pointer",
                   fontSize: 12,
                   fontWeight: 600,
@@ -176,9 +176,9 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
           <div style={{ flex: 1, minWidth: 0 }}>
             <div
               style={{
-                background: "white",
+                background: "var(--st-surface)",
                 borderRadius: 14,
-                border: "1px solid #EFE6D8",
+                border: "1px solid var(--st-efe6d8)",
                 padding: 24,
                 boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
               }}
@@ -186,7 +186,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
               {/* Wallet */}
               {activeSection === "wallet" && (
                 <div>
-                  <h3 style={{ color: "#1C1714", marginBottom: 16 }}>Wallet</h3>
+                  <h3 style={{ color: "var(--st-1c1714)", marginBottom: 16 }}>Wallet</h3>
                   <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
                     <div
                       style={{
@@ -201,10 +201,10 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                       <User size={22} color="#fff" />
                     </div>
                     <div>
-                      <div style={{ fontFamily: "monospace", fontSize: 14, color: "#1C1714", fontWeight: 600 }}>
+                      <div style={{ fontFamily: "monospace", fontSize: 14, color: "var(--st-1c1714)", fontWeight: 600 }}>
                         {short(address) || "Not connected"}
                       </div>
-                      <div style={{ fontSize: 11, color: "#7A6A59" }}>MetaMask</div>
+                      <div style={{ fontSize: 11, color: "var(--st-7a6a59)" }}>MetaMask</div>
                     </div>
                   </div>
                   {[
@@ -219,12 +219,12 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                         display: "flex",
                         justifyContent: "space-between",
                         padding: "10px 0",
-                        borderBottom: "1px solid #EFE6D8",
+                        borderBottom: "1px solid var(--st-efe6d8)",
                         fontSize: 13,
                       }}
                     >
-                      <span style={{ color: "#7A6A59" }}>{row.label}</span>
-                      <span style={{ color: "#1C1714", fontWeight: 600 }}>{row.value}</span>
+                      <span style={{ color: "var(--st-7a6a59)" }}>{row.label}</span>
+                      <span style={{ color: "var(--st-1c1714)", fontWeight: 600 }}>{row.value}</span>
                     </div>
                   ))}
                   <button
@@ -249,9 +249,9 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
               {/* Network */}
               {activeSection === "network" && (
                 <div>
-                  <h3 style={{ color: "#1C1714", marginBottom: 16 }}>Network</h3>
+                  <h3 style={{ color: "var(--st-1c1714)", marginBottom: 16 }}>Network</h3>
                   <div style={{ marginBottom: 16 }}>
-                    <label style={{ fontSize: 12, color: "#7A6A59", fontWeight: 700, letterSpacing: 0.5, display: "block", marginBottom: 8 }}>
+                    <label style={{ fontSize: 12, color: "var(--st-7a6a59)", fontWeight: 700, letterSpacing: 0.5, display: "block", marginBottom: 8 }}>
                       CHAIN
                     </label>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
@@ -262,11 +262,11 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                           style={{
                             padding: "8px 16px",
                             borderRadius: 8,
-                            border: "1px solid #EFE6D8",
+                            border: "1px solid var(--st-efe6d8)",
                             background: network === chain
                               ? "linear-gradient(135deg, #FFB331, #FF5A12)"
-                              : "white",
-                            color: network === chain ? "#1C1714" : "#7A6A59",
+                              : "var(--st-surface)",
+                            color: network === chain ? "var(--st-1c1714)" : "var(--st-7a6a59)",
                             cursor: "pointer",
                             fontSize: 13,
                             fontWeight: 600,
@@ -279,7 +279,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                     </div>
                   </div>
                   <div>
-                    <label style={{ fontSize: 12, color: "#7A6A59", fontWeight: 700, letterSpacing: 0.5, display: "block", marginBottom: 8 }}>
+                    <label style={{ fontSize: 12, color: "var(--st-7a6a59)", fontWeight: 700, letterSpacing: 0.5, display: "block", marginBottom: 8 }}>
                       CUSTOM RPC (OPTIONAL)
                     </label>
                     <input
@@ -288,12 +288,12 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                       placeholder="https://your-rpc.example.com"
                       style={{
                         width: "100%",
-                        background: "#F8F2E9",
-                        border: "1px solid #EFE6D8",
+                        background: "var(--st-f8f2e9)",
+                        border: "1px solid var(--st-efe6d8)",
                         borderRadius: 8,
                         padding: "10px 12px",
                         fontSize: 13,
-                        color: "#1C1714",
+                        color: "var(--st-1c1714)",
                         outline: "none",
                         boxSizing: "border-box",
                         fontFamily: "monospace",
@@ -308,7 +308,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                       borderRadius: 8,
                       border: "none",
                       background: saved ? "rgba(31,168,100,0.15)" : "linear-gradient(135deg, #FFE45D, #FFB331, #FF5A12)",
-                      color: saved ? "#1FA864" : "#1C1714",
+                      color: saved ? "#1FA864" : "var(--st-1c1714)",
                       cursor: "pointer",
                       fontSize: 13,
                       fontWeight: 600,
@@ -326,8 +326,8 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
               {/* Card Defaults */}
               {activeSection === "defaults" && (
                 <div>
-                  <h3 style={{ color: "#1C1714", marginBottom: 8 }}>Card Defaults</h3>
-                  <p style={{ color: "#7A6A59", fontSize: 13, marginBottom: 20 }}>
+                  <h3 style={{ color: "var(--st-1c1714)", marginBottom: 8 }}>Card Defaults</h3>
+                  <p style={{ color: "var(--st-7a6a59)", fontSize: 13, marginBottom: 20 }}>
                     Default values when creating a new card.
                   </p>
                   {[
@@ -336,7 +336,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                     { label: "DEFAULT TARGET PROTOCOL", value: target, onChange: setTarget, placeholder: "x402" },
                   ].map((field) => (
                     <div key={field.label} style={{ marginBottom: 16 }}>
-                      <label style={{ fontSize: 11, color: "#7A6A59", fontWeight: 700, letterSpacing: 0.5, display: "block", marginBottom: 6 }}>
+                      <label style={{ fontSize: 11, color: "var(--st-7a6a59)", fontWeight: 700, letterSpacing: 0.5, display: "block", marginBottom: 6 }}>
                         {field.label}
                       </label>
                       <input
@@ -345,12 +345,12 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                         placeholder={field.placeholder}
                         style={{
                           width: "100%",
-                          background: "#F8F2E9",
-                          border: "1px solid #EFE6D8",
+                          background: "var(--st-f8f2e9)",
+                          border: "1px solid var(--st-efe6d8)",
                           borderRadius: 8,
                           padding: "10px 12px",
                           fontSize: 13,
-                          color: "#1C1714",
+                          color: "var(--st-1c1714)",
                           outline: "none",
                           boxSizing: "border-box",
                         }}
@@ -364,7 +364,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                       borderRadius: 8,
                       border: "none",
                       background: saved ? "rgba(31,168,100,0.15)" : "linear-gradient(135deg, #FFE45D, #FFB331, #FF5A12)",
-                      color: saved ? "#1FA864" : "#1C1714",
+                      color: saved ? "#1FA864" : "var(--st-1c1714)",
                       cursor: "pointer",
                       fontSize: 13,
                       fontWeight: 600,
@@ -382,7 +382,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
               {activeSection === "danger" && (
                 <div>
                   <h3 style={{ color: "#E0533B", marginBottom: 8 }}>Danger Zone</h3>
-                  <p style={{ color: "#7A6A59", fontSize: 13, marginBottom: 20 }}>
+                  <p style={{ color: "var(--st-7a6a59)", fontSize: 13, marginBottom: 20 }}>
                     These actions are irreversible. Proceed with caution.
                   </p>
                   {[
@@ -418,7 +418,7 @@ export function SettingsPage({ onBack }: SettingsPageProps) {
                         <div style={{ fontSize: 14, fontWeight: 600, color: "#E0533B", marginBottom: 4 }}>
                           {item.title}
                         </div>
-                        <div style={{ fontSize: 12, color: "#7A6A59", lineHeight: 1.5 }}>
+                        <div style={{ fontSize: 12, color: "var(--st-7a6a59)", lineHeight: 1.5 }}>
                           {item.desc}
                         </div>
                       </div>

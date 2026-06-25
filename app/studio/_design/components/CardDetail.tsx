@@ -152,15 +152,15 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
   // Loading / not-found.
   if (!card) {
     return (
-      <div style={{ background: "#FDF8F0", minHeight: "100vh", padding: 24 }}>
+      <div style={{ background: "var(--st-fdf8f0)", minHeight: "100vh", padding: 24 }}>
         <div style={{ maxWidth: 900, margin: "0 auto" }}>
           <button
             onClick={onBack}
-            style={{ background: "white", border: "1px solid #EFE6D8", borderRadius: 8, padding: "6px 10px", cursor: "pointer", color: "#7A6A59", display: "flex", alignItems: "center", gap: 6 }}
+            style={{ background: "var(--st-surface)", border: "1px solid var(--st-efe6d8)", borderRadius: 8, padding: "6px 10px", cursor: "pointer", color: "var(--st-7a6a59)", display: "flex", alignItems: "center", gap: 6 }}
           >
             <ArrowLeft size={16} /> Back
           </button>
-          <div style={{ marginTop: 40, textAlign: "center", color: "#9A8A79", fontSize: 14 }}>
+          <div style={{ marginTop: 40, textAlign: "center", color: "var(--st-9a8a79)", fontSize: 14 }}>
             {loading ? "Loading card…" : "Card not found."}
           </div>
         </div>
@@ -211,7 +211,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
   }
 
   return (
-    <div style={{ background: "#FDF8F0", minHeight: "100vh", padding: "24px" }}>
+    <div style={{ background: "var(--st-fdf8f0)", minHeight: "100vh", padding: "24px" }}>
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
         {/* Header */}
         <div
@@ -228,19 +228,19 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
             <button
               onClick={onBack}
               style={{
-                background: "white",
-                border: "1px solid #EFE6D8",
+                background: "var(--st-surface)",
+                border: "1px solid var(--st-efe6d8)",
                 borderRadius: 8,
                 padding: "6px 10px",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
-                color: "#7A6A59",
+                color: "var(--st-7a6a59)",
               }}
             >
               <ArrowLeft size={16} />
             </button>
-            <h2 style={{ color: "#1C1714" }}>{card.intent.purpose}</h2>
+            <h2 style={{ color: "var(--st-1c1714)" }}>{card.intent.purpose}</h2>
             <span
               style={{
                 background: statusBg,
@@ -291,7 +291,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
               background: cardGradient(card.id),
               borderRadius: 20,
               padding: 28,
-              color: "#1C1714",
+              color: "var(--st-1c1714)",
               boxShadow: "0 8px 32px rgba(255,179,49,0.3)",
               position: "relative",
               overflow: "hidden",
@@ -317,9 +317,9 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
             {/* Ring */}
             <div
               style={{
-                background: "white",
+                background: "var(--st-surface)",
                 borderRadius: 14,
-                border: "1px solid #EFE6D8",
+                border: "1px solid var(--st-efe6d8)",
                 padding: 20,
                 display: "flex",
                 alignItems: "center",
@@ -328,7 +328,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
             >
               <div style={{ position: "relative", width: 80, height: 80, flexShrink: 0 }}>
                 <svg width={80} height={80} viewBox="0 0 80 80">
-                  <circle cx="40" cy="40" r="32" fill="none" stroke="#F8F2E9" strokeWidth="8" />
+                  <circle cx="40" cy="40" r="32" fill="none" stroke="var(--st-f8f2e9)" strokeWidth="8" />
                   <circle
                     cx="40"
                     cy="40"
@@ -342,21 +342,21 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                   />
                 </svg>
                 <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "#1C1714" }}>{pct}%</span>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "var(--st-1c1714)" }}>{pct}%</span>
                 </div>
               </div>
               <div>
-                <div style={{ fontSize: 22, fontWeight: 800, color: "#1C1714" }}>${spent.toFixed(2)}</div>
-                <div style={{ fontSize: 13, color: "#7A6A59" }}>of ${dailyLimit} today</div>
-                <div style={{ fontSize: 11, color: "#7A6A59", marginTop: 4 }}>
+                <div style={{ fontSize: 22, fontWeight: 800, color: "var(--st-1c1714)" }}>${spent.toFixed(2)}</div>
+                <div style={{ fontSize: 13, color: "var(--st-7a6a59)" }}>of ${dailyLimit} today</div>
+                <div style={{ fontSize: 11, color: "var(--st-7a6a59)", marginTop: 4 }}>
                   ${Math.max(dailyLimit - spent, 0).toFixed(2)} remaining
                 </div>
               </div>
             </div>
 
             {/* Run Agent */}
-            <div style={{ background: "white", borderRadius: 14, border: "1px solid #EFE6D8", padding: 16 }}>
-              <h4 style={{ color: "#1C1714", marginBottom: 10 }}>Run Agent</h4>
+            <div style={{ background: "var(--st-surface)", borderRadius: 14, border: "1px solid var(--st-efe6d8)", padding: 16 }}>
+              <h4 style={{ color: "var(--st-1c1714)", marginBottom: 10 }}>Run Agent</h4>
               <input
                 value={recipient}
                 onChange={(e) => setRecipient(e.target.value)}
@@ -364,12 +364,12 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                 disabled={!isActive || auto}
                 style={{
                   width: "100%",
-                  background: "#F8F2E9",
-                  border: "1px solid #EFE6D8",
+                  background: "var(--st-f8f2e9)",
+                  border: "1px solid var(--st-efe6d8)",
                   borderRadius: 8,
                   padding: "8px 12px",
                   fontSize: 13,
-                  color: "#1C1714",
+                  color: "var(--st-1c1714)",
                   outline: "none",
                   marginBottom: 8,
                   boxSizing: "border-box",
@@ -383,12 +383,12 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                 disabled={!isActive || auto}
                 style={{
                   width: "100%",
-                  background: "#F8F2E9",
-                  border: "1px solid #EFE6D8",
+                  background: "var(--st-f8f2e9)",
+                  border: "1px solid var(--st-efe6d8)",
                   borderRadius: 8,
                   padding: "8px 12px",
                   fontSize: 13,
-                  color: "#1C1714",
+                  color: "var(--st-1c1714)",
                   outline: "none",
                   marginBottom: 10,
                   boxSizing: "border-box",
@@ -402,8 +402,8 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                   padding: "10px",
                   borderRadius: 8,
                   border: "none",
-                  background: !isActive || running || !recipient.trim() || !runAmount.trim() ? "#EFE6D8" : GOLD,
-                  color: !isActive || running || !recipient.trim() || !runAmount.trim() ? "#7A6A59" : "#1C1714",
+                  background: !isActive || running || !recipient.trim() || !runAmount.trim() ? "var(--st-efe6d8)" : GOLD,
+                  color: !isActive || running || !recipient.trim() || !runAmount.trim() ? "var(--st-7a6a59)" : "var(--st-1c1714)",
                   cursor: !isActive || running ? "not-allowed" : "pointer",
                   fontWeight: 600,
                   fontSize: 13,
@@ -413,21 +413,21 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                   gap: 8,
                 }}
               >
-                <Play size={14} fill="#1C1714" /> {running ? "Running…" : isActive ? "Run Agent" : "Card revoked"}
+                <Play size={14} fill="var(--st-1c1714)" /> {running ? "Running…" : isActive ? "Run Agent" : "Card revoked"}
               </button>
               {runError && (
                 <div style={{ marginTop: 8, fontSize: 11.5, color: "#E0533B", lineHeight: 1.5 }}>{runError}</div>
               )}
 
               {/* Subscription: start once, the agent keeps paying on its own. */}
-              <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #EFE6D8" }}>
+              <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid var(--st-efe6d8)" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                  <span style={{ fontSize: 12, fontWeight: 600, color: "#1C1714" }}>Auto-pay (subscription)</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: "var(--st-1c1714)" }}>Auto-pay (subscription)</span>
                   <select
                     value={intervalSec}
                     onChange={(e) => setIntervalSec(Number(e.target.value))}
                     disabled={auto || !isActive}
-                    style={{ fontSize: 11, padding: "3px 6px", borderRadius: 6, border: "1px solid #EFE6D8", background: "#F8F2E9", color: "#1C1714" }}
+                    style={{ fontSize: 11, padding: "3px 6px", borderRadius: 6, border: "1px solid var(--st-efe6d8)", background: "var(--st-f8f2e9)", color: "var(--st-1c1714)" }}
                   >
                     <option value={15}>every 15s</option>
                     <option value={30}>every 30s</option>
@@ -443,9 +443,9 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                     padding: "9px",
                     borderRadius: 8,
                     border: "1px solid",
-                    borderColor: auto ? "rgba(224,83,59,0.3)" : "#EFE6D8",
-                    background: auto ? "rgba(224,83,59,0.06)" : "#F8F2E9",
-                    color: auto ? "#E0533B" : !isActive || !recipient.trim() || !runAmount.trim() ? "#9A8A79" : "#1C1714",
+                    borderColor: auto ? "rgba(224,83,59,0.3)" : "var(--st-efe6d8)",
+                    background: auto ? "rgba(224,83,59,0.06)" : "var(--st-f8f2e9)",
+                    color: auto ? "#E0533B" : !isActive || !recipient.trim() || !runAmount.trim() ? "var(--st-9a8a79)" : "var(--st-1c1714)",
                     cursor: !isActive || (!auto && (!recipient.trim() || !runAmount.trim())) ? "not-allowed" : "pointer",
                     fontWeight: 600,
                     fontSize: 12.5,
@@ -470,9 +470,9 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
         {/* Agent */}
         <div
           style={{
-            background: "white",
+            background: "var(--st-surface)",
             borderRadius: 14,
-            border: "1px solid #EFE6D8",
+            border: "1px solid var(--st-efe6d8)",
             padding: 20,
             marginBottom: 20,
             boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
@@ -483,32 +483,32 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
           }}
         >
           <div style={{ width: 44, height: 44, borderRadius: "50%", background: GOLD, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <Bot size={22} color="#1C1714" />
+            <Bot size={22} color="var(--st-1c1714)" />
           </div>
           <div style={{ flex: 1, minWidth: 140 }}>
-            <div style={{ fontSize: 11, color: "#7A6A59", fontWeight: 600, letterSpacing: 0.4, textTransform: "uppercase" }}>Agent</div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#1C1714", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{card.label}</div>
+            <div style={{ fontSize: 11, color: "var(--st-7a6a59)", fontWeight: 600, letterSpacing: 0.4, textTransform: "uppercase" }}>Agent</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--st-1c1714)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{card.label}</div>
             <a
               href={`${EXPLORER_URL}/address/${card.delegate}`}
               target="_blank"
               rel="noreferrer"
-              style={{ fontSize: 12, fontFamily: "monospace", color: "#7A6A59", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4, marginTop: 2 }}
+              style={{ fontSize: 12, fontFamily: "monospace", color: "var(--st-7a6a59)", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 4, marginTop: 2 }}
             >
               {short(card.delegate)} <ExternalLink size={10} />
             </a>
           </div>
           <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 15, fontWeight: 800, color: "#1C1714" }}>${dailyLimit}/day</div>
-            <div style={{ fontSize: 12, color: "#7A6A59" }}>${card.intent.perCallCapUsd} per charge</div>
+            <div style={{ fontSize: 15, fontWeight: 800, color: "var(--st-1c1714)" }}>${dailyLimit}/day</div>
+            <div style={{ fontSize: 12, color: "var(--st-7a6a59)" }}>${card.intent.perCallCapUsd} per charge</div>
           </div>
         </div>
 
         {/* Permission details */}
         <div
           style={{
-            background: "white",
+            background: "var(--st-surface)",
             borderRadius: 14,
-            border: "1px solid #EFE6D8",
+            border: "1px solid var(--st-efe6d8)",
             padding: 20,
             marginBottom: 20,
             boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
@@ -516,7 +516,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <Shield size={16} color="#FFB331" />
-            <h4 style={{ color: "#1C1714" }}>Permission Details</h4>
+            <h4 style={{ color: "var(--st-1c1714)" }}>Permission Details</h4>
           </div>
           {[
             { label: "Delegate", value: card.delegate, mono: true },
@@ -531,15 +531,15 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                 justifyContent: "space-between",
                 alignItems: "center",
                 padding: "8px 0",
-                borderBottom: "1px solid #EFE6D8",
+                borderBottom: "1px solid var(--st-efe6d8)",
                 gap: 16,
               }}
             >
-              <span style={{ fontSize: 13, color: "#7A6A59", flexShrink: 0 }}>{row.label}</span>
+              <span style={{ fontSize: 13, color: "var(--st-7a6a59)", flexShrink: 0 }}>{row.label}</span>
               <span
                 style={{
                   fontSize: 12,
-                  color: "#1C1714",
+                  color: "var(--st-1c1714)",
                   fontWeight: 600,
                   fontFamily: row.mono ? "monospace" : "inherit",
                   wordBreak: "break-all",
@@ -555,9 +555,9 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
         {/* Activity timeline */}
         <div
           style={{
-            background: "white",
+            background: "var(--st-surface)",
             borderRadius: 14,
-            border: "1px solid #EFE6D8",
+            border: "1px solid var(--st-efe6d8)",
             padding: 20,
             marginBottom: 20,
             boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
@@ -565,10 +565,10 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <Activity size={16} color="#FFB331" />
-            <h4 style={{ color: "#1C1714" }}>Activity Timeline</h4>
+            <h4 style={{ color: "var(--st-1c1714)" }}>Activity Timeline</h4>
           </div>
           {executions.length === 0 ? (
-            <div style={{ fontSize: 13, color: "#9A8A79", padding: "8px 0" }}>
+            <div style={{ fontSize: 13, color: "var(--st-9a8a79)", padding: "8px 0" }}>
               No activity yet. Run the agent to make a payment.
             </div>
           ) : (
@@ -583,7 +583,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                     gap: 12,
                     paddingBottom: i < executions.length - 1 ? 16 : 0,
                     marginBottom: i < executions.length - 1 ? 16 : 0,
-                    borderBottom: i < executions.length - 1 ? "1px solid #EFE6D8" : "none",
+                    borderBottom: i < executions.length - 1 ? "1px solid var(--st-efe6d8)" : "none",
                   }}
                 >
                   <div
@@ -601,7 +601,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                     {failed ? <XCircle size={14} color="#E0533B" /> : <CheckCircle size={14} color="#1FA864" />}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, color: "#1C1714", marginBottom: 4 }}>{tx.summary}</div>
+                    <div style={{ fontSize: 13, color: "var(--st-1c1714)", marginBottom: 4 }}>{tx.summary}</div>
                     <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
                       {tx.txHash && (
                         <a
@@ -612,12 +612,12 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                             display: "flex",
                             alignItems: "center",
                             gap: 4,
-                            background: "#F8F2E9",
+                            background: "var(--st-f8f2e9)",
                             borderRadius: 4,
                             padding: "2px 8px",
                             fontSize: 10,
                             fontFamily: "monospace",
-                            color: "#7A6A59",
+                            color: "var(--st-7a6a59)",
                             textDecoration: "none",
                           }}
                         >
@@ -628,7 +628,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
                       {!ok && !failed && (
                         <span style={{ fontSize: 10, color: "#B0892F", fontWeight: 600 }}>{tx.status}</span>
                       )}
-                      <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#7A6A59" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "var(--st-7a6a59)" }}>
                         <Clock size={9} /> {timeAgo(tx.createdAt)}
                       </div>
                     </div>

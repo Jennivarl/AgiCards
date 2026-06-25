@@ -44,6 +44,73 @@
   --radius-lg: calc(var(--radius) + 2px);
 }
 
+/* ── Studio (app) theme tokens ───────────────────────────────────────────────
+   The studio UI uses inline styles; these CSS variables let it switch between
+   light and dark. Each token's LIGHT value equals the original hand-picked
+   colour, so light mode is unchanged. Dark values are a warm near-black set.
+   Accents (gold/green/red/purple) are NOT tokenised and stay constant. */
+.studio-theme {
+  --st-surface: #FFFFFF;
+  --st-fdf8f0: #FDF8F0;
+  --st-fffdfa: #FFFDFA;
+  --st-fdfcf9: #FDFCF9;
+  --st-f7f0e2: #F7F0E2;
+  --st-f2eadf: #F2EADF;
+  --st-f8f2e9: #F8F2E9;
+  --st-efe6d8: #EFE6D8;
+  --st-c9bcad: #C9BCAD;
+  --st-1c1714: #1C1714;
+  --st-7a6a59: #7A6A59;
+  --st-8a7d6c: #8A7D6C;
+  --st-9a8a79: #9A8A79;
+  --st-9b8f7e: #9B8F7E;
+  --st-a89a88: #A89A88;
+  --st-7c7264: #7C7264;
+  --st-b0a293: #B0A293;
+  --st-a89c8a: #A89C8A;
+  --st-6b6256: #6B6256;
+  --st-5c4a38: #5C4A38;
+  --st-111: #111111;
+  --st-333: #333333;
+  --st-555: #555555;
+  --st-666: #666666;
+  --st-777: #777777;
+  --st-888: #888888;
+  --st-999: #999999;
+  background: var(--st-fdf8f0);
+  color: var(--st-1c1714);
+  min-height: 100vh;
+}
+.studio-theme[data-theme="dark"] {
+  --st-surface: #1E1813;
+  --st-fdf8f0: #14110D;
+  --st-fffdfa: #211A14;
+  --st-fdfcf9: #211A14;
+  --st-f7f0e2: #262019;
+  --st-f2eadf: #2A2219;
+  --st-f8f2e9: #241D16;
+  --st-efe6d8: #352C24;
+  --st-c9bcad: #423830;
+  --st-1c1714: #F3EDE2;
+  --st-7a6a59: #A99A86;
+  --st-8a7d6c: #B0A18D;
+  --st-9a8a79: #8E8070;
+  --st-9b8f7e: #8F8170;
+  --st-a89a88: #9A8C79;
+  --st-7c7264: #A4957F;
+  --st-b0a293: #B8AA97;
+  --st-a89c8a: #9C8E7B;
+  --st-6b6256: #978A77;
+  --st-5c4a38: #C7B59B;
+  --st-111: #F3EDE2;
+  --st-333: #DAD2C6;
+  --st-555: #C5BBAD;
+  --st-666: #B6AC9D;
+  --st-777: #A99F90;
+  --st-888: #9E9485;
+  --st-999: #948979;
+}
+
 @layer base {
   * {
     box-sizing: border-box;

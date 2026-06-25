@@ -544,12 +544,12 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             >
               <h4 style={{ color: "#1C1714", marginBottom: 4 }}>Create a Card</h4>
               <p style={{ color: "#7A6A59", fontSize: 12, marginBottom: 12 }}>
-                Describe your card in plain English
+                What should your agent pay for? You&apos;ll set the limits next.
               </p>
               <textarea
                 value={cardInput}
                 onChange={(e) => setCardInput(e.target.value)}
-                placeholder="e.g. Pay for AI tools, $20/day, $5 per charge, 7 days"
+                placeholder="e.g. AI tools, cloud compute, data feeds"
                 style={{
                   width: "100%",
                   background: "#F8F2E9",
@@ -565,41 +565,6 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                   boxSizing: "border-box",
                 }}
               />
-              {cardInput && (
-                <div
-                  style={{
-                    background: "#F8F2E9",
-                    borderRadius: 8,
-                    padding: 12,
-                    marginTop: 8,
-                    marginBottom: 12,
-                    border: "1px solid #EFE6D8",
-                  }}
-                >
-                  <div style={{ fontSize: 11, fontWeight: 600, color: "#7A6A59", marginBottom: 8, letterSpacing: 0.5 }}>
-                    CARD PREVIEW
-                  </div>
-                  {[
-                    { label: "Daily limit", value: "$20.00" },
-                    { label: "Per charge", value: "$5.00" },
-                    { label: "Protocol", value: "x402" },
-                    { label: "Expires", value: "7 days" },
-                  ].map((row) => (
-                    <div
-                      key={row.label}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: 4,
-                        fontSize: 12,
-                      }}
-                    >
-                      <span style={{ color: "#7A6A59" }}>{row.label}</span>
-                      <span style={{ color: "#1C1714", fontWeight: 600 }}>{row.value}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
               <button
                 onClick={() => onCreateCard(cardInput)}
                 style={{
@@ -612,10 +577,10 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                   cursor: "pointer",
                   fontWeight: 600,
                   fontSize: 13,
-                  marginTop: 4,
+                  marginTop: 12,
                 }}
               >
-                Preview & Mint →
+                Set limits &amp; mint →
               </button>
             </div>
 

@@ -1,18 +1,41 @@
-import { useState, useEffect } from "react";
+import { useState, type CSSProperties } from "react";
 import {
   X,
   CheckCircle,
-  Shield,
   Wallet,
   CreditCard,
   Zap,
   ChevronRight,
   AlertTriangle,
-  BrainCircuit,
 } from "lucide-react";
 import { useWallet } from "../WalletProvider";
 import { grantCard } from "@/lib/v2/grantCard";
-import type { ValidatedIntent } from "@/lib/v2/intent";
+import {
+  permissionIntentSchema,
+  TARGET_KEYS,
+  TARGET_LABELS,
+  type ValidatedIntent,
+  type TargetKey,
+} from "@/lib/v2/intent";
+
+const fieldStyle: CSSProperties = {
+  width: "100%",
+  background: "#F8F2E9",
+  border: "1px solid #EFE6D8",
+  borderRadius: 10,
+  padding: "11px 12px",
+  fontSize: 14,
+  color: "#1C1714",
+  outline: "none",
+  boxSizing: "border-box",
+};
+const labelStyle: CSSProperties = {
+  display: "block",
+  fontSize: 12,
+  fontWeight: 600,
+  color: "#7A6A59",
+  marginBottom: 5,
+};
 
 interface CreateCardProps {
   initialDescription?: string;
@@ -51,60 +74,58 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
   const { wallet, address, smartAddress, status, connect, short } = useWallet();
 
   const [step, setStep] = useState<Step>(status === "connected" ? "describe" : "connect");
-  const [description, setDescription] = useState(initialDescription ?? "");
   const [name, setName] = useState("");
+  const [purpose, setPurpose] = useState(initialDescription ?? "");
+  const [dailyCap, setDailyCap] = useState("");
+  const [perCharge, setPerCharge] = useState("");
+  const [days, setDays] = useState("");
+  const [target, setTarget] = useState<TargetKey>("x402");
+  const [formError, setFormError] = useState<string>();
   const [intent, setIntent] = useState<ValidatedIntent>();
-  const [previewing, setPreviewing] = useState(false);
-  const [previewError, setPreviewError] = useState<string>();
-  const [brainSource, setBrainSource] = useState<string>();
   const [minting, setMinting] = useState(false);
   const [mintStatus, setMintStatus] = useState<string>();
   const [mintError, setMintError] = useState<string>();
 
   const steps: { id: Step; label: string }[] = [
     { id: "connect", label: "Connect" },
-    { id: "describe", label: "Describe" },
+    { id: "describe", label: "Limits" },
     { id: "mint", label: "Mint" },
   ];
   const stepIndex = { connect: 0, describe: 1, mint: 2, success: 3 };
 
-  // Parse the plain-English description into a validated permission intent.
-  async function preview(): Promise<ValidatedIntent | undefined> {
-    if (!description.trim()) return;
-    setPreviewing(true);
-    setPreviewError(undefined);
-    setIntent(undefined);
-    setBrainSource(undefined);
-    try {
-      const res = await fetch("/api/v2/intent", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: description }),
-      });
-      const data = await res.json();
-      if (!data.ok) {
-        setPreviewError(data.error || "Could not parse that.");
-        return;
-      }
-      const parsed = data.intent as ValidatedIntent;
-      setIntent(parsed);
-      setBrainSource(data.source);
-      return parsed;
-    } catch {
-      setPreviewError("Could not reach the parser.");
-    } finally {
-      setPreviewing(false);
-    }
-  }
+  // Validate the form fields into a permission intent. Every limit must be
+  // filled correctly — nothing is defaulted. The zod schema is the final gate,
+  // matching exactly what the server and chain accept.
+  function submitForm() {
+    const daily = Number(dailyCap);
+    const per = Number(perCharge);
+    const d = Number(days);
 
-  // Opened from the dashboard with a description already typed → parse it and jump
-  // straight to mint, so the card is never described twice.
-  useEffect(() => {
-    if (initialDescription && status === "connected") {
-      preview();
+    if (!purpose.trim()) return setFormError("Tell us what this card pays for.");
+    if (!dailyCap || !Number.isFinite(daily) || daily <= 0)
+      return setFormError("Enter a daily limit greater than $0.");
+    if (daily > 10_000) return setFormError("Daily limit can't exceed $10,000.");
+    if (!perCharge || !Number.isFinite(per) || per <= 0)
+      return setFormError("Enter a per-charge limit greater than $0.");
+    if (per > daily) return setFormError("Per-charge can't be more than the daily limit.");
+    if (!days || !Number.isInteger(d) || d < 1 || d > 30)
+      return setFormError("Duration must be a whole number of days between 1 and 30.");
+
+    const result = permissionIntentSchema.safeParse({
+      purpose: purpose.trim(),
+      token: "USDC",
+      dailyCapUsd: daily,
+      perCallCapUsd: per,
+      allowedTargets: [target],
+      expiresInDays: d,
+    });
+    if (!result.success) {
+      return setFormError(result.error.issues[0]?.message ?? "Please check the limits.");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setFormError(undefined);
+    setIntent(result.data);
+    setStep("mint");
+  }
 
   // The real mint: agent session -> user signs the delegation in MetaMask -> save.
   async function mint() {
@@ -407,115 +428,106 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
             </div>
           )}
 
-          {/* Step 2: Describe */}
+          {/* Step 2: Set the limits (form) */}
           {step === "describe" && (
             <div>
-              <h4 style={{ color: "#1C1714", marginBottom: 4 }}>Describe your card</h4>
+              <h4 style={{ color: "#1C1714", marginBottom: 4 }}>Set the card&apos;s limits</h4>
               <p style={{ color: "#7A6A59", fontSize: 13, marginBottom: 16, lineHeight: 1.5 }}>
-                Describe what your agent can spend on. We&apos;ll parse it into spending limits.
+                Fill in each limit. They are enforced on-chain, so the agent can never go past them.
               </p>
+
+              <label style={labelStyle}>
+                Agent name <span style={{ color: "#A89A88", fontWeight: 400 }}>(optional)</span>
+              </label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Name your agent (e.g. Research Agent)"
-                style={{
-                  width: "100%",
-                  background: "#F8F2E9",
-                  border: "1px solid #EFE6D8",
-                  borderRadius: 10,
-                  padding: "12px",
-                  fontSize: 14,
-                  color: "#1C1714",
-                  outline: "none",
-                  boxSizing: "border-box",
-                  marginBottom: 12,
-                }}
+                placeholder="e.g. Research Agent"
+                style={{ ...fieldStyle, marginBottom: 14 }}
               />
-              <textarea
-                value={description}
+
+              <label style={labelStyle}>What it pays for</label>
+              <input
+                value={purpose}
                 onChange={(e) => {
-                  setDescription(e.target.value);
-                  setIntent(undefined);
+                  setPurpose(e.target.value);
+                  setFormError(undefined);
                 }}
-                placeholder='e.g. "pay for AI tools, $20/day, $5 per charge, 7 days"'
-                style={{
-                  width: "100%",
-                  background: "#F8F2E9",
-                  border: "1px solid #EFE6D8",
-                  borderRadius: 10,
-                  padding: "12px",
-                  fontSize: 14,
-                  color: "#1C1714",
-                  outline: "none",
-                  resize: "none",
-                  minHeight: 100,
-                  fontFamily: "inherit",
-                  boxSizing: "border-box",
-                  marginBottom: 16,
-                }}
+                maxLength={100}
+                placeholder="e.g. AI tools, cloud compute, data feeds"
+                style={{ ...fieldStyle, marginBottom: 14 }}
               />
-              {intent && (
-                <div
-                  style={{
-                    background: "white",
-                    border: "1px solid #EFE6D8",
-                    borderRadius: 12,
-                    padding: 16,
-                    marginBottom: 16,
-                  }}
-                >
-                  <div
-                    style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}
-                  >
-                    <Shield size={14} color="#FFB331" />
-                    <span style={{ fontSize: 12, fontWeight: 700, color: "#7A6A59", letterSpacing: 0.5 }}>
-                      CARD PREVIEW
-                    </span>
-                    {brainSource === "0g-compute" && (
-                      <span
-                        title="The plain-English request was understood by an AI model running on the 0G Compute Network."
-                        style={{ marginLeft: "auto", fontSize: 10, fontWeight: 700, color: "#7C3AED", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.25)", borderRadius: 20, padding: "3px 9px", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 4 }}
-                      >
-                        <BrainCircuit size={11} /> Understood by 0G Compute
-                      </span>
-                    )}
-                  </div>
-                  {[
-                    { label: "Purpose", value: intent.purpose },
-                    { label: "Daily limit", value: `$${intent.dailyCapUsd}` },
-                    { label: "Per charge", value: `$${intent.perCallCapUsd}` },
-                    { label: "Spend on", value: intent.allowedTargets.join(", ") },
-                    { label: "Expires", value: `${intent.expiresInDays} days` },
-                  ].map((row) => (
-                    <div
-                      key={row.label}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        padding: "6px 0",
-                        borderBottom: "1px solid #EFE6D8",
-                        fontSize: 13,
-                        gap: 16,
-                      }}
-                    >
-                      <span style={{ color: "#7A6A59", flexShrink: 0 }}>{row.label}</span>
-                      <span style={{ color: "#1C1714", fontWeight: 600, textAlign: "right" }}>{row.value}</span>
-                    </div>
-                  ))}
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 14 }}>
+                <div>
+                  <label style={labelStyle}>Daily limit (USD)</label>
+                  <input
+                    value={dailyCap}
+                    onChange={(e) => {
+                      setDailyCap(e.target.value);
+                      setFormError(undefined);
+                    }}
+                    inputMode="decimal"
+                    placeholder="1.00"
+                    style={fieldStyle}
+                  />
                 </div>
-              )}
-              {previewError && <div style={{ marginBottom: 12 }}><ErrorNote text={previewError} /></div>}
+                <div>
+                  <label style={labelStyle}>Per charge (USD)</label>
+                  <input
+                    value={perCharge}
+                    onChange={(e) => {
+                      setPerCharge(e.target.value);
+                      setFormError(undefined);
+                    }}
+                    inputMode="decimal"
+                    placeholder="0.20"
+                    style={fieldStyle}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
+                <div>
+                  <label style={labelStyle}>Duration (days)</label>
+                  <input
+                    value={days}
+                    onChange={(e) => {
+                      setDays(e.target.value);
+                      setFormError(undefined);
+                    }}
+                    inputMode="numeric"
+                    placeholder="7"
+                    style={fieldStyle}
+                  />
+                </div>
+                <div>
+                  <label style={labelStyle}>Spend on</label>
+                  <select
+                    value={target}
+                    onChange={(e) => setTarget(e.target.value as TargetKey)}
+                    style={{ ...fieldStyle, cursor: "pointer" }}
+                  >
+                    {TARGET_KEYS.map((k) => (
+                      <option key={k} value={k}>
+                        {TARGET_LABELS[k]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {formError && <div style={{ marginBottom: 12 }}><ErrorNote text={formError} /></div>}
               <button
-                onClick={() => (intent ? setStep("mint") : preview())}
-                disabled={previewing || !description.trim()}
+                onClick={submitForm}
                 style={{
                   width: "100%",
                   padding: "12px",
                   borderRadius: 10,
                   border: "none",
-                  background: previewing || !description.trim() ? "#EFE6D8" : GOLD,
-                  color: previewing || !description.trim() ? "#7A6A59" : "#1C1714",
-                  cursor: previewing || !description.trim() ? "not-allowed" : "pointer",
+                  background: GOLD,
+                  color: "#1C1714",
+                  cursor: "pointer",
                   fontWeight: 700,
                   fontSize: 14,
                   display: "flex",
@@ -524,7 +536,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                   gap: 8,
                 }}
               >
-                {previewing ? "Reading…" : intent ? "Continue to mint" : "Preview card"}
+                Continue to mint
                 <ChevronRight size={16} />
               </button>
             </div>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { Address, Hex } from "viem";
 import { saveCard, listCards } from "@/lib/v2/cardStore";
+import { permissionIntentSchema } from "@/lib/v2/intent";
 import type { AgiCard, PermissionIntent } from "@/lib/v2/types";
 
 export async function GET(request: Request) {
@@ -35,14 +36,25 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Missing card fields." }, { status: 400 });
   }
 
+  // The limits are the safety net — re-validate them server-side so a forged or
+  // malformed request can never store a card outside the allowed bounds.
+  const validIntent = permissionIntentSchema.safeParse(intent);
+  if (!validIntent.success) {
+    return NextResponse.json(
+      { ok: false, error: validIntent.error.issues[0]?.message ?? "Invalid card limits." },
+      { status: 400 }
+    );
+  }
+  const safeIntent = validIntent.data as PermissionIntent;
+
   const now = new Date().toISOString();
   const card: AgiCard = {
     id,
-    label: body.name?.trim() || intent.purpose,
+    label: body.name?.trim() || safeIntent.purpose,
     owner: owner as Address,
     delegate: delegate as Address,
     status: "active",
-    intent,
+    intent: safeIntent,
     permissionsContext: permissionsContext as Hex,
     delegationManager: delegationManager as Address,
     createdAt: now,

@@ -40,7 +40,7 @@ export async function POST(
     return NextResponse.json({ ok: false, error: "Card not found." }, { status: 404 });
   }
   try {
-    await requireCardOwner(card, body.auth);
+    await requireCardOwner(card, body.auth, "spend");
   } catch (e) {
     return NextResponse.json(
       { ok: false, error: e instanceof Error ? e.message : "Not authorized." },

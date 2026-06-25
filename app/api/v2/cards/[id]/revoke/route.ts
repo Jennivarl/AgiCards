@@ -23,7 +23,7 @@ export async function POST(
     body = {};
   }
   try {
-    await requireCardOwner(card, body.auth);
+    await requireCardOwner(card, body.auth, "revoke");
   } catch (e) {
     return NextResponse.json(
       { ok: false, error: e instanceof Error ? e.message : "Not authorized." },

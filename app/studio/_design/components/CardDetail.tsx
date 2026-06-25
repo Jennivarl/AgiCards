@@ -17,7 +17,7 @@ import { useCards } from "../useCards";
 import { useWallet } from "../WalletProvider";
 import { cardGradient } from "../cardColors";
 import { EXPLORER_URL } from "@/lib/v2/chains";
-import { buildAuthMessage, type OwnerAuth } from "@/lib/v2/auth";
+import { buildAuthMessage, type OwnerAuth, type CardAction } from "@/lib/v2/auth";
 import type { Hex } from "viem";
 import type { AgentExecution } from "@/lib/v2/types";
 import type { TargetKey } from "@/lib/v2/intent";
@@ -48,7 +48,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
   const card = cards.find((c) => c.id === cardId);
   // Cached owner-authorization signature (sign once per card, reused for the
   // auto-pay loop) so the server can prove the caller owns this card.
-  const authRef = useRef<{ cardId: string; message: string; signature: Hex; expires: number } | undefined>(undefined);
+  const authRef = useRef<Map<string, { message: string; signature: Hex; expires: number }>>(new Map());
 
   const [executions, setExecutions] = useState<AgentExecution[]>([]);
   const [recipient, setRecipient] = useState("");
@@ -77,17 +77,18 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
   // Owner authorization: sign a short capability once per card (reused for the
   // whole hour and the auto-pay loop), so the server can prove the caller owns
   // the card before moving any money.
-  const ensureAuth = async (cId: string, owner: string): Promise<OwnerAuth> => {
+  const ensureAuth = async (cId: string, owner: string, action: CardAction): Promise<OwnerAuth> => {
     const now = Date.now();
-    const cur = authRef.current;
-    if (cur && cur.cardId === cId && cur.expires - 60_000 > now) {
+    const key = `${cId}:${action}`;
+    const cur = authRef.current.get(key);
+    if (cur && cur.expires - 60_000 > now) {
       return { message: cur.message, signature: cur.signature };
     }
     if (!wallet || !address) throw new Error("Connect your wallet to authorize this card.");
     const expires = now + 60 * 60 * 1000;
-    const message = buildAuthMessage(cId, owner, expires);
+    const message = buildAuthMessage(cId, owner, expires, action);
     const signature = (await wallet.walletClient.signMessage({ account: address, message })) as Hex;
-    authRef.current = { cardId: cId, message, signature, expires };
+    authRef.current.set(key, { message, signature, expires });
     return { message, signature };
   };
 
@@ -100,7 +101,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
     setRunning(true);
     setRunError(undefined);
     try {
-      const auth = await ensureAuth(card.id, card.owner);
+      const auth = await ensureAuth(card.id, card.owner, "spend");
       const res = await fetch(`/api/v2/cards/${card.id}/execute`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -193,7 +194,7 @@ export function CardDetail({ cardId, onBack }: CardDetailProps) {
     setRevoking(true);
     setRunError(undefined);
     try {
-      const auth = await ensureAuth(card.id, card.owner);
+      const auth = await ensureAuth(card.id, card.owner, "revoke");
       const res = await fetch(`/api/v2/cards/${card.id}/revoke`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

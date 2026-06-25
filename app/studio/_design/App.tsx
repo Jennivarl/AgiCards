@@ -8,7 +8,6 @@ import { CreateCard } from "./components/CreateCard";
 import { Activity } from "./components/Activity";
 import { SettingsPage } from "./components/SettingsPage";
 import { WalletProvider, useWallet } from "./WalletProvider";
-import { ThemeProvider } from "./ThemeProvider";
 
 type Screen =
   | { id: "landing" }
@@ -19,11 +18,9 @@ type Screen =
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <WalletProvider>
-        <AppInner />
-      </WalletProvider>
-    </ThemeProvider>
+    <WalletProvider>
+      <AppInner />
+    </WalletProvider>
   );
 }
 

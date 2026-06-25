@@ -75,7 +75,7 @@ export function Activity({ onBack }: ActivityProps) {
   }
 
   return (
-    <div style={{ background: "var(--st-fdf8f0)", minHeight: "100vh", padding: "24px" }}>
+    <div style={{ background: "#FDF8F0", minHeight: "100vh", padding: "24px" }}>
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
         {/* Header */}
         <div
@@ -92,19 +92,19 @@ export function Activity({ onBack }: ActivityProps) {
             <button
               onClick={onBack}
               style={{
-                background: "var(--st-surface)",
-                border: "1px solid var(--st-efe6d8)",
+                background: "white",
+                border: "1px solid #EFE6D8",
                 borderRadius: 8,
                 padding: "6px 10px",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
-                color: "var(--st-7a6a59)",
+                color: "#7A6A59",
               }}
             >
               <ArrowLeft size={16} />
             </button>
-            <h2 style={{ color: "var(--st-1c1714)" }}>Activity</h2>
+            <h2 style={{ color: "#1C1714" }}>Activity</h2>
           </div>
           <button
             onClick={exportCsv}
@@ -115,9 +115,9 @@ export function Activity({ onBack }: ActivityProps) {
               gap: 6,
               padding: "8px 16px",
               borderRadius: 8,
-              border: "1px solid var(--st-efe6d8)",
-              background: "var(--st-surface)",
-              color: "var(--st-1c1714)",
+              border: "1px solid #EFE6D8",
+              background: "white",
+              color: "#1C1714",
               cursor: rows.length === 0 ? "not-allowed" : "pointer",
               opacity: rows.length === 0 ? 0.5 : 1,
               fontSize: 13,
@@ -141,17 +141,17 @@ export function Activity({ onBack }: ActivityProps) {
             <div
               key={s.label}
               style={{
-                background: "var(--st-surface)",
+                background: "white",
                 borderRadius: 12,
-                border: "1px solid var(--st-efe6d8)",
+                border: "1px solid #EFE6D8",
                 padding: "16px",
                 boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
               }}
             >
-              <div style={{ fontSize: 11, color: "var(--st-7a6a59)", marginBottom: 6, fontWeight: 600, letterSpacing: 0.5 }}>
+              <div style={{ fontSize: 11, color: "#7A6A59", marginBottom: 6, fontWeight: 600, letterSpacing: 0.5 }}>
                 {s.label.toUpperCase()}
               </div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: "var(--st-1c1714)" }}>{s.value}</div>
+              <div style={{ fontSize: 22, fontWeight: 700, color: "#1C1714" }}>{s.value}</div>
             </div>
           ))}
         </div>
@@ -171,14 +171,14 @@ export function Activity({ onBack }: ActivityProps) {
               display: "flex",
               alignItems: "center",
               gap: 8,
-              background: "var(--st-surface)",
-              border: "1px solid var(--st-efe6d8)",
+              background: "white",
+              border: "1px solid #EFE6D8",
               borderRadius: 8,
               padding: "7px 12px",
               flex: "1 1 200px",
             }}
           >
-            <Search size={14} color="var(--st-7a6a59)" />
+            <Search size={14} color="#7A6A59" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -188,7 +188,7 @@ export function Activity({ onBack }: ActivityProps) {
                 border: "none",
                 outline: "none",
                 fontSize: 13,
-                color: "var(--st-1c1714)",
+                color: "#1C1714",
                 width: "100%",
               }}
             />
@@ -200,9 +200,9 @@ export function Activity({ onBack }: ActivityProps) {
               style={{
                 padding: "7px 14px",
                 borderRadius: 8,
-                border: "1px solid var(--st-efe6d8)",
-                background: filterStatus === s ? "linear-gradient(135deg, #FFB331, #FF5A12)" : "var(--st-surface)",
-                color: filterStatus === s ? "var(--st-1c1714)" : "var(--st-7a6a59)",
+                border: "1px solid #EFE6D8",
+                background: filterStatus === s ? "linear-gradient(135deg, #FFB331, #FF5A12)" : "white",
+                color: filterStatus === s ? "#1C1714" : "#7A6A59",
                 cursor: "pointer",
                 fontSize: 12,
                 fontWeight: 600,
@@ -217,9 +217,9 @@ export function Activity({ onBack }: ActivityProps) {
         {/* Table (desktop) */}
         <div
           style={{
-            background: "var(--st-surface)",
+            background: "white",
             borderRadius: 14,
-            border: "1px solid var(--st-efe6d8)",
+            border: "1px solid #EFE6D8",
             overflow: "hidden",
             boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
             marginBottom: 24,
@@ -232,13 +232,13 @@ export function Activity({ onBack }: ActivityProps) {
               display: "grid",
               gridTemplateColumns: "160px 120px 120px 80px 100px 120px",
               padding: "10px 16px",
-              background: "var(--st-fdf8f0)",
-              borderBottom: "1px solid var(--st-efe6d8)",
+              background: "#FDF8F0",
+              borderBottom: "1px solid #EFE6D8",
               gap: 8,
             }}
           >
             {["Time", "Card", "Action", "Amount", "Status", "Tx Hash"].map((h) => (
-              <span key={h} style={{ fontSize: 10, color: "var(--st-7a6a59)", fontWeight: 700, letterSpacing: 0.5 }}>
+              <span key={h} style={{ fontSize: 10, color: "#7A6A59", fontWeight: 700, letterSpacing: 0.5 }}>
                 {h}
               </span>
             ))}
@@ -256,20 +256,20 @@ export function Activity({ onBack }: ActivityProps) {
                     display: "grid",
                     gridTemplateColumns: "160px 120px 120px 80px 100px 120px",
                     padding: "12px 16px",
-                    borderBottom: "1px solid var(--st-efe6d8)",
+                    borderBottom: "1px solid #EFE6D8",
                     alignItems: "center",
                     gap: 8,
                     cursor: "pointer",
-                    background: isExpanded ? "var(--st-fdf8f0)" : "var(--st-surface)",
+                    background: isExpanded ? "#FDF8F0" : "white",
                     transition: "background 0.1s",
                   }}
                 >
-                  <span style={{ fontSize: 11, color: "var(--st-7a6a59)", fontFamily: "monospace" }}>
+                  <span style={{ fontSize: 11, color: "#7A6A59", fontFamily: "monospace" }}>
                     {tx.time}
                   </span>
-                  <span style={{ fontSize: 12, color: "var(--st-1c1714)", fontWeight: 600 }}>{tx.card}</span>
-                  <span style={{ fontSize: 12, color: "var(--st-7a6a59)" }}>{tx.action}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "var(--st-1c1714)" }}>{tx.amount}</span>
+                  <span style={{ fontSize: 12, color: "#1C1714", fontWeight: 600 }}>{tx.card}</span>
+                  <span style={{ fontSize: 12, color: "#7A6A59" }}>{tx.action}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "#1C1714" }}>{tx.amount}</span>
                   <span
                     style={{
                       display: "inline-flex",
@@ -294,12 +294,12 @@ export function Activity({ onBack }: ActivityProps) {
                       display: "flex",
                       alignItems: "center",
                       gap: 4,
-                      background: "var(--st-f8f2e9)",
+                      background: "#F8F2E9",
                       borderRadius: 4,
                       padding: "2px 8px",
                       fontSize: 10,
                       fontFamily: "monospace",
-                      color: "var(--st-7a6a59)",
+                      color: "#7A6A59",
                       cursor: "pointer",
                     }}
                   >
@@ -313,9 +313,9 @@ export function Activity({ onBack }: ActivityProps) {
                   onClick={() => setExpandedId(isExpanded ? null : tx.id)}
                   style={{
                     padding: "14px 16px",
-                    borderBottom: "1px solid var(--st-efe6d8)",
+                    borderBottom: "1px solid #EFE6D8",
                     cursor: "pointer",
-                    background: isExpanded ? "var(--st-fdf8f0)" : "var(--st-surface)",
+                    background: isExpanded ? "#FDF8F0" : "white",
                     display: "flex",
                     flexDirection: "column",
                     gap: 6,
@@ -323,10 +323,10 @@ export function Activity({ onBack }: ActivityProps) {
                 >
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
-                      <span style={{ fontSize: 13, fontWeight: 600, color: "var(--st-1c1714)" }}>{tx.card}</span>
-                      <span style={{ fontSize: 12, color: "var(--st-7a6a59)", marginLeft: 8 }}>{tx.action}</span>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: "#1C1714" }}>{tx.card}</span>
+                      <span style={{ fontSize: 12, color: "#7A6A59", marginLeft: 8 }}>{tx.action}</span>
                     </div>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "var(--st-1c1714)" }}>{tx.amount}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#1C1714" }}>{tx.amount}</span>
                   </div>
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                     <span
@@ -341,9 +341,9 @@ export function Activity({ onBack }: ActivityProps) {
                     >
                       {tx.status}
                     </span>
-                    <span style={{ fontSize: 10, fontFamily: "monospace", color: "var(--st-7a6a59)" }}>{tx.hash}</span>
-                    <Clock size={10} color="var(--st-7a6a59)" />
-                    <span style={{ fontSize: 10, color: "var(--st-7a6a59)" }}>{tx.time}</span>
+                    <span style={{ fontSize: 10, fontFamily: "monospace", color: "#7A6A59" }}>{tx.hash}</span>
+                    <Clock size={10} color="#7A6A59" />
+                    <span style={{ fontSize: 10, color: "#7A6A59" }}>{tx.time}</span>
                   </div>
                 </div>
 
@@ -351,8 +351,8 @@ export function Activity({ onBack }: ActivityProps) {
                 {isExpanded && (
                   <div
                     style={{
-                      background: "var(--st-fdf8f0)",
-                      borderBottom: "1px solid var(--st-efe6d8)",
+                      background: "#FDF8F0",
+                      borderBottom: "1px solid #EFE6D8",
                       padding: "16px 24px",
                     }}
                   >
@@ -368,14 +368,14 @@ export function Activity({ onBack }: ActivityProps) {
                         { label: "Recipient", value: tx.recipient, mono: true },
                       ].map((row) => (
                         <div key={row.label}>
-                          <div style={{ fontSize: 10, color: "var(--st-7a6a59)", marginBottom: 4, fontWeight: 700, letterSpacing: 0.5 }}>
+                          <div style={{ fontSize: 10, color: "#7A6A59", marginBottom: 4, fontWeight: 700, letterSpacing: 0.5 }}>
                             {row.label}
                           </div>
                           <div
                             style={{
                               fontSize: 10,
                               fontFamily: row.mono ? "monospace" : "inherit",
-                              color: "var(--st-1c1714)",
+                              color: "#1C1714",
                               wordBreak: "break-all",
                             }}
                           >
@@ -396,9 +396,9 @@ export function Activity({ onBack }: ActivityProps) {
                             gap: 4,
                             padding: "5px 12px",
                             borderRadius: 6,
-                            border: "1px solid var(--st-efe6d8)",
-                            background: "var(--st-surface)",
-                            color: "var(--st-1c1714)",
+                            border: "1px solid #EFE6D8",
+                            background: "white",
+                            color: "#1C1714",
                             cursor: "pointer",
                             fontSize: 11,
                             fontWeight: 600,

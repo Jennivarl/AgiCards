@@ -14,8 +14,6 @@ import {
   ChevronLeft,
   ChevronRight,
   User,
-  Sun,
-  Moon,
 } from "lucide-react";
 import {
   AreaChart,
@@ -26,7 +24,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Logo } from "./Logo";
-import { useTheme } from "../ThemeProvider";
 import { useWallet } from "../WalletProvider";
 import { useCards } from "../useCards";
 import { useExecutions, timeAgo } from "../useExecutions";
@@ -96,7 +93,6 @@ function buildSpendSeries(range: SpendRange, execs: AgentExecution[]) {
 
 export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, onSettings }: DashboardProps) {
   const { address, short, disconnect } = useWallet();
-  const { theme, toggle: toggleTheme } = useTheme();
   const walletLabel = short(address) || "Not connected";
   const usdc = useUsdcBalance(address);
   const [copied, setCopied] = useState(false);
@@ -187,12 +183,12 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
   const budgetPct = totalBudget > 0 ? Math.round((totalSpent / totalBudget) * 100) : 0;
 
   return (
-    <div style={{ background: "var(--st-fdf8f0)", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ background: "#FDF8F0", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Top nav */}
       <nav
         style={{
-          background: "var(--st-surface)",
-          borderBottom: "1px solid var(--st-efe6d8)",
+          background: "white",
+          borderBottom: "1px solid #EFE6D8",
           padding: "0 24px",
           height: 56,
           display: "flex",
@@ -207,7 +203,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
           <button onClick={onGoHome} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}>
             <Logo size={28} />
-            <span style={{ fontWeight: 700, fontSize: 16, color: "var(--st-1c1714)" }}>AgiCards</span>
+            <span style={{ fontWeight: 700, fontSize: 16, color: "#1C1714" }}>AgiCards</span>
           </button>
         </div>
 
@@ -233,7 +229,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           >
             {[...marqueePhrases, ...marqueePhrases].map((p, i) => (
               <span key={i} style={{ display: "inline-flex", alignItems: "center" }}>
-                <span style={{ fontSize: 12.5, fontWeight: 600, letterSpacing: 0.2, color: "var(--st-5c4a38)" }}>{p}</span>
+                <span style={{ fontSize: 12.5, fontWeight: 600, letterSpacing: 0.2, color: "#5C4A38" }}>{p}</span>
                 <span
                   style={{
                     margin: "0 20px",
@@ -253,36 +249,18 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <button
-            onClick={toggleTheme}
-            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: 34,
-              height: 34,
-              background: "var(--st-f8f2e9)",
-              border: "1px solid var(--st-efe6d8)",
-              borderRadius: 8,
-              cursor: "pointer",
-              color: "var(--st-7a6a59)",
-            }}
-          >
-            {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-          <button
             onClick={onGoHome}
             title="Back to home"
             style={{
               display: "flex",
               alignItems: "center",
               gap: 6,
-              background: "var(--st-f8f2e9)",
-              border: "1px solid var(--st-efe6d8)",
+              background: "#F8F2E9",
+              border: "1px solid #EFE6D8",
               borderRadius: 8,
               padding: "6px 12px",
               cursor: "pointer",
-              color: "var(--st-7a6a59)",
+              color: "#7A6A59",
               fontSize: 13,
               fontWeight: 500,
             }}
@@ -294,7 +272,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             <button
               onClick={toggleNotifs}
               title="Notifications"
-              style={{ background: "none", border: "none", cursor: "pointer", color: "var(--st-7a6a59)", position: "relative", display: "flex", alignItems: "center" }}
+              style={{ background: "none", border: "none", cursor: "pointer", color: "#7A6A59", position: "relative", display: "flex", alignItems: "center" }}
             >
               <Bell size={18} />
               {unread > 0 && (
@@ -304,18 +282,18 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
               )}
             </button>
             {showNotifs && (
-              <div style={{ position: "absolute", top: "calc(100% + 10px)", right: 0, width: 300, background: "var(--st-surface)", border: "1px solid var(--st-efe6d8)", borderRadius: 12, boxShadow: "0 12px 40px rgba(0,0,0,0.15)", zIndex: 60, overflow: "hidden" }}>
-                <div style={{ padding: "12px 14px", borderBottom: "1px solid var(--st-efe6d8)", fontWeight: 700, fontSize: 13, color: "var(--st-1c1714)" }}>Notifications</div>
+              <div style={{ position: "absolute", top: "calc(100% + 10px)", right: 0, width: 300, background: "white", border: "1px solid #EFE6D8", borderRadius: 12, boxShadow: "0 12px 40px rgba(0,0,0,0.15)", zIndex: 60, overflow: "hidden" }}>
+                <div style={{ padding: "12px 14px", borderBottom: "1px solid #EFE6D8", fontWeight: 700, fontSize: 13, color: "#1C1714" }}>Notifications</div>
                 <div style={{ maxHeight: 320, overflowY: "auto" }}>
                   {executions.length === 0 ? (
-                    <div style={{ padding: 16, fontSize: 12.5, color: "var(--st-9a8a79)" }}>No notifications yet.</div>
+                    <div style={{ padding: 16, fontSize: 12.5, color: "#9A8A79" }}>No notifications yet.</div>
                   ) : (
                     executions.slice(0, 12).map((e) => (
-                      <div key={e.id} style={{ padding: "10px 14px", borderBottom: "1px solid var(--st-f2eadf)", display: "flex", gap: 10, alignItems: "flex-start" }}>
+                      <div key={e.id} style={{ padding: "10px 14px", borderBottom: "1px solid #F2EADF", display: "flex", gap: 10, alignItems: "flex-start" }}>
                         <div style={{ width: 7, height: 7, borderRadius: "50%", marginTop: 5, background: e.status === "reverted" ? "#E0533B" : "#1FA864", flexShrink: 0 }} />
                         <div style={{ minWidth: 0 }}>
-                          <div style={{ fontSize: 12.5, color: "var(--st-1c1714)" }}>{e.summary}</div>
-                          <div style={{ fontSize: 10.5, color: "var(--st-9a8a79)", marginTop: 2 }}>{timeAgo(e.createdAt)}</div>
+                          <div style={{ fontSize: 12.5, color: "#1C1714" }}>{e.summary}</div>
+                          <div style={{ fontSize: 10.5, color: "#9A8A79", marginTop: 2 }}>{timeAgo(e.createdAt)}</div>
                         </div>
                       </div>
                     ))
@@ -329,20 +307,20 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           <div style={{ position: "relative" }}>
             <button
               onClick={() => { setShowWalletMenu((v) => !v); setShowNotifs(false); }}
-              style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--st-f8f2e9)", border: "1px solid var(--st-efe6d8)", borderRadius: 20, padding: "4px 12px 4px 8px", fontSize: 12, cursor: "pointer" }}
+              style={{ display: "flex", alignItems: "center", gap: 8, background: "#F8F2E9", border: "1px solid #EFE6D8", borderRadius: 20, padding: "4px 12px 4px 8px", fontSize: 12, cursor: "pointer" }}
             >
               <div style={{ width: 20, height: 20, borderRadius: "50%", background: "linear-gradient(135deg, #FFB331, #FF5A12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <User size={12} color="#fff" />
               </div>
-              <span style={{ color: "var(--st-1c1714)", fontFamily: "monospace" }}>{walletLabel}</span>
-              <ChevronDown size={12} color="var(--st-7a6a59)" />
+              <span style={{ color: "#1C1714", fontFamily: "monospace" }}>{walletLabel}</span>
+              <ChevronDown size={12} color="#7A6A59" />
             </button>
             {showWalletMenu && (
-              <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, width: 200, background: "var(--st-surface)", border: "1px solid var(--st-efe6d8)", borderRadius: 10, boxShadow: "0 12px 40px rgba(0,0,0,0.15)", zIndex: 60, overflow: "hidden" }}>
-                <button onClick={() => { copyAddress(); setShowWalletMenu(false); }} style={{ width: "100%", textAlign: "left", padding: "10px 14px", background: "none", border: "none", borderBottom: "1px solid var(--st-f2eadf)", cursor: "pointer", fontSize: 13, color: "var(--st-1c1714)" }}>
+              <div style={{ position: "absolute", top: "calc(100% + 8px)", right: 0, width: 200, background: "white", border: "1px solid #EFE6D8", borderRadius: 10, boxShadow: "0 12px 40px rgba(0,0,0,0.15)", zIndex: 60, overflow: "hidden" }}>
+                <button onClick={() => { copyAddress(); setShowWalletMenu(false); }} style={{ width: "100%", textAlign: "left", padding: "10px 14px", background: "none", border: "none", borderBottom: "1px solid #F2EADF", cursor: "pointer", fontSize: 13, color: "#1C1714" }}>
                   {copied ? "Copied!" : "Copy address"}
                 </button>
-                <a href={`${EXPLORER_URL}/address/${address ?? ""}`} target="_blank" rel="noreferrer" onClick={() => setShowWalletMenu(false)} style={{ display: "block", padding: "10px 14px", borderBottom: "1px solid var(--st-f2eadf)", fontSize: 13, color: "var(--st-1c1714)", textDecoration: "none" }}>
+                <a href={`${EXPLORER_URL}/address/${address ?? ""}`} target="_blank" rel="noreferrer" onClick={() => setShowWalletMenu(false)} style={{ display: "block", padding: "10px 14px", borderBottom: "1px solid #F2EADF", fontSize: 13, color: "#1C1714", textDecoration: "none" }}>
                   View on Basescan
                 </a>
                 <button onClick={() => { setShowWalletMenu(false); disconnect(); onGoHome(); }} style={{ width: "100%", textAlign: "left", padding: "10px 14px", background: "none", border: "none", cursor: "pointer", fontSize: 13, color: "#E0533B", fontWeight: 600 }}>
@@ -367,8 +345,8 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           className="hidden md:flex"
           style={{
             width: navCollapsed ? 64 : 200,
-            background: "var(--st-surface)",
-            borderRight: "1px solid var(--st-efe6d8)",
+            background: "white",
+            borderRight: "1px solid #EFE6D8",
             flexDirection: "column",
             padding: "16px 0 0",
             gap: 2,
@@ -391,7 +369,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                 border: "none",
                 borderLeft: activeNav === item.id ? "2px solid #FFB331" : "2px solid transparent",
                 cursor: "pointer",
-                color: activeNav === item.id ? "#FF5A12" : "var(--st-7a6a59)",
+                color: activeNav === item.id ? "#FF5A12" : "#7A6A59",
                 fontSize: 13,
                 fontWeight: activeNav === item.id ? 600 : 400,
                 textAlign: "left",
@@ -419,9 +397,9 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
               padding: navCollapsed ? "14px 0" : "14px 18px",
               background: "none",
               border: "none",
-              borderTop: "1px solid var(--st-f2eadf)",
+              borderTop: "1px solid #F2EADF",
               cursor: "pointer",
-              color: "var(--st-9a8a79)",
+              color: "#9A8A79",
               fontSize: 13,
               width: "100%",
             }}
@@ -442,7 +420,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                 marginBottom: 12,
               }}
             >
-              <h3 style={{ color: "var(--st-1c1714)" }}>Your Cards</h3>
+              <h3 style={{ color: "#1C1714" }}>Your Cards</h3>
               <button
                 onClick={() => onCreateCard(cardInput)}
                 style={{
@@ -453,7 +431,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                   borderRadius: 8,
                   border: "none",
                   background: "linear-gradient(135deg, #FFE45D, #FFB331, #FF5A12)",
-                  color: "var(--st-1c1714)",
+                  color: "#1C1714",
                   cursor: "pointer",
                   fontSize: 12,
                   fontWeight: 600,
@@ -463,7 +441,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
               </button>
             </div>
             {cards.length === 0 && (
-              <div style={{ padding: "26px", textAlign: "center", color: "var(--st-9a8a79)", fontSize: 13, background: "var(--st-surface)", border: "1px dashed var(--st-efe6d8)", borderRadius: 12 }}>
+              <div style={{ padding: "26px", textAlign: "center", color: "#9A8A79", fontSize: 13, background: "white", border: "1px dashed #EFE6D8", borderRadius: 12 }}>
                 No cards yet. Click <strong style={{ color: "#FF5A12" }}>New Card</strong> to mint your first one.
               </div>
             )}
@@ -567,15 +545,15 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             {/* Create a card */}
             <div
               style={{
-                background: "var(--st-surface)",
+                background: "white",
                 borderRadius: 14,
-                border: "1px solid var(--st-efe6d8)",
+                border: "1px solid #EFE6D8",
                 padding: 20,
                 boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
               }}
             >
-              <h4 style={{ color: "var(--st-1c1714)", marginBottom: 4 }}>Create a Card</h4>
-              <p style={{ color: "var(--st-7a6a59)", fontSize: 12, marginBottom: 12 }}>
+              <h4 style={{ color: "#1C1714", marginBottom: 4 }}>Create a Card</h4>
+              <p style={{ color: "#7A6A59", fontSize: 12, marginBottom: 12 }}>
                 What should your agent pay for? You&apos;ll set the limits next.
               </p>
               <textarea
@@ -584,12 +562,12 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                 placeholder="e.g. AI tools, cloud compute, data feeds"
                 style={{
                   width: "100%",
-                  background: "var(--st-f8f2e9)",
-                  border: "1px solid var(--st-efe6d8)",
+                  background: "#F8F2E9",
+                  border: "1px solid #EFE6D8",
                   borderRadius: 8,
                   padding: "10px 12px",
                   fontSize: 13,
-                  color: "var(--st-1c1714)",
+                  color: "#1C1714",
                   outline: "none",
                   resize: "none",
                   minHeight: 80,
@@ -605,7 +583,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                   borderRadius: 8,
                   border: "none",
                   background: "linear-gradient(135deg, #FFE45D, #FFB331, #FF5A12)",
-                  color: "var(--st-1c1714)",
+                  color: "#1C1714",
                   cursor: "pointer",
                   fontWeight: 600,
                   fontSize: 13,
@@ -630,9 +608,9 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             {/* Spending chart */}
             <div
               style={{
-                background: "var(--st-surface)",
+                background: "white",
                 borderRadius: 14,
-                border: "1px solid var(--st-efe6d8)",
+                border: "1px solid #EFE6D8",
                 padding: 20,
                 boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
               }}
@@ -645,7 +623,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                   marginBottom: 16,
                 }}
               >
-                <h4 style={{ color: "var(--st-1c1714)" }}>Spending</h4>
+                <h4 style={{ color: "#1C1714" }}>Spending</h4>
                 <div style={{ display: "flex", gap: 4 }}>
                   {(["1D", "1W", "1M", "ALL"] as const).map((r) => (
                     <button
@@ -654,9 +632,9 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                       style={{
                         padding: "3px 10px",
                         borderRadius: 6,
-                        border: "1px solid var(--st-efe6d8)",
+                        border: "1px solid #EFE6D8",
                         background: spendRange === r ? "linear-gradient(135deg, #FFB331, #FF5A12)" : "transparent",
-                        color: spendRange === r ? "var(--st-1c1714)" : "var(--st-7a6a59)",
+                        color: spendRange === r ? "#1C1714" : "#7A6A59",
                         cursor: "pointer",
                         fontSize: 11,
                         fontWeight: 600,
@@ -675,12 +653,12 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                       <stop offset="95%" stopColor="#FFB331" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="t" tick={{ fontSize: 10, fill: "var(--st-7a6a59)" }} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "var(--st-7a6a59)" }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
+                  <XAxis dataKey="t" tick={{ fontSize: 10, fill: "#7A6A59" }} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "#7A6A59" }} axisLine={false} tickLine={false} tickFormatter={(v) => `$${v}`} />
                   <Tooltip
                     contentStyle={{
-                      background: "var(--st-surface)",
-                      border: "1px solid var(--st-efe6d8)",
+                      background: "white",
+                      border: "1px solid #EFE6D8",
                       borderRadius: 8,
                       fontSize: 12,
                     }}
@@ -700,19 +678,19 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             {/* Card limits */}
             <div
               style={{
-                background: "var(--st-surface)",
+                background: "white",
                 borderRadius: 14,
-                border: "1px solid var(--st-efe6d8)",
+                border: "1px solid #EFE6D8",
                 padding: 20,
                 boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
               }}
             >
-              <h4 style={{ color: "var(--st-1c1714)", marginBottom: 16 }}>Card Limits</h4>
+              <h4 style={{ color: "#1C1714", marginBottom: 16 }}>Card Limits</h4>
               {/* Circular ring */}
               <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
                 <div style={{ position: "relative", width: 80, height: 80 }}>
                   <svg width={80} height={80} viewBox="0 0 80 80">
-                    <circle cx="40" cy="40" r="32" fill="none" stroke="var(--st-f8f2e9)" strokeWidth="8" />
+                    <circle cx="40" cy="40" r="32" fill="none" stroke="#F8F2E9" strokeWidth="8" />
                     <circle
                       cx="40"
                       cy="40"
@@ -735,25 +713,25 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                       justifyContent: "center",
                     }}
                   >
-                    <span style={{ fontSize: 16, fontWeight: 700, color: "var(--st-1c1714)" }}>{budgetPct}%</span>
-                    <span style={{ fontSize: 9, color: "var(--st-7a6a59)" }}>used</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: "#1C1714" }}>{budgetPct}%</span>
+                    <span style={{ fontSize: 9, color: "#7A6A59" }}>used</span>
                   </div>
                 </div>
               </div>
-              <div style={{ fontSize: 12, textAlign: "center", color: "var(--st-7a6a59)", marginBottom: 12 }}>
-                <span style={{ fontWeight: 700, color: "var(--st-1c1714)" }}>${totalSpent.toFixed(2)}</span>
+              <div style={{ fontSize: 12, textAlign: "center", color: "#7A6A59", marginBottom: 12 }}>
+                <span style={{ fontWeight: 700, color: "#1C1714" }}>${totalSpent.toFixed(2)}</span>
                 {" "}of{" "}
-                <span style={{ fontWeight: 700, color: "var(--st-1c1714)" }}>${totalBudget}/day</span>
+                <span style={{ fontWeight: 700, color: "#1C1714" }}>${totalBudget}/day</span>
               </div>
               {cards.filter(c => c.status === "active").map((card) => (
                 <div key={card.id} style={{ marginBottom: 10 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3, fontSize: 11 }}>
-                    <span style={{ color: "var(--st-7a6a59)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "60%" }}>{card.task}</span>
-                    <span style={{ color: "var(--st-1c1714)", fontWeight: 600 }}>
+                    <span style={{ color: "#7A6A59", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "60%" }}>{card.task}</span>
+                    <span style={{ color: "#1C1714", fontWeight: 600 }}>
                       ${card.spent}/${card.limit}
                     </span>
                   </div>
-                  <div style={{ height: 3, borderRadius: 2, background: "var(--st-f8f2e9)" }}>
+                  <div style={{ height: 3, borderRadius: 2, background: "#F8F2E9" }}>
                     <div
                       style={{
                         height: "100%",
@@ -784,14 +762,14 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           {/* Account */}
           <div
             style={{
-              background: "var(--st-surface)",
+              background: "white",
               borderRadius: 14,
-              border: "1px solid var(--st-efe6d8)",
+              border: "1px solid #EFE6D8",
               padding: 16,
               boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
             }}
           >
-            <h4 style={{ color: "var(--st-1c1714)", marginBottom: 12 }}>Account</h4>
+            <h4 style={{ color: "#1C1714", marginBottom: 12 }}>Account</h4>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
               <div
                 style={{
@@ -806,15 +784,15 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                 <User size={18} color="#fff" />
               </div>
               <div>
-                <div style={{ fontSize: 11, color: "var(--st-7a6a59)" }}>Wallet</div>
-                <div style={{ fontSize: 11, fontFamily: "monospace", color: "var(--st-1c1714)", fontWeight: 600 }}>
+                <div style={{ fontSize: 11, color: "#7A6A59" }}>Wallet</div>
+                <div style={{ fontSize: 11, fontFamily: "monospace", color: "#1C1714", fontWeight: 600 }}>
                   {walletLabel}
                 </div>
               </div>
               <button
                 onClick={copyAddress}
                 title={copied ? "Copied!" : "Copy address"}
-                style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: copied ? "#1FA864" : "var(--st-7a6a59)" }}
+                style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", color: copied ? "#1FA864" : "#7A6A59" }}
               >
                 <Copy size={12} />
               </button>
@@ -831,12 +809,12 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                   display: "flex",
                   justifyContent: "space-between",
                   padding: "6px 0",
-                  borderBottom: "1px solid var(--st-efe6d8)",
+                  borderBottom: "1px solid #EFE6D8",
                   fontSize: 12,
                 }}
               >
-                <span style={{ color: "var(--st-7a6a59)" }}>{row.label}</span>
-                <span style={{ color: "var(--st-1c1714)", fontWeight: 600 }}>{row.value}</span>
+                <span style={{ color: "#7A6A59" }}>{row.label}</span>
+                <span style={{ color: "#1C1714", fontWeight: 600 }}>{row.value}</span>
               </div>
             ))}
             <button
@@ -846,7 +824,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                 marginTop: 12,
                 padding: "7px",
                 borderRadius: 7,
-                border: "1px solid var(--st-efe6d8)",
+                border: "1px solid #EFE6D8",
                 background: "none",
                 color: "#E0533B",
                 cursor: "pointer",
@@ -861,18 +839,18 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           {/* Revoke a Card */}
           <div
             style={{
-              background: "var(--st-surface)",
+              background: "white",
               borderRadius: 14,
-              border: "1px solid var(--st-efe6d8)",
+              border: "1px solid #EFE6D8",
               padding: 16,
               boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
             }}
           >
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
               <Flame size={16} color="#E0533B" />
-              <h4 style={{ color: "var(--st-1c1714)" }}>Revoke a Card</h4>
+              <h4 style={{ color: "#1C1714" }}>Revoke a Card</h4>
             </div>
-            <p style={{ fontSize: 11, color: "var(--st-7a6a59)", marginBottom: 10, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 11, color: "#7A6A59", marginBottom: 10, lineHeight: 1.5 }}>
               Instantly revoke a card so the agent can no longer spend.
             </p>
             <button
@@ -907,8 +885,8 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           bottom: 0,
           left: 0,
           right: 0,
-          background: "var(--st-surface)",
-          borderTop: "1px solid var(--st-efe6d8)",
+          background: "white",
+          borderTop: "1px solid #EFE6D8",
           padding: "8px 0 4px",
           zIndex: 50,
           justifyContent: "space-around",
@@ -926,7 +904,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
               background: "none",
               border: "none",
               cursor: "pointer",
-              color: activeNav === item.id ? "#FF5A12" : "var(--st-7a6a59)",
+              color: activeNav === item.id ? "#FF5A12" : "#7A6A59",
               padding: "4px 8px",
               minWidth: 44,
               minHeight: 44,
@@ -950,8 +928,8 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              width: "100%", maxWidth: 640, background: "var(--st-fffdfa)",
-              borderRadius: 16, border: "1px solid var(--st-efe6d8)",
+              width: "100%", maxWidth: 640, background: "#FFFDFA",
+              borderRadius: 16, border: "1px solid #EFE6D8",
               boxShadow: "0 30px 80px rgba(0,0,0,0.25)", padding: 24, position: "relative",
             }}
           >
@@ -961,11 +939,11 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
               style={{
                 position: "absolute", top: 14, right: 16, width: 28, height: 28,
                 borderRadius: "50%", border: "none", background: "rgba(0,0,0,0.05)",
-                cursor: "pointer", fontSize: 16, color: "var(--st-666)",
+                cursor: "pointer", fontSize: 16, color: "#666",
               }}
             >×</button>
-            <h3 style={{ color: "var(--st-1c1714)", marginBottom: 4 }}>Your Cards</h3>
-            <p style={{ fontSize: 13, color: "var(--st-999)", marginBottom: 18 }}>Select a card to view its details.</p>
+            <h3 style={{ color: "#1C1714", marginBottom: 4 }}>Your Cards</h3>
+            <p style={{ fontSize: 13, color: "#999", marginBottom: 18 }}>Select a card to view its details.</p>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               {cards.map((card) => {
                 const pct = (card.spent / card.limit) * 100;
@@ -974,22 +952,22 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                     key={card.id}
                     onClick={() => { onCardDetail(card.id); setShowCards(false); }}
                     style={{
-                      background: "var(--st-surface)", borderRadius: 12, border: "1px solid var(--st-efe6d8)",
+                      background: "white", borderRadius: 12, border: "1px solid #EFE6D8",
                       padding: 16, cursor: "pointer",
                     }}
                   >
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 10 }}>
                       <div>
-                        <div style={{ fontWeight: 600, color: "var(--st-1c1714)", fontSize: 14 }}>{card.task}</div>
-                        <div style={{ fontSize: 11, color: "var(--st-9a8a79)", marginTop: 2 }}>{card.protocol}</div>
+                        <div style={{ fontWeight: 600, color: "#1C1714", fontSize: 14 }}>{card.task}</div>
+                        <div style={{ fontSize: 11, color: "#9A8A79", marginTop: 2 }}>{card.protocol}</div>
                       </div>
                       <div style={{ width: 8, height: 8, borderRadius: "50%", background: card.color, marginTop: 4 }} />
                     </div>
-                    <div style={{ fontSize: 18, fontWeight: 700, color: "var(--st-1c1714)" }}>
+                    <div style={{ fontSize: 18, fontWeight: 700, color: "#1C1714" }}>
                       ${card.spent.toFixed(2)}{" "}
-                      <span style={{ fontSize: 12, fontWeight: 400, color: "var(--st-9a8a79)" }}>/ ${card.limit} {card.unit}</span>
+                      <span style={{ fontSize: 12, fontWeight: 400, color: "#9A8A79" }}>/ ${card.limit} {card.unit}</span>
                     </div>
-                    <div style={{ height: 4, borderRadius: 2, background: "var(--st-f2eadf)", marginTop: 10, overflow: "hidden" }}>
+                    <div style={{ height: 4, borderRadius: 2, background: "#F2EADF", marginTop: 10, overflow: "hidden" }}>
                       <div style={{ height: "100%", borderRadius: 2, width: `${pct}%`, background: pct > 80 ? "#E0533B" : "linear-gradient(90deg, #FFB331, #FF5A12)" }} />
                     </div>
                   </div>
@@ -1012,8 +990,8 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           <div
             onClick={(e) => e.stopPropagation()}
             style={{
-              width: "100%", maxWidth: 560, background: "var(--st-fffdfa)",
-              borderRadius: 16, border: "1px solid var(--st-efe6d8)",
+              width: "100%", maxWidth: 560, background: "#FFFDFA",
+              borderRadius: 16, border: "1px solid #EFE6D8",
               boxShadow: "0 30px 80px rgba(0,0,0,0.25)", padding: 24, position: "relative",
             }}
           >
@@ -1023,11 +1001,11 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
               style={{
                 position: "absolute", top: 14, right: 16, width: 28, height: 28,
                 borderRadius: "50%", border: "none", background: "rgba(0,0,0,0.05)",
-                cursor: "pointer", fontSize: 16, color: "var(--st-666)",
+                cursor: "pointer", fontSize: 16, color: "#666",
               }}
             >×</button>
-            <h3 style={{ color: "var(--st-1c1714)", marginBottom: 4 }}>Agents</h3>
-            <p style={{ fontSize: 13, color: "var(--st-999)", marginBottom: 18 }}>
+            <h3 style={{ color: "#1C1714", marginBottom: 4 }}>Agents</h3>
+            <p style={{ fontSize: 13, color: "#999", marginBottom: 18 }}>
               {cards.filter((c) => !pausedAgents.includes(c.id)).length} active ·{" "}
               {cards.filter((c) => pausedAgents.includes(c.id)).length} paused ·{" "}
               ${cards.reduce((a, c) => a + (pausedAgents.includes(c.id) ? 0 : c.spent), 0).toFixed(2)} spent today
@@ -1042,7 +1020,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                     key={card.id}
                     style={{
                       display: "flex", alignItems: "center", justifyContent: "space-between",
-                      gap: 12, background: "var(--st-surface)", border: "1px solid var(--st-efe6d8)",
+                      gap: 12, background: "white", border: "1px solid #EFE6D8",
                       borderRadius: 12, padding: "12px 14px",
                     }}
                   >
@@ -1059,19 +1037,19 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                       </div>
                       <div style={{ minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                          <span style={{ fontWeight: 600, color: "var(--st-1c1714)", fontSize: 14 }}>{card.label}</span>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, color: online ? "#1FA864" : "var(--st-9a8a79)" }}>
-                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: online ? "#1FA864" : "var(--st-c9bcad)" }} />
+                          <span style={{ fontWeight: 600, color: "#1C1714", fontSize: 14 }}>{card.label}</span>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, color: online ? "#1FA864" : "#9A8A79" }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: online ? "#1FA864" : "#C9BCAD" }} />
                             {online ? "Online" : "Paused"}
                           </span>
-                          <span style={{ fontSize: 11, color: "var(--st-b0a293)" }}>
+                          <span style={{ fontSize: 11, color: "#B0A293" }}>
                             {online ? `last spend ${time}` : "idle"}
                           </span>
                         </div>
-                        <div style={{ fontSize: 12, color: "var(--st-7a6a59)", marginTop: 2 }}>
+                        <div style={{ fontSize: 12, color: "#7A6A59", marginTop: 2 }}>
                           ${card.spent.toFixed(2)} / ${card.limit} {card.unit}
                         </div>
-                        <div style={{ fontSize: 11, color: "var(--st-a89a88)", fontFamily: "monospace", marginTop: 1 }}>{key}</div>
+                        <div style={{ fontSize: 11, color: "#A89A88", fontFamily: "monospace", marginTop: 1 }}>{key}</div>
                       </div>
                     </div>
                     <button
@@ -1082,9 +1060,9 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                       }
                       style={{
                         flexShrink: 0, fontSize: 12, fontWeight: 500,
-                        padding: "6px 12px", borderRadius: 8, border: "1px solid var(--st-efe6d8)",
-                        background: online ? "var(--st-surface)" : "linear-gradient(135deg, #FFB331, #FF5A12)",
-                        color: online ? "var(--st-9a8a79)" : "var(--st-1c1714)", cursor: "pointer",
+                        padding: "6px 12px", borderRadius: 8, border: "1px solid #EFE6D8",
+                        background: online ? "white" : "linear-gradient(135deg, #FFB331, #FF5A12)",
+                        color: online ? "#9A8A79" : "#1C1714", cursor: "pointer",
                       }}
                     >
                       {online ? "Pause" : "Resume"}

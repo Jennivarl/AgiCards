@@ -17,12 +17,12 @@ import {
 
 const fieldStyle: CSSProperties = {
   width: "100%",
-  background: "var(--st-f8f2e9)",
-  border: "1px solid var(--st-efe6d8)",
+  background: "#F8F2E9",
+  border: "1px solid #EFE6D8",
   borderRadius: 10,
   padding: "11px 12px",
   fontSize: 14,
-  color: "var(--st-1c1714)",
+  color: "#1C1714",
   outline: "none",
   boxSizing: "border-box",
 };
@@ -30,7 +30,7 @@ const labelStyle: CSSProperties = {
   display: "block",
   fontSize: 12,
   fontWeight: 600,
-  color: "var(--st-7a6a59)",
+  color: "#7A6A59",
   marginBottom: 5,
 };
 
@@ -188,9 +188,9 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
     >
       <div
         style={{
-          background: "var(--st-fdf8f0)",
+          background: "#FDF8F0",
           borderRadius: 20,
-          border: "1px solid var(--st-efe6d8)",
+          border: "1px solid #EFE6D8",
           width: "100%",
           maxWidth: 520,
           maxHeight: "90vh",
@@ -207,7 +207,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
             alignItems: "center",
           }}
         >
-          <h3 style={{ color: "var(--st-1c1714)" }}>
+          <h3 style={{ color: "#1C1714" }}>
             {step === "success" ? "Card minted!" : "Create a Card"}
           </h3>
           <button
@@ -216,7 +216,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
               background: "none",
               border: "none",
               cursor: "pointer",
-              color: "var(--st-7a6a59)",
+              color: "#7A6A59",
               padding: 4,
             }}
           >
@@ -254,12 +254,12 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                             ? "#1FA864"
                             : isActive
                             ? "linear-gradient(135deg, #FFB331, #FF5A12)"
-                            : "var(--st-f8f2e9)",
-                          border: isDone || isActive ? "none" : "1.5px solid var(--st-efe6d8)",
+                            : "#F8F2E9",
+                          border: isDone || isActive ? "none" : "1.5px solid #EFE6D8",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          color: isDone ? "#FFFFFF" : isActive ? "var(--st-1c1714)" : "var(--st-7a6a59)",
+                          color: isDone ? "white" : isActive ? "#1C1714" : "#7A6A59",
                           fontSize: 12,
                           fontWeight: 700,
                         }}
@@ -269,7 +269,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                       <span
                         style={{
                           fontSize: 10,
-                          color: isActive ? "#FF5A12" : isDone ? "#1FA864" : "var(--st-7a6a59)",
+                          color: isActive ? "#FF5A12" : isDone ? "#1FA864" : "#7A6A59",
                           fontWeight: isActive ? 700 : 400,
                         }}
                       >
@@ -281,7 +281,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                         style={{
                           flex: 1,
                           height: 1,
-                          background: isDone ? "#1FA864" : "var(--st-efe6d8)",
+                          background: isDone ? "#1FA864" : "#EFE6D8",
                           margin: "0 8px",
                           marginBottom: 18,
                         }}
@@ -307,7 +307,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                       height: 64,
                       borderRadius: "50%",
                       background: "linear-gradient(135deg, #FFE45D20, #FF5A1220)",
-                      border: "1px solid var(--st-efe6d8)",
+                      border: "1px solid #EFE6D8",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -316,8 +316,8 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                   >
                     <Wallet size={28} color="#FFB331" />
                   </div>
-                  <h4 style={{ color: "var(--st-1c1714)", marginBottom: 8 }}>Connect MetaMask</h4>
-                  <p style={{ color: "var(--st-7a6a59)", fontSize: 13, lineHeight: 1.6, marginBottom: 24 }}>
+                  <h4 style={{ color: "#1C1714", marginBottom: 8 }}>Connect MetaMask</h4>
+                  <p style={{ color: "#7A6A59", fontSize: 13, lineHeight: 1.6, marginBottom: 24 }}>
                     Connect your MetaMask wallet on Base to create an AgiCard. We use your Smart
                     Account (EIP-7702) to enforce on-chain spend limits.
                   </p>
@@ -329,8 +329,8 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                       padding: "12px",
                       borderRadius: 10,
                       border: "none",
-                      background: status === "connecting" ? "var(--st-efe6d8)" : GOLD,
-                      color: status === "connecting" ? "var(--st-7a6a59)" : "var(--st-1c1714)",
+                      background: status === "connecting" ? "#EFE6D8" : GOLD,
+                      color: status === "connecting" ? "#7A6A59" : "#1C1714",
                       cursor: status === "connecting" ? "not-allowed" : "pointer",
                       fontWeight: 700,
                       fontSize: 15,
@@ -370,17 +370,17 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                         alignItems: "center",
                         justifyContent: "space-between",
                         padding: "10px 14px",
-                        background: "var(--st-surface)",
-                        border: "1px solid var(--st-efe6d8)",
+                        background: "white",
+                        border: "1px solid #EFE6D8",
                         borderRadius: 10,
                         marginBottom: 10,
                       }}
                     >
                       <div>
-                        <div style={{ fontSize: 11, color: "var(--st-7a6a59)", marginBottom: 2 }}>
+                        <div style={{ fontSize: 11, color: "#7A6A59", marginBottom: 2 }}>
                           {row.label}
                         </div>
-                        <div style={{ fontSize: 12, fontFamily: "monospace", color: "var(--st-1c1714)" }}>
+                        <div style={{ fontSize: 12, fontFamily: "monospace", color: "#1C1714" }}>
                           {row.value}
                         </div>
                       </div>
@@ -407,7 +407,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                       borderRadius: 10,
                       border: "none",
                       background: GOLD,
-                      color: "var(--st-1c1714)",
+                      color: "#1C1714",
                       cursor: "pointer",
                       fontWeight: 700,
                       fontSize: 14,
@@ -427,13 +427,13 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
           {/* Step 2: Set the limits (form) */}
           {step === "describe" && (
             <div>
-              <h4 style={{ color: "var(--st-1c1714)", marginBottom: 4 }}>Set the card&apos;s limits</h4>
-              <p style={{ color: "var(--st-7a6a59)", fontSize: 13, marginBottom: 16, lineHeight: 1.5 }}>
+              <h4 style={{ color: "#1C1714", marginBottom: 4 }}>Set the card&apos;s limits</h4>
+              <p style={{ color: "#7A6A59", fontSize: 13, marginBottom: 16, lineHeight: 1.5 }}>
                 Fill in each limit. They are enforced on-chain, so the agent can never go past them.
               </p>
 
               <label style={labelStyle}>
-                Agent name <span style={{ color: "var(--st-a89a88)", fontWeight: 400 }}>(optional)</span>
+                Agent name <span style={{ color: "#A89A88", fontWeight: 400 }}>(optional)</span>
               </label>
               <input
                 value={name}
@@ -504,7 +504,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                   borderRadius: 10,
                   border: "none",
                   background: GOLD,
-                  color: "var(--st-1c1714)",
+                  color: "#1C1714",
                   cursor: "pointer",
                   fontWeight: 700,
                   fontSize: 14,
@@ -523,16 +523,16 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
           {/* Step 3: Mint */}
           {step === "mint" && intent && (
             <div>
-              <h4 style={{ color: "var(--st-1c1714)", marginBottom: 4 }}>Review & Mint</h4>
-              <p style={{ color: "var(--st-7a6a59)", fontSize: 13, marginBottom: 16 }}>
+              <h4 style={{ color: "#1C1714", marginBottom: 4 }}>Review & Mint</h4>
+              <p style={{ color: "#7A6A59", fontSize: 13, marginBottom: 16 }}>
                 One MetaMask signature to mint your card on-chain.
               </p>
 
               {/* Limits review */}
               <div
                 style={{
-                  background: "var(--st-surface)",
-                  border: "1px solid var(--st-efe6d8)",
+                  background: "white",
+                  border: "1px solid #EFE6D8",
                   borderRadius: 12,
                   padding: 16,
                   marginBottom: 16,
@@ -550,12 +550,12 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                       display: "flex",
                       justifyContent: "space-between",
                       padding: "7px 0",
-                      borderBottom: "1px solid var(--st-efe6d8)",
+                      borderBottom: "1px solid #EFE6D8",
                       fontSize: 13,
                     }}
                   >
-                    <span style={{ color: "var(--st-7a6a59)" }}>{row.label}</span>
-                    <span style={{ color: "var(--st-1c1714)", fontWeight: 600 }}>{row.value}</span>
+                    <span style={{ color: "#7A6A59" }}>{row.label}</span>
+                    <span style={{ color: "#1C1714", fontWeight: 600 }}>{row.value}</span>
                   </div>
                 ))}
               </div>
@@ -583,12 +583,12 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                     margin: "0 auto 10px",
                   }}
                 >
-                  <Zap size={22} color="var(--st-1c1714)" />
+                  <Zap size={22} color="#1C1714" />
                 </div>
-                <div style={{ fontSize: 13, color: "var(--st-1c1714)", fontWeight: 600, marginBottom: 4 }}>
+                <div style={{ fontSize: 13, color: "#1C1714", fontWeight: 600, marginBottom: 4 }}>
                   MetaMask will prompt you
                 </div>
-                <div style={{ fontSize: 11, color: "var(--st-7a6a59)" }}>
+                <div style={{ fontSize: 11, color: "#7A6A59" }}>
                   Review and sign the delegation in MetaMask to mint your AgiCard on-chain.
                 </div>
               </div>
@@ -601,8 +601,8 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                   padding: "12px",
                   borderRadius: 10,
                   border: "none",
-                  background: minting ? "var(--st-efe6d8)" : GOLD,
-                  color: minting ? "var(--st-7a6a59)" : "var(--st-1c1714)",
+                  background: minting ? "#EFE6D8" : GOLD,
+                  color: minting ? "#7A6A59" : "#1C1714",
                   cursor: minting ? "not-allowed" : "pointer",
                   fontWeight: 700,
                   fontSize: 15,
@@ -618,7 +618,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                       style={{
                         width: 16,
                         height: 16,
-                        border: "2px solid var(--st-7a6a59)",
+                        border: "2px solid #7A6A59",
                         borderTopColor: "transparent",
                         borderRadius: "50%",
                         animation: "spin 0.8s linear infinite",
@@ -654,8 +654,8 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
               >
                 <CheckCircle size={36} color="#1FA864" />
               </div>
-              <h3 style={{ color: "var(--st-1c1714)", marginBottom: 8 }}>Card minted!</h3>
-              <p style={{ color: "var(--st-7a6a59)", fontSize: 14, lineHeight: 1.6, marginBottom: 24 }}>
+              <h3 style={{ color: "#1C1714", marginBottom: 8 }}>Card minted!</h3>
+              <p style={{ color: "#7A6A59", fontSize: 14, lineHeight: 1.6, marginBottom: 24 }}>
                 Your agent can now spend within its limits in USDC.
                 <br />
                 Revoke anytime from the dashboard.
@@ -669,7 +669,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                     borderRadius: 10,
                     border: "none",
                     background: GOLD,
-                    color: "var(--st-1c1714)",
+                    color: "#1C1714",
                     cursor: "pointer",
                     fontWeight: 700,
                     fontSize: 13,
@@ -683,9 +683,9 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                     flex: 1,
                     padding: "11px",
                     borderRadius: 10,
-                    border: "1px solid var(--st-efe6d8)",
-                    background: "var(--st-surface)",
-                    color: "var(--st-1c1714)",
+                    border: "1px solid #EFE6D8",
+                    background: "white",
+                    color: "#1C1714",
                     cursor: "pointer",
                     fontWeight: 600,
                     fontSize: 13,

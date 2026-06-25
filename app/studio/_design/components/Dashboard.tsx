@@ -860,36 +860,6 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             </button>
           </div>
 
-          {/* Capabilities */}
-          <div
-            style={{
-              background: "white",
-              borderRadius: 14,
-              border: "1px solid #EFE6D8",
-              padding: 16,
-              boxShadow: "0 1px 4px rgba(28,23,20,0.04)",
-            }}
-          >
-            <h4 style={{ color: "#1C1714", marginBottom: 12 }}>Capabilities</h4>
-            <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-              {[
-                { name: "Pay & subscribe", live: true },
-                { name: "Swap", live: true },
-                { name: "Trade", live: false },
-                { name: "Predict", live: false },
-                { name: "Yield · Bid · Data", live: false },
-              ].map((c) => (
-                <div key={c.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 12.5 }}>
-                  <span style={{ color: "#1C1714", fontWeight: 500 }}>{c.name}</span>
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 700, color: c.live ? "#1FA864" : "#9A8A79" }}>
-                    {c.live && <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1FA864" }} />}
-                    {c.live ? "LIVE" : "SOON"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Recent Activity */}
           <div
             style={{

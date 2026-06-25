@@ -12,10 +12,7 @@ import { useWallet } from "../WalletProvider";
 import { grantCard } from "@/lib/v2/grantCard";
 import {
   permissionIntentSchema,
-  TARGET_KEYS,
-  TARGET_LABELS,
   type ValidatedIntent,
-  type TargetKey,
 } from "@/lib/v2/intent";
 
 const fieldStyle: CSSProperties = {
@@ -79,7 +76,6 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
   const [dailyCap, setDailyCap] = useState("");
   const [perCharge, setPerCharge] = useState("");
   const [days, setDays] = useState("");
-  const [target, setTarget] = useState<TargetKey>("x402");
   const [formError, setFormError] = useState<string>();
   const [intent, setIntent] = useState<ValidatedIntent>();
   const [minting, setMinting] = useState(false);
@@ -116,7 +112,7 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
       token: "USDC",
       dailyCapUsd: daily,
       perCallCapUsd: per,
-      allowedTargets: [target],
+      allowedTargets: ["x402"],
       expiresInDays: d,
     });
     if (!result.success) {
@@ -487,35 +483,17 @@ export function CreateCard({ initialDescription, onClose, onSuccess }: CreateCar
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-                <div>
-                  <label style={labelStyle}>Duration (days)</label>
-                  <input
-                    value={days}
-                    onChange={(e) => {
-                      setDays(e.target.value);
-                      setFormError(undefined);
-                    }}
-                    inputMode="numeric"
-                    placeholder="7"
-                    style={fieldStyle}
-                  />
-                </div>
-                <div>
-                  <label style={labelStyle}>Spend on</label>
-                  <select
-                    value={target}
-                    onChange={(e) => setTarget(e.target.value as TargetKey)}
-                    style={{ ...fieldStyle, cursor: "pointer" }}
-                  >
-                    {TARGET_KEYS.map((k) => (
-                      <option key={k} value={k}>
-                        {TARGET_LABELS[k]}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
+              <label style={labelStyle}>Duration (days)</label>
+              <input
+                value={days}
+                onChange={(e) => {
+                  setDays(e.target.value);
+                  setFormError(undefined);
+                }}
+                inputMode="numeric"
+                placeholder="7"
+                style={{ ...fieldStyle, marginBottom: 16 }}
+              />
 
               {formError && <div style={{ marginBottom: 12 }}><ErrorNote text={formError} /></div>}
               <button

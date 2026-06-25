@@ -391,7 +391,6 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
             }}
           >
             {navCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
-            {!navCollapsed && "Collapse"}
           </button>
         </div>
 

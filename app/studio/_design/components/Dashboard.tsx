@@ -5,7 +5,6 @@ import {
   Bot,
   Activity,
   Settings,
-  Search,
   Bell,
   ChevronDown,
   Flame,
@@ -105,7 +104,6 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
   };
 
   // Search, notifications, and the wallet menu.
-  const [query, setQuery] = useState("");
   const [showNotifs, setShowNotifs] = useState(false);
   const [showWalletMenu, setShowWalletMenu] = useState(false);
   const [lastSeen, setLastSeen] = useState(0);
@@ -136,11 +134,17 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
   }));
 
   // Derived search / notification values (depend on cards + executions above).
-  const q = query.trim().toLowerCase();
-  const visibleCards = q
-    ? cards.filter((c) => c.task.toLowerCase().includes(q) || c.label.toLowerCase().includes(q) || c.protocol.toLowerCase().includes(q))
-    : cards;
   const unread = executions.filter((e) => new Date(e.createdAt).getTime() > lastSeen).length;
+
+  // Flowing taglines that fill the header space where search used to be.
+  const marqueePhrases = [
+    "Spending cards for AI agents",
+    "Limits enforced on-chain",
+    "Pay-per-use in USDC on Base",
+    "Every payment reviewed by 0G",
+    "Gasless via 1Shot",
+    "Revoke anytime",
+  ];
   const toggleNotifs = () => {
     const opening = !showNotifs;
     setShowNotifs(opening);
@@ -203,34 +207,44 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
           </button>
         </div>
 
-        {/* Search */}
+        {/* Flowing tagline (fills the space where search used to be) */}
         <div
-          className="hidden md:flex"
+          className="hidden md:block"
           style={{
             flex: 1,
-            maxWidth: 320,
-            alignItems: "center",
-            gap: 8,
-            background: "#F8F2E9",
-            border: "1px solid #EFE6D8",
-            borderRadius: 8,
-            padding: "6px 12px",
+            overflow: "hidden",
+            margin: "0 28px",
+            WebkitMaskImage: "linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent)",
+            maskImage: "linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent)",
           }}
         >
-          <Search size={14} color="#7A6A59" />
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search cards, activity…"
+          <style>{"@keyframes agiMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }"}</style>
+          <div
             style={{
-              background: "none",
-              border: "none",
-              outline: "none",
-              fontSize: 13,
-              color: "#1C1714",
-              width: "100%",
+              display: "inline-flex",
+              alignItems: "center",
+              whiteSpace: "nowrap",
+              animation: "agiMarquee 30s linear infinite",
             }}
-          />
+          >
+            {[...marqueePhrases, ...marqueePhrases].map((p, i) => (
+              <span key={i} style={{ display: "inline-flex", alignItems: "center" }}>
+                <span style={{ fontSize: 12.5, fontWeight: 600, letterSpacing: 0.2, color: "#5C4A38" }}>{p}</span>
+                <span
+                  style={{
+                    margin: "0 20px",
+                    fontSize: 11,
+                    background: "linear-gradient(135deg, #FFB331, #FF5A12)",
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    color: "transparent",
+                  }}
+                >
+                  ✦
+                </span>
+              </span>
+            ))}
+          </div>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -426,9 +440,9 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                 <Plus size={14} /> New Card
               </button>
             </div>
-            {visibleCards.length === 0 && (
+            {cards.length === 0 && (
               <div style={{ padding: "26px", textAlign: "center", color: "#9A8A79", fontSize: 13, background: "white", border: "1px dashed #EFE6D8", borderRadius: 12 }}>
-                {q ? "No cards match your search." : (<>No cards yet. Click <strong style={{ color: "#FF5A12" }}>New Card</strong> to mint your first one.</>)}
+                No cards yet. Click <strong style={{ color: "#FF5A12" }}>New Card</strong> to mint your first one.
               </div>
             )}
             <div
@@ -438,7 +452,7 @@ export function Dashboard({ onGoHome, onCardDetail, onCreateCard, onActivity, on
                 gap: 12,
               }}
             >
-              {visibleCards.map((card) => {
+              {cards.map((card) => {
                 const pct = card.limit > 0 ? (card.spent / card.limit) * 100 : 0;
                 const isSelected = selectedCard === card.id;
                 const gradient = cardGradient(card.id);

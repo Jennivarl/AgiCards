@@ -77,6 +77,10 @@
   --st-777: #777777;
   --st-888: #888888;
   --st-999: #999999;
+  /* RGB channel sets for translucent "glass" surfaces and hairlines, so alpha
+     is preserved while the base colour flips between themes (used by Landing). */
+  --st-glass-rgb: 255, 255, 255;
+  --st-line-rgb: 0, 0, 0;
   background: var(--st-fdf8f0);
   color: var(--st-1c1714);
   min-height: 100vh;
@@ -109,6 +113,8 @@
   --st-777: #A99F90;
   --st-888: #9E9485;
   --st-999: #948979;
+  --st-glass-rgb: 36, 29, 22;
+  --st-line-rgb: 243, 237, 226;
 }
 
 @layer base {
